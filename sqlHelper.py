@@ -1,8 +1,9 @@
-from sqlite3 import Cursor, Connection
-import os
-import sqlite3
+from sqlite3 import Cursor, Connection, Error
 from enum import Enum
 from typing import Optional, List, Tuple
+
+import os
+import json
 
 
 class Tables(Enum):
@@ -79,7 +80,7 @@ class DB:
             )
 
             self.__conn.commit()
-        except sqlite3.Error as e:
+        except Error as e:
             self.__conn.rollback()
             raise e
 
@@ -106,7 +107,7 @@ class DB:
             file_id = c.lastrowid
 
             return True, f"Added {name} successfully", file_id
-        except sqlite3.Error as e:
+        except Error as e:
             return False, f"Failed to add {name}: {e}", None
 
     def add_filter(self, method: str, input: str) -> Tuple[bool, str, int]:
@@ -123,7 +124,7 @@ class DB:
             filter_id = c.lastrowid
 
             return True, f"Added filter successfully", filter_id
-        except sqlite3.Error as e:
+        except Error as e:
             return False, f"Failed to add filter: {e}", None
 
     def file_filter_relationship(
@@ -141,7 +142,7 @@ class DB:
             )
 
             return True, f"Relationship created successfully"
-        except sqlite3.Error as e:
+        except Error as e:
             return False, f"Failed to create relationship: {e}"
 
     def get_file(self, file_id) -> Optional[bytes]:
@@ -155,7 +156,7 @@ class DB:
             )
             blob = c.fetchone()[0]
             return blob
-        except sqlite3.Error as e:
+        except Error as e:
             return None  # Failed to fetch file
 
     def get_all_files(self) -> Optional[List[bytes]]:
@@ -165,8 +166,23 @@ class DB:
             c.execute(f"""SELECT {FileColumns.BLOB.value} FROM {Tables.File.value}""")
             blobs = [record[0] for record in c.fetchall()]
             return blobs
-        except sqlite3.Error as e:
+        except Error as e:
             return None  # Failed to fetch files
+
+    def get_filter(self, filter_id) -> Optional[str]:
+        c: Cursor = self.cursor()
+
+        try:
+            c.execute(
+                f"""SELECT ({FilterColumns.INPUT.value}, {FilterColumns.METHOD.value})
+                      WHERE {FilterColumns.ID.value}=?""",
+                filter_id,
+            )
+            input, method = c.fetchone()
+            data: dict = {"input": input, "method": method}
+            return json.dump(data)
+        except Exception as e:
+            return None  # Filter not found
 
 
 def init_db(parent: os.PathLike, db_name: str) -> DB:

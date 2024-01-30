@@ -171,6 +171,19 @@ def add_filter():
     return jsonify({"error": msg}), 500
 
 
+@app.route("/filters/get", methods=["POST"])
+def get_filter():
+    # Return the filter matching given id
+    keys = {"filterId"}
+
+    json_data = request.get_json()
+    if not verifyKeys(json_data, keys):
+        return jsonify({"error": "Missing one or more required keys"}), 400
+
+    filter_id = json_data["filterId"]
+    filter = DB.get_filter(filter_id)
+
+
 if __name__ == "__main__":
     port = 5000
     app.run(port=port, debug=True)
