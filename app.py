@@ -10,7 +10,7 @@ import tempfile
 import pandas as pd
 
 from sqlHelper import DB, init_db
-from helperMethods import isAValidExt
+from helperMethods import isAValidExt, verifyKeys
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
@@ -80,6 +80,19 @@ def upload_file():
     msg += f"Files that were dropped for being invalid: {''.join(dropped)}"
 
     return jsonify(msg), 200
+
+
+@app.route("/files/get", methods=["POST"])
+def upload_file():
+    # Get a file matching given id
+    keys = {"fileId"}
+
+    json_data = request.get_json()
+    if verifyKeys(json_data, keys):
+        return jsonify({"error": "Missing one or more required keys"}), 400
+
+    file_id: int = int(json_data["fileId"])
+    working_db.get_file(file_id=file_id)
 
 
 if __name__ == "__main__":
