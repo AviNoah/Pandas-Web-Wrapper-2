@@ -35,4 +35,5 @@ def file_upload():
     files: list = list(request.files.values())
 
     for file in files:
-        ...
+        ok, msg, id = DB.addFile(file.name, file)
+        print(msg)
