@@ -182,7 +182,7 @@ class DB:
                 f"""SELECT ({FilterColumns.INPUT.value}, {FilterColumns.METHOD.value})
                 FROM {Tables.Filter.value}
                 WHERE {FilterColumns.ID.value}=?""",
-                filter_id,
+                (filter_id,),
             )
             input, method = c.fetchone()
             data: dict = {"input": input, "method": method}
@@ -220,6 +220,25 @@ class DB:
                     {FilterColumns.METHOD.value} = ?
                 WHERE {FilterColumns.ID.value} = ?""",
                 (input, method, filter_id),
+            )
+
+            self.commit()
+            if c.rowcount > 0:
+                return True
+            return False
+        except Exception as e:
+            self.rollback()
+            return False  # Filter not found
+
+    def delete_filter(self, filter_id) -> bool:
+        # Update filter data matching id
+        c: Cursor = self.cursor()
+
+        try:
+            c.execute(
+                f"""DELETE FROM {Tables.FILTER.value}
+                WHERE {FilterColumns.ID.value} = ?""",
+                (filter_id,),
             )
 
             self.commit()

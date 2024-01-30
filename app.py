@@ -230,6 +230,24 @@ def update_filter():
     return jsonify({"error": "Filter failed to update"}), 200
 
 
+@app.route("/filters/delete", methods=["POST"])
+def update_filter():
+    # Delete a filter matching the given id.
+    keys = {"filterId"}
+
+    json_data = request.get_json()
+    if not verifyKeys(json_data, keys):
+        return jsonify({"error": "Missing one or more required keys"}), 400
+
+    filter_id = json_data["filterId"]
+
+    ok = DB.delete_filter(filter_id)
+    if ok:
+        return jsonify({"message": "Filter deleted successfully"}), 200
+
+    return jsonify({"error": "Filter failed to delete"}), 200
+
+
 if __name__ == "__main__":
     port = 5000
     app.run(port=port, debug=True)
