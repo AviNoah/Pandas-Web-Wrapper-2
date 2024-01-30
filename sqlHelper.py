@@ -4,24 +4,23 @@ import os
 from enum import Enum
 
 
-class file_columns(Enum):
-    id = "id"
-    file_name = "name"
-    file_ext = "ext"
-    file_blob = "blob"
+class FileColumns(Enum):
+    ID = "id"
+    FILE_NAME = "name"
+    FILE_EXT = "ext"
+    FILE_BLOB = "blob"
 
 
-class filter_columns(Enum):
-    id = "id"
-    method = "method"
-    input = "input"
+class FilterColumns(Enum):
+    ID = "id"
+    METHOD = "method"
+    INPUT = "input"
 
 
-class file_filter_columns(Enum):
-    # A relation ship table between file and filter tables
-    file_id = "file_id"
-    filter_id = "filter_id"
-    sheet = "sheet"
+class FileFilterColumns(Enum):
+    FILE_ID = "file_id"
+    FILTER_ID = "filter_id"
+    SHEET = "sheet"
 
 
 class DB:
@@ -33,9 +32,43 @@ class DB:
         self.__conn: sqlite3.Connection = sqlite3.connect(
             DB_Path, isolation_level=isolation_level
         )
+        self.initTables()
 
     def conn(self):
         return self.__conn
+
+    def initTables(self):
+        # Initialize tables
+        c = self.conn().cursor()
+
+        # Create File table
+        c.execute(
+            """CREATE TABLE IF NOT EXISTS File
+                    (id INTEGER PRIMARY KEY,
+                    name TEXT,
+                    ext TEXT,
+                    blob BLOB)"""
+        )
+
+        # Create Filter table
+        c.execute(
+            """CREATE TABLE IF NOT EXISTS Filter
+                    (id INTEGER PRIMARY KEY,
+                    method TEXT,
+                    input TEXT)"""
+        )
+
+        # Create Relationship table (Junction table)
+        c.execute(
+            """CREATE TABLE IF NOT EXISTS FileFilter
+                    (filter_id INTEGER,
+                    file_id INTEGER,
+                    FOREIGN KEY(filter_id) REFERENCES Filter(id),
+                    FOREIGN KEY(file_id) REFERENCES File(id),
+                    UNIQUE(filter_id, file_id))"""
+        )
+
+        self.__conn.commit()
 
     def commit(self):
         self.__conn.commit()
@@ -43,12 +76,18 @@ class DB:
     def close(self):
         self.__conn.close()
 
+    @staticmethod
+    def addFile(filename, fileBlob):
+        # Add the fileBlob to database
+        filename = os.path.basename(filename)
+        filename, ext = os.path.splitext(filename)
 
-def init_DB(parent: os.PathLike, db_name: str) -> DB:
+
+def initDB(parent: os.PathLike, dbName: str) -> DB:
     if not os.path.exists(parent):
         os.mkdir(parent)
 
-    DB_path: str = os.path.join(parent, db_name) + ".db"
+    DB_path: str = os.path.join(parent, dbName) + ".db"
 
     # Create an empty db file if it doesn't exist
     if not os.path.exists(DB_path):
