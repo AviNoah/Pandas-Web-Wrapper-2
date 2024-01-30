@@ -88,12 +88,24 @@ function handleDroppedFiles(event) {
                 body: formData,
             })
                 .then(response => {
-                    if (response.ok) {
-                        console.log('Files added successfully');
-                        addFiles(passedFiles);  // Send only valid files
-                    } else {
+                    if (!response.ok)
                         console.error("Server didn't receive files.");
+
+                    return response.json();
+                })
+                .then(json => {
+                    if (!json.hasOwnProperty('passed')) {
+                        throw new Error("Response from server does not contain passed files");
                     }
+                    return json;
+                })
+                .then(json => {
+                    // TODO attach the ID returned from the database to each of the created file-views.
+                    const passedIds = json.passed;
+                    console.log('Files added successfully');
+
+                    // TODO: zip them
+                    addFiles(passedFiles, passedIds);  // Send only valid files
                 })
                 .catch(error => {
                     console.error(`These files weren't added successfully ${files}\n${error}`);

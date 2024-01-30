@@ -72,16 +72,10 @@ def upload_file():
     for file in files:
         ok, msg, id = DB.addFile(file.name, file)
         print(msg)
-        file_statuses((ok, file.name, id))
+        file_statuses((ok, id))
 
-    failed: list = [{"name": name, "id": id} for ok, name, id in file_statuses if not ok]
-    succeeded: list = [{"name": name, "id": id} for ok, name, id in file_statuses if ok]
-
-    msg = f"Files uploaded successfully: {''.join(succeeded)}\n"
-    msg += f"Files that failed uploading: {''.join(failed)}\n"
-    msg += f"Files that were dropped for being invalid: {''.join(dropped)}"
-
-    return jsonify({"message":msg, "passed": succeeded}), 200
+    succeeded_ids: list = [id for ok, id in file_statuses if ok]
+    return jsonify({"message":"Files uploaded successfully", "passed": succeeded_ids}), 200
 
 
 @app.route("/files/get", methods=["POST"])
