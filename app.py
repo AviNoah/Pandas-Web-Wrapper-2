@@ -32,18 +32,18 @@ readers = {
 ALLOWED_EXTENSIONS: set = set(readers.keys())
 
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def index():
     return render_template("index.html")
 
 
-@app.route("/resources/<path:path>")
+@app.route("/resources/<path:path>", methods=["GET"])
 def get_resource(path):
     # Serve static files from back-end
     return send_from_directory("static", path)
 
 
-@app.route("/templates/<path:template>")
+@app.route("/templates/<path:template>", methods=["GET"])
 def get_template(template):
     # Serve template files from back-end
     return render_template(template)
