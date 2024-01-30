@@ -28,16 +28,6 @@ working_db: DB = initDB(parent=app.config["APP_FOLDER"], dbName="files")
 os.startfile(app.config["APP_FOLDER"])
 
 
-# Helper methods
-def is_valid_ext(filename: str) -> bool:
-    global ALLOWED_EXTENSIONS
-    _, ext = os.path.splitext(os.path.basename(filename))  # discard name
-    if not ext:
-        return False  # No extension isn't valid.
-
-    return ext in ALLOWED_EXTENSIONS
-
-
 @app.route("/files/upload", methods=["POST"])
 def file_upload():
     # Save files into database.
