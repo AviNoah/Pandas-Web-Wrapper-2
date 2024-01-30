@@ -3,6 +3,7 @@ from urllib.parse import quote
 import requests
 
 from io import BytesIO
+from zipfile import ZipFile
 
 import os
 import shutil
@@ -93,6 +94,10 @@ def get_file():
 
     file_id: int = int(json_data["fileId"])
     file = working_db.get_file(file_id=file_id)
+
+    if not file:
+        return jsonify({"error": "No files found"}), 500
+
     return send_file(
         file,
         as_attachment=False,
@@ -103,20 +108,41 @@ def get_file():
 
 @app.route("/files/get/all", methods=["POST"])
 def get_all_files():
-    # Get a file matching given id
-    keys = {"fileId"}
+    # Get all files
+    files = working_db.get_all_files()
+    if not files:
+        return jsonify({"error": "No files found"}), 500
 
-    json_data = request.get_json()
-    if verifyKeys(json_data, keys):
-        return jsonify({"error": "Missing one or more required keys"}), 400
-
-    file_id: int = int(json_data["fileId"])
-    file = working_db.get_file(file_id=file_id)
     return send_file(
-        file,
+        files,
         as_attachment=False,
-        download_name=file.name,
+        download_name=files.name,
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+
+
+@app.route("/files/get/all/compressed", methods=["POST"])
+def get_all_files_zipped():
+    # Get all files in a zip file
+    files = working_db.get_all_files()
+    if not files:
+        return jsonify({"error": "No files found"}), 500
+
+    # Construct a zip archive containing all files
+    zip_data = BytesIO()
+    with ZipFile(zip_data, "w") as zip_file:
+        for index, file_blob in enumerate(files, start=1):
+            zip_file.writestr(f"file_{index}.xlsx", file_blob)
+
+    # Reset the file-like object's position to the beginning
+    zip_data.seek(0)
+
+    # Send the zip file to the client
+    return send_file(
+        zip_data,
+        as_attachment=True,
+        attachment_filename="files.zip",
+        mimetype="application/zip",
     )
 
 
