@@ -83,7 +83,7 @@ def upload_file():
 
 
 @app.route("/files/get", methods=["POST"])
-def upload_file():
+def get_file():
     # Get a file matching given id
     keys = {"fileId"}
 
@@ -92,7 +92,13 @@ def upload_file():
         return jsonify({"error": "Missing one or more required keys"}), 400
 
     file_id: int = int(json_data["fileId"])
-    working_db.get_file(file_id=file_id)
+    file = working_db.get_file(file_id=file_id)
+    return send_file(
+        file,
+        as_attachment=False,
+        download_name=file.name,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
 
 
 if __name__ == "__main__":
