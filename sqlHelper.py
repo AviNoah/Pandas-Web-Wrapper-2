@@ -37,9 +37,7 @@ class DB:
             isolation_level = None  # Auto-commit mode
         else:
             isolation_level = ""  # Default isolation level
-        self.__conn: Connection = connect(
-            db_path, isolation_level=isolation_level
-        )
+        self.__conn: Connection = connect(db_path, isolation_level=isolation_level)
         self.init_tables()
 
     def conn(self) -> Connection:
@@ -175,12 +173,13 @@ class DB:
         try:
             c.execute(
                 f"""SELECT ({FilterColumns.INPUT.value}, {FilterColumns.METHOD.value})
-                      WHERE {FilterColumns.ID.value}=?""",
+                FROM {Tables.Filter.value}
+                WHERE {FilterColumns.ID.value}=?""",
                 filter_id,
             )
             input, method = c.fetchone()
             data: dict = {"input": input, "method": method}
-            return json.dump(data)
+            return json.dumps(data)
         except Exception as e:
             return None  # Filter not found
 
