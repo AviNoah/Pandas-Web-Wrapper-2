@@ -55,9 +55,9 @@ def validate_files():
     except Exception as e:
         return jsonify({"error": "Failed to retrieve files from form"}), 500
 
-    files: zip = zip(file_blobs, indices)
+    files = zip(file_blobs, indices)
 
-    passed: list = [id for file, id in files if isAValidExt(file.name)]
+    passed = [id for file, id in files if isAValidExt(file.name)]
     data = {"acceptedIndices": passed}
     return jsonify(data), 200
 
