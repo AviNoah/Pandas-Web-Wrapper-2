@@ -5,11 +5,11 @@
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
     <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/index_page_layout.css') }}" />
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename = 'images/favicon.svg') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'styles/index_page_layout.css') }}" />
   </head>
   <body>
-    <iframe src="/spreadsheet/show"></iframe>
-    <iframe src="/select_file/show"></iframe>
+    <iframe src="/templates/spreadsheet/spreadsheet_view.html"></iframe>
+    <iframe src="/templates/select_file/select_file.html"></iframe>
   </body>
 </html>
