@@ -49,6 +49,11 @@ def get_template(template):
 
 @app.route("/files/validate", methods=["POST"])
 def validate_files():
+    files: list = list(request.files.values())
+    
+    dropped: list = list(filter(lambda f: not isAValidExt(f), files))
+    passed: list = list(filter(isAValidExt, files))
+
     
 
 @app.route("/files/upload", methods=["POST"])

@@ -78,14 +78,18 @@ function handleDroppedFiles(event) {
                 formDataPassedFiles.append(`file${index}`, file)
             })
 
+            return { formData: formDataPassedFiles, passedFiles: passedFiles }
+        })
+        .then((formData, passedFiles) => {
+
             fetch('/files/upload', {
                 method: 'POST',
-                body: formDataPassedFiles,
+                body: formData,
             })
                 .then(response => {
                     if (response.ok) {
                         console.log('Files added successfully');
-                        addFiles(files)  // Send only valid files
+                        addFiles(passedFiles)  // Send only valid files
                     } else {
                         console.error("Server didn't receive files.");
                     }
