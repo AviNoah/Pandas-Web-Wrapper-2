@@ -94,7 +94,7 @@ class DB:
 
         try:
             c.execute(
-                f"""INSERT INTO File 
+                f"""INSERT INTO {tables.File.value} 
                 ({FileColumns.NAME.value}, 
                 {FileColumns.EXT.value}, 
                 {FileColumns.BLOB.value})
@@ -113,7 +113,7 @@ class DB:
 
         try:
             c.execute(
-                f"""INSERT INTO Filter 
+                f"""INSERT INTO {tables.Filter.value} 
                 ({FilterColumns.METHOD.value}, 
                 {FilterColumns.INPUT.value})
                 VALUES (?, ?)""",
@@ -131,7 +131,7 @@ class DB:
 
         try:
             c.execute(
-                f"""INSERT INTO File 
+                f"""INSERT INTO {tables.FileFilter.value} 
                 ({FileFilterColumns.FILE_ID.value},
                 {FileFilterColumns.FILE_ID.value})
                 VALUES (?, ?)""",
