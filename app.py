@@ -183,8 +183,8 @@ def get_filter():
     filter_id = json_data["filterId"]
     filter_json: str = DB.get_filter(filter_id)
     if not filter_json:
-        return jsonify("error": "Failed to fetch filter"), 500
-    
+        return jsonify({"error": "Failed to fetch filter"}), 500
+
     return filter_json, 200
 
 
