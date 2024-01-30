@@ -33,7 +33,7 @@ function handleDroppedFiles(event) {
     // Create a FormData object
     const formDataAllFiles = new FormData();
     files.forEach((file, index) => {
-        formDataAllFiles.append(`file${index}`, file)
+        formDataAllFiles.append(`file${index}`, file, file.name)
     });
 
     fetch('/files/validate', {
@@ -75,7 +75,7 @@ function handleDroppedFiles(event) {
             const formDataPassedFiles = new FormData();
 
             passedFiles.forEach((file, index) => {
-                formDataPassedFiles.append(`file${index}`, file)
+                formDataPassedFiles.append(`file${index}`, file, file.name)
             })
 
             return { formData: formDataPassedFiles, passedFiles: passedFiles }
