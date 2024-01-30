@@ -82,10 +82,16 @@ class DB:
     def addFile(self, filename, fileBlob):
         # Add the fileBlob to database
         filename = os.path.basename(filename)
-        filename, ext = os.path.splitext(filename)
+        name, ext = os.path.splitext(filename)
 
         c: Cursor = self.conn().cursor()
         c.execute(
+            f"""INSERT INTO File 
+            ({FileColumns.NAME.value}, 
+            {FileColumns.EXT.value}, 
+            {FileColumns.BLOB.value})
+            VALUES (?, ?, ?)""",
+            (name, ext, fileBlob),
         )
 
 
