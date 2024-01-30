@@ -79,7 +79,7 @@ class DB:
 
     # CRUD operation helpers
 
-    def addFile(self, filename, fileBlob) -> (bool, str):
+    def addFile(self, filename, fileBlob) -> (bool, str, int):
         # Add the fileBlob to database
         filename = os.path.basename(filename)
         name, ext = os.path.splitext(filename)
@@ -95,12 +95,15 @@ class DB:
                 VALUES (?, ?, ?)""",
                 (name, ext, fileBlob),
             )
+            
+            file_id = c.lastrowid
 
-            return True, f"Added {name} successfully"
+            return True, f"Added {name} successfully", file_id
         except sqlite3.Error as e:
-            return False, f"Failed to add {name}: {e}"
+            return False, f"Failed to add {name}: {e}", None
 
-    def addFilter(self, method: str, input: str):
+
+    def addFilter(self, method: str, input: str) -> (bool, str, int):
         c: Cursor = self.conn().cursor()
 
         try:
@@ -111,10 +114,13 @@ class DB:
                 VALUES (?, ?)""",
                 (method, input),
             )
+            
+            filter_id = c.lastrowid
 
-            return True, f"Added filter successfully"
+            return True, f"Added filter successfully", filter_id
         except sqlite3.Error as e:
-            return False, f"Failed to add filter: {e}"
+            return False, f"Failed to add filter: {e}", None
+
 
 
 def initDB(parent: os.PathLike, dbName: str) -> DB:
