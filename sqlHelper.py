@@ -79,20 +79,26 @@ class DB:
 
     # CRUD operation helpers
 
-    def addFile(self, filename, fileBlob):
+    def addFile(self, filename, fileBlob) -> (bool, str):
         # Add the fileBlob to database
         filename = os.path.basename(filename)
         name, ext = os.path.splitext(filename)
 
         c: Cursor = self.conn().cursor()
-        c.execute(
-            f"""INSERT INTO File 
-            ({FileColumns.NAME.value}, 
-            {FileColumns.EXT.value}, 
-            {FileColumns.BLOB.value})
-            VALUES (?, ?, ?)""",
-            (name, ext, fileBlob),
-        )
+
+        try:
+            c.execute(
+                f"""INSERT INTO File 
+                ({FileColumns.NAME.value}, 
+                {FileColumns.EXT.value}, 
+                {FileColumns.BLOB.value})
+                VALUES (?, ?, ?)""",
+                (name, ext, fileBlob),
+            )
+
+            return True, f"Added {name} successfully"
+        except sqlite3.Error as e:
+            return False, f"Failed to add {name}: {e}"
 
 
 def initDB(parent: os.PathLike, dbName: str) -> DB:
