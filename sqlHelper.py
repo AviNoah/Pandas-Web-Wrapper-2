@@ -85,6 +85,9 @@ class DB:
     def commit(self):
         self.__conn.commit()
 
+    def rollback(self):
+        self.conn().rollback()
+
     def close(self):
         self.__conn.close()
 
@@ -202,6 +205,24 @@ class DB:
             return json.dumps(filters_data)
         except Exception as e:
             return None  # Filters not found
+
+    def update_filter(self, filter_id, method: str, input: str) -> bool:
+        # Update filter data matching id
+        c: Cursor = self.cursor()
+
+        try:
+            c.execute(
+                f"""UPDATE {Tables.FILTER.value}
+                SET {FilterColumns.INPUT.value} = ?,
+                    {FilterColumns.METHOD.value} = ?
+                WHERE {FilterColumns.ID.value} = ?""",
+                (input, method, filter_id),
+            )
+            if c.rowcount > 0:
+                return True
+            return False
+        except Exception as e:
+            return False  # Filter not found
 
 
 def init_db(parent: os.PathLike, db_name: str) -> DB:

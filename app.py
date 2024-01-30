@@ -208,6 +208,28 @@ def get_filter_for_sheet():
     return filters_json, 200
 
 
+@app.route("/filters/update", methods=["POST"])
+def update_filter():
+    # Update a filter matching the given id.
+    keys = {"filterId", "method", "input"}
+
+    json_data = request.get_json()
+    if not verifyKeys(json_data, keys):
+        return jsonify({"error": "Missing one or more required keys"}), 400
+
+    filter_id, method, input = (
+        json_data["filterId"],
+        json_data["method"],
+        json_data["input"],
+    )
+
+    ok = DB.update_filter(filter_id, method, input)
+    if ok:
+        return jsonify({"message": "Filter updated successfully"}), 200
+
+    return jsonify({"error": "Filter failed to update"}), 200
+
+
 if __name__ == "__main__":
     port = 5000
     app.run(port=port, debug=True)
