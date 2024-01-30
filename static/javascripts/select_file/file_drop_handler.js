@@ -108,7 +108,7 @@ function handleDroppedFiles(event) {
                     addFiles(passedFiles, passedIds);  // Send only valid files
                 })
                 .catch(error => {
-                    console.error(`These files weren't added successfully ${files}\n${error}`);
+                    console.error(`These files weren't added successfully ${passedFiles}\n${error}`);
                 });
         })
         .catch(error => console.error(error));
