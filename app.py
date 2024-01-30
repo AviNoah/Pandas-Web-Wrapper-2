@@ -85,6 +85,37 @@ def upload_file():
     )
 
 
+@app.route("/files/update", methods=["POST"])
+def update_file():
+    # Update files at the given ids.
+    try:
+        file_blobs: list = list(request.files.values())
+        indices: list = request.form.getlist("index")
+    except Exception as e:
+        return jsonify({"error": "Failed to retrieve files from form"}), 500
+
+    files = zip(file_blobs, indices)
+    file_statuses: list = list()
+    for file, file_id in files:
+        ok, msg, id = DB.update_file(file_id, file.name, file)
+        print(msg)
+        file_statuses((ok, id))
+
+    succeeded_ids: list = [id for ok, id in file_statuses if ok]
+    failed_ids: list = [id for ok, id in file_statuses if not ok]
+
+    return (
+        jsonify(
+            {
+                "message": "Files updated successfully",
+                "passed": succeeded_ids,
+                "failed": failed_ids,
+            }
+        ),
+        200,
+    )
+
+
 @app.route("/files/get", methods=["POST"])
 def get_file():
     # Get a file matching given id

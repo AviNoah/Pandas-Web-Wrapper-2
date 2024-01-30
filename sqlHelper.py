@@ -93,6 +93,7 @@ class DB:
 
     def add_file(self, filename: str, file_blob: bytes) -> Tuple[bool, str, int]:
         # Add the file_blob to database
+        filename = os.path.basename(filename)
         name, ext = os.path.splitext(filename)
         c: Cursor = self.cursor()
         try:
@@ -248,6 +249,30 @@ class DB:
         except Exception as e:
             self.rollback()
             return False  # Filter not found
+
+    def update_file(
+        self, file_id, filename: str, file_blob: bytes
+    ) -> Tuple[bool, str, int]:
+        # Update the file_blob in database at the given id
+        filename = os.path.basename(filename)
+        name, ext = os.path.splitext(filename)
+        c: Cursor = self.cursor()
+        try:
+            c.execute(
+                f"""UPDATE {Tables.File.value}
+                SET {FileColumns.NAME.value} = ?,
+                    {FileColumns.EXT.value} = ?,
+                    {FileColumns.BLOB.value} = ?
+                WHERE {FileColumns.ID.value} = ?""",
+                (name, ext, file_blob, file_id),
+            )
+
+            self.commit()
+
+            return c.rowcount > 0, f"Updated {name} successfully", file_id
+        except Error as e:
+            self.rollback()
+            return False, f"Failed to update {name}: {e}", file_id
 
 
 def init_db(parent: os.PathLike, db_name: str) -> DB:
