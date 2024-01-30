@@ -173,7 +173,7 @@ def add_filter():
 
 @app.route("/filters/get", methods=["POST"])
 def get_filter():
-    # Return the filter matching given id
+    # Return the filter matching given id as a json
     keys = {"filterId"}
 
     json_data = request.get_json()
@@ -181,11 +181,31 @@ def get_filter():
         return jsonify({"error": "Missing one or more required keys"}), 400
 
     filter_id = json_data["filterId"]
+
     filter_json: str = DB.get_filter(filter_id)
     if not filter_json:
         return jsonify({"error": "Failed to fetch filter"}), 500
 
     return filter_json, 200
+
+
+@app.route("/filters/get/for_sheet", methods=["POST"])
+def get_filter_for_sheet():
+    # Return all the filters of the given fileId and sheet
+    keys = {"fileId", "sheet"}
+
+    json_data = request.get_json()
+    if not verifyKeys(json_data, keys):
+        return jsonify({"error": "Missing one or more required keys"}), 400
+
+    file_id = json_data["fileId"]
+    sheet = json_data["sheet"]
+
+    filters_json: str = DB.get_sheets_filters(file_id, sheet)
+    if not filters_json:
+        return jsonify({"error": "Failed to fetch filter"}), 500
+
+    return filters_json, 200
 
 
 if __name__ == "__main__":

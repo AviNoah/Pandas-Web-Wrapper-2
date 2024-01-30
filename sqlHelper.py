@@ -168,6 +168,7 @@ class DB:
             return None  # Failed to fetch files
 
     def get_filter(self, filter_id) -> Optional[str]:
+        # Return a json representing filter data
         c: Cursor = self.cursor()
 
         try:
@@ -182,6 +183,25 @@ class DB:
             return json.dumps(data)
         except Exception as e:
             return None  # Filter not found
+
+    def get_sheets_filters(self, file_id, sheet) -> Optional[str]:
+        # Return a json representing a list of filter data's
+        c: Cursor = self.cursor()
+
+        try:
+            c.execute(
+                f"""SELECT {FilterColumns.INPUT.value}, {FilterColumns.METHOD.value}
+                FROM {Tables.Filter.value}
+                WHERE {FileFilterColumns.FILE_ID.value}=? AND {FileFilterColumns.SHEET.value}=?""",
+                (file_id, sheet),
+            )
+
+            filters_data = []
+            for input, method in c.fetchall():
+                filters_data.append({"input": input, "method": method})
+            return json.dumps(filters_data)
+        except Exception as e:
+            return None  # Filters not found
 
 
 def init_db(parent: os.PathLike, db_name: str) -> DB:
