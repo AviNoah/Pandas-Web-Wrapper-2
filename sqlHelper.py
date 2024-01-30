@@ -127,13 +127,13 @@ class DB:
             return False, f"Failed to add filter: {e}", None
 
     def fileFilterRelationship(self, fileID: int, filterID: int) -> (bool, str):
-        c: Cursor = self.conn()
+        c: Cursor = self.conn().cursor()
 
         try:
             c.execute(
                 f"""INSERT INTO {tables.FileFilter.value} 
                 ({FileFilterColumns.FILE_ID.value},
-                {FileFilterColumns.FILE_ID.value})
+                {FileFilterColumns.FILTER_ID.value})
                 VALUES (?, ?)""",
                 (fileID, filterID),
             )
