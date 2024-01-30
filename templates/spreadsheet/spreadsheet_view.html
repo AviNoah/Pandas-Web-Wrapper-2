@@ -4,13 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{{ url_for('static', filename = 'styles/spreadsheet/layout_styles.css') }}" />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'styles/spreadsheet/sheet_selector_styles.css') }}" />
+    <script src="{{ url_for('static', filename = 'javascripts/spreadsheet/sheet_selector_handler.js') }}"></script>
+
+    <!-- Table design -->
     <link rel="stylesheet" href="{{ url_for('static', filename = 'styles/spreadsheet/table_styles.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename = 'styles/spreadsheet/header_styles.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'styles/spreadsheet/filter_styles.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'styles/spreadsheet/sheet_selector_styles.css') }}" />
+
     <script src="{{ url_for('static', filename = 'node_modules/xlsx/dist/xlsx.full.min.js') }}"></script>
-    <script src="{{ url_for('static', filename = 'javascripts/spreadsheet/filter_handler.js') }}"></script>
-    <script src="{{ url_for('static', filename = 'javascripts/spreadsheet/sheet_selector_handler.js') }}"></script>
     <title>Spreadsheet view</title>
   </head>
   <body>
