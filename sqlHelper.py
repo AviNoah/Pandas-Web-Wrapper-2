@@ -1,6 +1,21 @@
 import sqlite3
 import os
 
+from enum import Enum
+
+
+class FileColumns(Enum):
+    id = "id"
+    file_name = "name"
+    file_ext = "ext"
+    file_blob = "blob"
+
+
+class FilterColumns(Enum):
+    id = "id"
+    method = "method"
+    input = "input"
+
 
 class DB:
     def __init__(self, DB_Path: os.PathLike, auto_commit: bool = False):
