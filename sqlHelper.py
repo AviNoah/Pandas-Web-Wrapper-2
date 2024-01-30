@@ -43,9 +43,12 @@ class DB:
     def conn(self) -> Connection:
         return self.__conn
 
+    def cursor(self) -> Cursor:
+        return self.conn().cursor()
+
     def init_tables(self):
         # Initialize tables
-        c: Cursor = self.conn().cursor()
+        c: Cursor = self.cursor()
         try:
             # Create File table
             c.execute(
@@ -88,7 +91,7 @@ class DB:
     def add_file(self, filename: str, file_blob: bytes) -> (bool, str, int):
         # Add the file_blob to database
         name, ext = os.path.splitext(filename)
-        c: Cursor = self.conn().cursor()
+        c: Cursor = self.cursor()
         try:
             c.execute(
                 f"""INSERT INTO {Tables.File.value} 
@@ -106,7 +109,7 @@ class DB:
             return False, f"Failed to add {name}: {e}", None
 
     def add_filter(self, method: str, input: str) -> (bool, str, int):
-        c: Cursor = self.conn().cursor()
+        c: Cursor = self.cursor()
         try:
             c.execute(
                 f"""INSERT INTO {Tables.Filter.value} 
@@ -123,7 +126,7 @@ class DB:
             return False, f"Failed to add filter: {e}", None
 
     def file_filter_relationship(self, file_id: int, filter_id: int) -> (bool, str):
-        c: Cursor = self.conn().cursor()
+        c: Cursor = self.cursor()
         try:
             c.execute(
                 f"""INSERT INTO {Tables.FileFilter.value} 
@@ -136,6 +139,9 @@ class DB:
             return True, f"Relationship created successfully"
         except sqlite3.Error as e:
             return False, f"Failed to create relationship: {e}"
+
+    def get_file(self, file_id):
+        c: Cursor = self.cursor()
 
 
 def init_db(parent: os.PathLike, db_name: str) -> DB:
