@@ -72,16 +72,16 @@ def upload_file():
     for file in files:
         ok, msg, id = DB.addFile(file.name, file)
         print(msg)
-        file_statuses((ok, file.name))
+        file_statuses((ok, file.name, id))
 
-    failed: list = [name for ok, name in file_statuses if not ok]
-    succeeded: list = [name for ok, name in file_statuses if ok]
+    failed: list = [{"name": name, "id": id} for ok, name, id in file_statuses if not ok]
+    succeeded: list = [{"name": name, "id": id} for ok, name, id in file_statuses if ok]
 
     msg = f"Files uploaded successfully: {''.join(succeeded)}\n"
     msg += f"Files that failed uploading: {''.join(failed)}\n"
     msg += f"Files that were dropped for being invalid: {''.join(dropped)}"
 
-    return jsonify(msg), 200
+    return jsonify({"message":msg, "passed": succeeded}), 200
 
 
 @app.route("/files/get", methods=["POST"])
@@ -149,6 +149,9 @@ def get_all_files_zipped():
         mimetype="application/zip",
     )
 
+@app.route("/filters/add", methods=["POST"])
+def add_filter():
+    
 
 if __name__ == "__main__":
     port = 5000
