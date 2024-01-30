@@ -100,6 +100,22 @@ class DB:
         except sqlite3.Error as e:
             return False, f"Failed to add {name}: {e}"
 
+    def addFilter(self, method: str, input: str):
+        c: Cursor = self.conn().cursor()
+
+        try:
+            c.execute(
+                f"""INSERT INTO Filter 
+                ({FilterColumns.INPUT.value}, 
+                {FilterColumns.METHOD.value})
+                VALUES (?, ?)""",
+                (input, method),
+            )
+
+            return True, f"Added filter successfully"
+        except sqlite3.Error as e:
+            return False, f"Failed to add filter: {e}"
+
 
 def initDB(parent: os.PathLike, dbName: str) -> DB:
     if not os.path.exists(parent):

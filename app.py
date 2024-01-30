@@ -23,7 +23,7 @@ ALLOWED_EXTENSIONS: set = set(readers.keys())
 
 app.config["APP_FOLDER"] = APP_FOLDER
 
-working_db: DB = initDB(parent=app.config["APP_FOLDER"], db_name="files")
+working_db: DB = initDB(parent=app.config["APP_FOLDER"], dbName="files")
 # Open directory TODO: Remove this after finishing
 os.startfile(app.config["APP_FOLDER"])
 
