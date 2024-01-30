@@ -106,9 +106,10 @@ class DB:
             )
 
             file_id = c.lastrowid
-
+            self.commit()
             return True, f"Added {name} successfully", file_id
         except Error as e:
+            self.rollback()
             return False, f"Failed to add {name}: {e}", None
 
     def add_filter(self, method: str, input: str) -> Tuple[bool, str, int]:
@@ -123,9 +124,10 @@ class DB:
             )
 
             filter_id = c.lastrowid
-
+            self.commit()
             return True, f"Added filter successfully", filter_id
         except Error as e:
+            self.rollback()
             return False, f"Failed to add filter: {e}", None
 
     def file_filter_relationship(
@@ -141,9 +143,10 @@ class DB:
                 VALUES (?, ?, ?)""",
                 (file_id, filter_id, sheet),
             )
-
+            self.commit()
             return True, f"Relationship created successfully"
         except Error as e:
+            self.rollback()
             return False, f"Failed to create relationship: {e}"
 
     def get_file(self, file_id) -> Optional[bytes]:
@@ -218,10 +221,13 @@ class DB:
                 WHERE {FilterColumns.ID.value} = ?""",
                 (input, method, filter_id),
             )
+
+            self.commit()
             if c.rowcount > 0:
                 return True
             return False
         except Exception as e:
+            self.rollback()
             return False  # Filter not found
 
 
