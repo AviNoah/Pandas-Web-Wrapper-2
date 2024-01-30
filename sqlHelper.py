@@ -4,17 +4,24 @@ import os
 from enum import Enum
 
 
-class FileColumns(Enum):
+class file_columns(Enum):
     id = "id"
     file_name = "name"
     file_ext = "ext"
     file_blob = "blob"
 
 
-class FilterColumns(Enum):
+class filter_columns(Enum):
     id = "id"
     method = "method"
     input = "input"
+
+
+class file_filter_columns(Enum):
+    # A relation ship table between file and filter tables
+    file_id = "file_id"
+    filter_id = "filter_id"
+    sheet = "sheet"
 
 
 class DB:
