@@ -13,7 +13,7 @@ from sqlHelper import *
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
-UPLOAD_FOLDER: str = tempfile.mkdtemp()
+APP_FOLDER: str = tempfile.mkdtemp()
 readers = {
     ".csv": pd.read_csv,
     ".xlsx": pd.read_excel,
@@ -21,7 +21,11 @@ readers = {
 }
 ALLOWED_EXTENSIONS: set = set(readers.keys())
 
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["APP_FOLDER"] = APP_FOLDER
+
+working_db: DB = init_DB(parent=app.config["APP_FOLDER"], db_name="files")
+# Open directory TODO: Remove this after finishing
+os.startfile(app.config["APP_FOLDER"])
 
 
 # Helper methods
@@ -32,3 +36,12 @@ def is_valid_ext(filename: str) -> bool:
         return False  # No extension isn't valid.
 
     return ext in ALLOWED_EXTENSIONS
+
+
+@app.route("/files/upload", methods=["POST"])
+def file_upload():
+    # Save files into database.
+    files: list = list(request.files.values())
+
+    for file in files:
+        ...
