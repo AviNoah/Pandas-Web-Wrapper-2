@@ -20,3 +20,17 @@ class DB:
 
     def close(self):
         self.__conn.close()
+
+
+def init_DB(parent: os.PathLike, dbName: str) -> DB:
+    if not os.path.exists(parent):
+        os.mkdir(parent)
+
+    DB_path: str = os.path.join(parent, dbName) + ".db"
+
+    # Create an empty db file if it doesn't exist
+    if not os.path.exists(DB_path):
+        with open(DB_path, "a"):
+            pass
+
+    return DB(DB_path)
