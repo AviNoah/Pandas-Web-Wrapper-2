@@ -2,6 +2,7 @@ from sqlite3 import Cursor, Connection
 import os
 import sqlite3
 from enum import Enum
+from typing import Optional, List, Tuple
 
 
 class Tables(Enum):
@@ -88,7 +89,7 @@ class DB:
     def close(self):
         self.__conn.close()
 
-    def add_file(self, filename: str, file_blob: bytes) -> (bool, str, int):
+    def add_file(self, filename: str, file_blob: bytes) -> Tuple[bool, str, int]:
         # Add the file_blob to database
         name, ext = os.path.splitext(filename)
         c: Cursor = self.cursor()
@@ -108,7 +109,7 @@ class DB:
         except sqlite3.Error as e:
             return False, f"Failed to add {name}: {e}", None
 
-    def add_filter(self, method: str, input: str) -> (bool, str, int):
+    def add_filter(self, method: str, input: str) -> Tuple[bool, str, int]:
         c: Cursor = self.cursor()
         try:
             c.execute(
@@ -125,7 +126,9 @@ class DB:
         except sqlite3.Error as e:
             return False, f"Failed to add filter: {e}", None
 
-    def file_filter_relationship(self, file_id: int, filter_id: int) -> (bool, str):
+    def file_filter_relationship(
+        self, file_id: int, filter_id: int
+    ) -> Tuple[bool, str]:
         c: Cursor = self.cursor()
         try:
             c.execute(
@@ -140,7 +143,7 @@ class DB:
         except sqlite3.Error as e:
             return False, f"Failed to create relationship: {e}"
 
-    def get_file(self, file_id) -> bytes | None:
+    def get_file(self, file_id) -> Optional[bytes]:
         c: Cursor = self.cursor()
 
         try:
@@ -153,6 +156,16 @@ class DB:
             return blob
         except sqlite3.Error as e:
             return None  # Failed to fetch file
+
+    def get_all_files(self) -> Optional[List[bytes]]:
+        c: Cursor = self.cursor()
+
+        try:
+            c.execute(f"""SELECT {FileColumns.BLOB.value} FROM {Tables.File.value}""")
+            blobs = [record[0] for record in c.fetchall()]
+            return blobs
+        except sqlite3.Error as e:
+            return None  # Failed to fetch files
 
 
 def init_db(parent: os.PathLike, db_name: str) -> DB:

@@ -101,6 +101,25 @@ def get_file():
     )
 
 
+@app.route("/files/get/all", methods=["POST"])
+def get_all_files():
+    # Get a file matching given id
+    keys = {"fileId"}
+
+    json_data = request.get_json()
+    if verifyKeys(json_data, keys):
+        return jsonify({"error": "Missing one or more required keys"}), 400
+
+    file_id: int = int(json_data["fileId"])
+    file = working_db.get_file(file_id=file_id)
+    return send_file(
+        file,
+        as_attachment=False,
+        download_name=file.name,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+
+
 if __name__ == "__main__":
     port = 5000
     app.run(port=port, debug=True)
