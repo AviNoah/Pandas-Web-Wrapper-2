@@ -75,7 +75,10 @@ def upload_file():
         file_statuses((ok, id))
 
     succeeded_ids: list = [id for ok, id in file_statuses if ok]
-    return jsonify({"message":"Files uploaded successfully", "passed": succeeded_ids}), 200
+    return (
+        jsonify({"message": "Files uploaded successfully", "passed": succeeded_ids}),
+        200,
+    )
 
 
 @app.route("/files/get", methods=["POST"])
@@ -84,7 +87,7 @@ def get_file():
     keys = {"fileId"}
 
     json_data = request.get_json()
-    if verifyKeys(json_data, keys):
+    if not verifyKeys(json_data, keys):
         return jsonify({"error": "Missing one or more required keys"}), 400
 
     file_id: int = int(json_data["fileId"])
@@ -143,9 +146,16 @@ def get_all_files_zipped():
         mimetype="application/zip",
     )
 
+
 @app.route("/filters/add", methods=["POST"])
 def add_filter():
-    
+    # Add a filter to the matching fileId
+    keys = {"fileId"}
+
+    json_data = request.get_json()
+    if not verifyKeys(json_data, keys):
+        
+
 
 if __name__ == "__main__":
     port = 5000

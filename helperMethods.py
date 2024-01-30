@@ -13,4 +13,4 @@ def isAValidExt(filename: str, ALLOWED_EXTENSIONS: set) -> bool:
 
 def verifyKeys(json, key_set: set) -> bool:
     # Verifies if json contains every key from the given set
-    return not json or not key_set.issubset(json.keys())
+    return json and key_set.issubset(json.keys())
