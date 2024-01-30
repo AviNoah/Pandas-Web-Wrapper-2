@@ -53,7 +53,7 @@ def validate_files():
         file_blobs: list = list(request.files.values())
         indices: list = request.form.getlist("index")
     except Exception as e:
-        jsonify({"error": "Failed to retrieve files from form"}), 500
+        return jsonify({"error": "Failed to retrieve files from form"}), 500
 
     files: zip = zip(file_blobs, indices)
 
