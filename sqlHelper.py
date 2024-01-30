@@ -95,13 +95,12 @@ class DB:
                 VALUES (?, ?, ?)""",
                 (name, ext, fileBlob),
             )
-            
+
             file_id = c.lastrowid
 
             return True, f"Added {name} successfully", file_id
         except sqlite3.Error as e:
             return False, f"Failed to add {name}: {e}", None
-
 
     def addFilter(self, method: str, input: str) -> (bool, str, int):
         c: Cursor = self.conn().cursor()
@@ -114,13 +113,28 @@ class DB:
                 VALUES (?, ?)""",
                 (method, input),
             )
-            
+
             filter_id = c.lastrowid
 
             return True, f"Added filter successfully", filter_id
         except sqlite3.Error as e:
             return False, f"Failed to add filter: {e}", None
 
+    def fileFilterRelationship(self, fileID: int, filterID: int) -> (bool, str):
+        c: Cursor = self.conn()
+
+        try:
+            c.execute(
+                f"""INSERT INTO File 
+                ({FileFilterColumns.FILE_ID.value},
+                {FileFilterColumns.FILE_ID.value})
+                VALUES (?, ?)""",
+                (fileID, filterID),
+            )
+
+            return True, f"Relationship created successfully"
+        except sqlite3.Error as e:
+            return False, f"Failed to create relationship: {e}"
 
 
 def initDB(parent: os.PathLike, dbName: str) -> DB:
