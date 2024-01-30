@@ -29,6 +29,23 @@ readers = {
 ALLOWED_EXTENSIONS: set = set(readers.keys())
 
 
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/resources/<path:path>")
+def get_resource(path):
+    # Serve static files from back-end
+    return send_from_directory("static", path)
+
+
+@app.route("/templates/<path:template>")
+def get_template(template):
+    # Serve template files from back-end
+    return render_template(template)
+
+
 @app.route("/files/upload", methods=["POST"])
 def file_upload():
     # Save files into database.
