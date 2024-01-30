@@ -1,0 +1,31 @@
+:root {
+    --header_color: rgb(116, 116, 255);
+    --table_color: rgb(251, 244, 244);
+    --grid_lines_color: black;
+}
+
+#spreadsheet table {
+    /* Collapse any cell borders that touch each-other into a single border*/
+    border-collapse: collapse;
+    width: 100%;
+    height: 100%;
+}
+
+#spreadsheet th,
+#spreadsheet td {
+    border: 1px solid var(--grid_lines_color);
+    padding: 8px;
+    /* Align depending on text direction */
+    direction: auto;
+}
+
+/* Mark in javascript header cells, the first row is usually the label row */
+#spreadsheet th:not(.header-cell),
+#spreadsheet td:not(.header-cell) {
+    background-color: var(--table_color);
+}
+
+.header-cell,
+.header-cell * {
+    background-color: var(--header_color);
+}

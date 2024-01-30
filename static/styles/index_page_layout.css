@@ -1,0 +1,23 @@
+:root {
+    --background-color: rgb(253, 233, 177);
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    background-color: var(--background-color);
+    overflow: hidden;
+}
+
+body {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    /* Remove iframe border */
+    border: none;
+}

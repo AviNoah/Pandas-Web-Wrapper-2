@@ -1,0 +1,13 @@
+<link rel="stylesheet" href="{{ url_for('static', filename = 'styles/select_file/filter_item_styles.css') }}" />
+<select name="column" class="select-column"></select>
+<select name="method" class="select-method">
+  <option value="exact">Exact match</option>
+  <option value="contains">Contains</option>
+  <option value="not contains">Does not contain</option>
+  <option value="regex">RegEx</option>
+</select>
+<input name="input" type="text" required />
+<div class="buttons">
+  <button name="update" onclick="handleFilterSubmit(event)">Update</button>
+  <button name="delete" onclick="handleFilterDelete(event)">Delete</button>
+</div>

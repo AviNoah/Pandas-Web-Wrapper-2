@@ -1,0 +1,13 @@
+<link rel="stylesheet" href="{{ url_for('static', filename = 'styles/select_file/selection_box_styles.css') }}" />
+
+<select id="method-selection">
+  <option value="add">Add</option>
+  <option value="subtract">Subtract</option>
+  <option value="analyze">Analyze</option>
+</select>
+<div class="columns-container">
+  <!-- These selectors will be populated with the df's that were selected -->
+  <select id="columns-left-selector"></select>
+  <select id="columns-right-selector"></select>
+</div>
+<button id="submit-selection">Submit</button>
