@@ -181,7 +181,11 @@ def get_filter():
         return jsonify({"error": "Missing one or more required keys"}), 400
 
     filter_id = json_data["filterId"]
-    filter = DB.get_filter(filter_id)
+    filter_json: str = DB.get_filter(filter_id)
+    if not filter_json:
+        return jsonify("error": "Failed to fetch filter"), 500
+    
+    return filter_json, 200
 
 
 if __name__ == "__main__":
