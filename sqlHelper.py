@@ -5,6 +5,12 @@ import os
 from enum import Enum
 
 
+class tables(Enum):
+    File: "File"
+    Filter: "Filter"
+    FileFilter: "FileFilter"
+
+
 class FileColumns(Enum):
     ID = "id"
     NAME = "name"
@@ -44,29 +50,29 @@ class DB:
 
         # Create File table
         c.execute(
-            """CREATE TABLE IF NOT EXISTS File
-                    (id INTEGER PRIMARY KEY,
-                    name TEXT,
-                    ext TEXT,
-                    blob BLOB)"""
+            f"""CREATE TABLE IF NOT EXISTS {tables.File.value}
+                    ({FileColumns.ID.value} INTEGER PRIMARY KEY,
+                    {FileColumns.NAME.value} TEXT,
+                    {FileColumns.EXT.value} TEXT,
+                    {FileColumns.BLOB.value} BLOB)"""
         )
 
         # Create Filter table
         c.execute(
-            """CREATE TABLE IF NOT EXISTS Filter
-                    (id INTEGER PRIMARY KEY,
-                    method TEXT,
-                    input TEXT)"""
+            f"""CREATE TABLE IF NOT EXISTS {tables.Filter.value}
+                    ({FilterColumns.ID.value} INTEGER PRIMARY KEY,
+                    {FilterColumns.METHOD.value} TEXT,
+                    {FilterColumns.INPUT.value} TEXT)"""
         )
 
         # Create Relationship table (Junction table)
         c.execute(
-            """CREATE TABLE IF NOT EXISTS FileFilter
-                    (filter_id INTEGER,
-                    file_id INTEGER,
-                    FOREIGN KEY(filter_id) REFERENCES Filter(id),
-                    FOREIGN KEY(file_id) REFERENCES File(id),
-                    UNIQUE(filter_id, file_id))"""
+            f"""CREATE TABLE IF NOT EXISTS {tables.FileFilter.value}
+                    ({FileFilterColumns.FILTER_ID.value} INTEGER,
+                    {FileFilterColumns.FILE_ID.value} INTEGER,
+                    FOREIGN KEY({FileFilterColumns.FILTER_ID.value}) REFERENCES {tables.Filter.value}({FilterColumns.ID.value}),
+                    FOREIGN KEY({FileFilterColumns.FILE_ID.value}) REFERENCES {tables.File.value}({FileColumns.ID.value}),
+                    UNIQUE({FileFilterColumns.FILTER_ID.value}, {FileFilterColumns.FILE_ID.value}))"""
         )
 
         self.__conn.commit()
