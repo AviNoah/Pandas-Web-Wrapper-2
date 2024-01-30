@@ -140,8 +140,19 @@ class DB:
         except sqlite3.Error as e:
             return False, f"Failed to create relationship: {e}"
 
-    def get_file(self, file_id):
+    def get_file(self, file_id) -> bytes | None:
         c: Cursor = self.cursor()
+
+        try:
+            c.execute(
+                f"""SELECT {FileColumns.BLOB.value} FROM {Tables.File.value}
+                     WHERE {FileColumns.ID}=?""",
+                (file_id,),
+            )
+            blob = c.fetchone()[0]
+            return blob
+        except sqlite3.Error as e:
+            return None  # Failed to fetch file
 
 
 def init_db(parent: os.PathLike, db_name: str) -> DB:
