@@ -76,8 +76,7 @@ class DB:
     def close(self):
         self.__conn.close()
 
-    @staticmethod
-    def addFile(filename, fileBlob):
+    def addFile(self, filename, fileBlob):
         # Add the fileBlob to database
         filename = os.path.basename(filename)
         filename, ext = os.path.splitext(filename)
