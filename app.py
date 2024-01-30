@@ -51,6 +51,7 @@ def get_template(template):
 def file_upload():
     # Save files into database.
     files: list = list(request.files.values())
+    dropped: list = list(filter(lambda f: not isAValidExt(f), files))
     files: list = list(filter(isAValidExt, files))
 
     file_statuses: list = list()
@@ -64,5 +65,6 @@ def file_upload():
 
     msg = f"Files uploaded successfully: {''.join(succeeded)}\n"
     msg += f"Files that failed uploading: {''.join(failed)}\n"
+    msg += f"Files that were dropped for being invalid: {''.join(dropped)}"
 
     return jsonify(msg), 200
