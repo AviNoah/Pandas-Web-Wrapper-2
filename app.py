@@ -4,6 +4,7 @@ import requests
 
 from io import BytesIO
 from zipfile import ZipFile
+import base64
 
 import os
 import shutil
@@ -113,12 +114,15 @@ def get_all_files():
     if not files:
         return jsonify({"error": "No files found"}), 500
 
-    return send_file(
-        files,
-        as_attachment=False,
-        download_name=files.name,
-        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    )
+    file_list = []
+    for file in files:
+        file_data = {
+            "name": file.name,
+            "content": base64.b64encode(file).decode(),  # Convert bytes to base64
+        }
+        file_list.append(file_data)
+
+    return jsonify({"files": file_list})
 
 
 @app.route("/files/get/all/compressed", methods=["POST"])
