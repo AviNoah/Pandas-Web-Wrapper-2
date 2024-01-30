@@ -7,9 +7,9 @@ from enum import Enum
 
 class FileColumns(Enum):
     ID = "id"
-    FILE_NAME = "name"
-    FILE_EXT = "ext"
-    FILE_BLOB = "blob"
+    NAME = "name"
+    EXT = "ext"
+    BLOB = "blob"
 
 
 class FilterColumns(Enum):
@@ -84,7 +84,9 @@ class DB:
         filename = os.path.basename(filename)
         filename, ext = os.path.splitext(filename)
 
-        self.conn().cursor()
+        c: Cursor = self.conn().cursor()
+        c.execute(
+        )
 
 
 def initDB(parent: os.PathLike, dbName: str) -> DB:
