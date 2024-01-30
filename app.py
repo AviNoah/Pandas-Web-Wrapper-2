@@ -49,12 +49,18 @@ def get_template(template):
 
 @app.route("/files/validate", methods=["POST"])
 def validate_files():
-    files: list = list(request.files.values())
-    
-    dropped: list = list(filter(lambda f: not isAValidExt(f), files))
-    passed: list = list(filter(isAValidExt, files))
+    try:
+        file_blobs: list = list(request.files.values())
+        indices: list = request.form.getlist("index")
+    except Exception as e:
+        jsonify({"error": "Failed to retrieve files from form"}), 500
 
-    
+    files: zip = zip(file_blobs, indices)
+
+    passed: list = [id for file, id in files if isAValidExt(file.name)]
+    data = {"acceptedIndices": passed}
+    return jsonify(data), 200
+
 
 @app.route("/files/upload", methods=["POST"])
 def upload_file():

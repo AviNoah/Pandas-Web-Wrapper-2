@@ -33,7 +33,8 @@ function handleDroppedFiles(event) {
     // Create a FormData object
     const formDataAllFiles = new FormData();
     files.forEach((file, index) => {
-        formDataAllFiles.append(`file${index}`, file, file.name)
+        formDataAllFiles.append(`file${index}`, file, file.name);
+        formDataAllFiles.append(`index${index}`, index);
     });
 
     fetch('/files/validate', {
@@ -75,10 +76,10 @@ function handleDroppedFiles(event) {
             const formDataPassedFiles = new FormData();
 
             passedFiles.forEach((file, index) => {
-                formDataPassedFiles.append(`file${index}`, file, file.name)
+                formDataPassedFiles.append(`file${index}`, file, file.name);
             })
 
-            return { formData: formDataPassedFiles, passedFiles: passedFiles }
+            return { formData: formDataPassedFiles, passedFiles: passedFiles };
         })
         .then((formData, passedFiles) => {
 
@@ -89,7 +90,7 @@ function handleDroppedFiles(event) {
                 .then(response => {
                     if (response.ok) {
                         console.log('Files added successfully');
-                        addFiles(passedFiles)  // Send only valid files
+                        addFiles(passedFiles);  // Send only valid files
                     } else {
                         console.error("Server didn't receive files.");
                     }
