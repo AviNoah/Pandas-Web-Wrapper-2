@@ -22,11 +22,11 @@ class DB:
         self.__conn.close()
 
 
-def init_DB(parent: os.PathLike, dbName: str) -> DB:
+def init_DB(parent: os.PathLike, db_name: str) -> DB:
     if not os.path.exists(parent):
         os.mkdir(parent)
 
-    DB_path: str = os.path.join(parent, dbName) + ".db"
+    DB_path: str = os.path.join(parent, db_name) + ".db"
 
     # Create an empty db file if it doesn't exist
     if not os.path.exists(DB_path):
