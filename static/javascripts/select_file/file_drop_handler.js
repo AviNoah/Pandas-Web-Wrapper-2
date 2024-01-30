@@ -27,46 +27,74 @@ function handleDrop(e) {
     }
 }
 
-function getFileExtension(filename) {
-    const parts = filename.split('.');
-    return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : '';
-}
-
-function isValidFile(filename) {
-    const allowedExtensions = ["xlsx", "ods", "csv"];
-    if (!filename)
-        return false;  // Empty or undefined is invalid
-    const fileExtension = getFileExtension(filename);
-    return Boolean(allowedExtensions.includes(fileExtension));
-}
-
 function handleDroppedFiles(event) {
-    const droppedFiles = Array.from(event.dataTransfer.files);
-
-    // Drop files with invalid extensions
-    const files = Array.from(droppedFiles.filter((file) => isValidFile(file.name)));
+    const files = Array.from(event.dataTransfer.files);
 
     // Create a FormData object
-    const formData = new FormData();
+    const formDataAllFiles = new FormData();
     files.forEach((file, index) => {
-        formData.append(`file${index}`, file)
+        formDataAllFiles.append(`file${index}`, file)
     });
 
-    fetch('/file/upload', {
-        method: 'POST',
-        body: formData,
+    fetch('/files/validate', {
+        method: "POST",
+        body: formDataAllFiles
     })
         .then(response => {
-            if (response.ok) {
-                console.log('Files added successfully');
-                addFiles(files)  // Send only valid files
-            } else {
-                console.error("Server didn't receive files.");
-            }
+            if (!response.ok)
+                throw new Error("Failed to validate files, upload failed");
+
+            return response.json();
         })
-        .catch(error => {
-            console.error(`These files weren't added successfully ${files}\n${error}`);
-        });
+        .then(json => {
+            if (!json.hasOwnProperty('acceptedIndices')) {
+                throw new Error("Response from server does not contain acceptedIndices");
+            }
+            return json
+        })
+        .then(json => {
+            // Separate accepted and dropped files
+            const acceptedIndices = json.acceptedIndices;
+            const passedFiles = [];
+            const failedFiles = [];
+            files.forEach((file, index) => {
+                if (acceptedIndices.includes(index)) {
+                    passedFiles.push(file);
+                } else {
+                    failedFiles.push(file);
+                }
+            });
+
+            return { passed: passedFiles, dropped: failedFiles };
+        })
+        .then((passed, dropped) => {
+            console.error(`Warning: these files have invalid extensions and have been dropped: ${dropped.join(", ")}`);
+            return passed;
+        })
+        .then(passedFiles => {
+            const formDataPassedFiles = new FormData();
+
+            passedFiles.forEach((file, index) => {
+                formDataPassedFiles.append(`file${index}`, file)
+            })
+
+            fetch('/files/upload', {
+                method: 'POST',
+                body: formDataPassedFiles,
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Files added successfully');
+                        addFiles(files)  // Send only valid files
+                    } else {
+                        console.error("Server didn't receive files.");
+                    }
+                })
+                .catch(error => {
+                    console.error(`These files weren't added successfully ${files}\n${error}`);
+                });
+        })
+        .catch(error => console.error(error));
 }
 
 // Attach event listeners
