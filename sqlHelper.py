@@ -106,10 +106,10 @@ class DB:
         try:
             c.execute(
                 f"""INSERT INTO Filter 
-                ({FilterColumns.INPUT.value}, 
-                {FilterColumns.METHOD.value})
+                ({FilterColumns.METHOD.value}, 
+                {FilterColumns.INPUT.value})
                 VALUES (?, ?)""",
-                (input, method),
+                (method, input),
             )
 
             return True, f"Added filter successfully"
