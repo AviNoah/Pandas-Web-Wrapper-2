@@ -17,7 +17,7 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 APP_FOLDER: str = tempfile.mkdtemp()
 app.config["APP_FOLDER"] = APP_FOLDER
 
-working_db: DB = initDB(parent=app.config["APP_FOLDER"], dbName="files")
+working_db: DB = init_db(parent=app.config["APP_FOLDER"], dbName="files")
 # Open directory TODO: Remove this after finishing
 os.startfile(app.config["APP_FOLDER"])
 
