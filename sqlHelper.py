@@ -1,4 +1,5 @@
 import sqlite3
+from sqlite3 import Cursor, Connection
 import os
 
 from enum import Enum
@@ -29,7 +30,7 @@ class DB:
             isolation_level = None  # Auto-commit mode
         else:
             isolation_level = ""  # Default isolation level
-        self.__conn: sqlite3.Connection = sqlite3.connect(
+        self.__conn: Connection = sqlite3.connect(
             DB_Path, isolation_level=isolation_level
         )
         self.initTables()
@@ -39,7 +40,7 @@ class DB:
 
     def initTables(self):
         # Initialize tables
-        c = self.conn().cursor()
+        c: Cursor = self.conn().cursor()
 
         # Create File table
         c.execute(
@@ -76,10 +77,14 @@ class DB:
     def close(self):
         self.__conn.close()
 
+    # CRUD operation helpers
+
     def addFile(self, filename, fileBlob):
         # Add the fileBlob to database
         filename = os.path.basename(filename)
         filename, ext = os.path.splitext(filename)
+
+        self.conn().cursor()
 
 
 def initDB(parent: os.PathLike, dbName: str) -> DB:
