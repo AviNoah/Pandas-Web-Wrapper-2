@@ -68,3 +68,8 @@ def file_upload():
     msg += f"Files that were dropped for being invalid: {''.join(dropped)}"
 
     return jsonify(msg), 200
+
+
+if __name__ == "__main__":
+    port = 5000
+    app.run(port=port, debug=True)
