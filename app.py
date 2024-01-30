@@ -9,7 +9,7 @@ import shutil
 import tempfile
 import pandas as pd
 
-from sqlHelper import *
+from sqlHelper import DB, init_db
 from helperMethods import isAValidExt
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
