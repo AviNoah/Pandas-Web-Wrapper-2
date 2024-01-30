@@ -10,6 +10,7 @@ import tempfile
 import pandas as pd
 
 from sqlHelper import *
+from helperMethods import isAValidExt
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
@@ -50,6 +51,7 @@ def get_template(template):
 def file_upload():
     # Save files into database.
     files: list = list(request.files.values())
+    files: list = list(filter(isAValidExt, files))
 
     file_statuses: list = list()
     for file in files:
