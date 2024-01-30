@@ -14,18 +14,19 @@ from sqlHelper import *
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
 APP_FOLDER: str = tempfile.mkdtemp()
+app.config["APP_FOLDER"] = APP_FOLDER
+
+working_db: DB = initDB(parent=app.config["APP_FOLDER"], dbName="files")
+# Open directory TODO: Remove this after finishing
+os.startfile(app.config["APP_FOLDER"])
+
+
 readers = {
     ".csv": pd.read_csv,
     ".xlsx": pd.read_excel,
     ".ods": pd.read_excel,
 }
 ALLOWED_EXTENSIONS: set = set(readers.keys())
-
-app.config["APP_FOLDER"] = APP_FOLDER
-
-working_db: DB = initDB(parent=app.config["APP_FOLDER"], dbName="files")
-# Open directory TODO: Remove this after finishing
-os.startfile(app.config["APP_FOLDER"])
 
 
 @app.route("/files/upload", methods=["POST"])
