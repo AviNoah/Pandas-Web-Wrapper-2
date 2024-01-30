@@ -232,7 +232,7 @@ class DB:
             return False  # Filter not found
 
     def delete_filter(self, filter_id) -> bool:
-        # Update filter data matching id
+        # Delete filter record matching id
         c: Cursor = self.cursor()
 
         try:
@@ -273,6 +273,25 @@ class DB:
         except Error as e:
             self.rollback()
             return False, f"Failed to update {name}: {e}", file_id
+
+    def delete_file(self, file_id) -> bool:
+        # Delete file record matching id
+        c: Cursor = self.cursor()
+
+        try:
+            c.execute(
+                f"""DELETE FROM {Tables.File.value}
+                WHERE {FileColumns.ID.value} = ?""",
+                (file_id,),
+            )
+
+            self.commit()
+            if c.rowcount > 0:
+                return True
+            return False
+        except Exception as e:
+            self.rollback()
+            return False  # File not found
 
 
 def init_db(parent: os.PathLike, db_name: str) -> DB:

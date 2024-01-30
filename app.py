@@ -116,6 +116,24 @@ def update_file():
     )
 
 
+@app.route("/files/delete", methods=["POST"])
+def delete_file():
+    # Delete the file at the given id
+    keys = {"fileId"}
+
+    json_data = request.get_json()
+    if not verifyKeys(json_data, keys):
+        return jsonify({"error": "Missing one or more required keys"}), 400
+
+    file_id: int = int(json_data["fileId"])
+    ok = DB.delete_file(file_id)
+
+    if ok:
+        return jsonify({"message": "Successfully deleted file"}), 200
+
+    return jsonify({"error": "Failed to delete file"}), 500
+
+
 @app.route("/files/get", methods=["POST"])
 def get_file():
     # Get a file matching given id
