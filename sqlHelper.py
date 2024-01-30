@@ -127,16 +127,17 @@ class DB:
             return False, f"Failed to add filter: {e}", None
 
     def file_filter_relationship(
-        self, file_id: int, filter_id: int
+        self, file_id: int, filter_id: int, sheet: int
     ) -> Tuple[bool, str]:
         c: Cursor = self.cursor()
         try:
             c.execute(
                 f"""INSERT INTO {Tables.FileFilter.value} 
                 ({FileFilterColumns.FILE_ID.value},
-                {FileFilterColumns.FILTER_ID.value})
-                VALUES (?, ?)""",
-                (file_id, filter_id),
+                {FileFilterColumns.FILTER_ID.value},
+                {FileFilterColumns.SHEET.value})
+                VALUES (?, ?, ?)""",
+                (file_id, filter_id, sheet),
             )
 
             return True, f"Relationship created successfully"

@@ -150,11 +150,25 @@ def get_all_files_zipped():
 @app.route("/filters/add", methods=["POST"])
 def add_filter():
     # Add a filter to the matching fileId
-    keys = {"fileId"}
+    keys = {"fileId", "sheet", "method", "input"}
 
     json_data = request.get_json()
     if not verifyKeys(json_data, keys):
-        
+        return jsonify({"error": "Missing one or more required keys"}), 400
+
+    file_id, sheet, method, input = (
+        json_data["fileId"],
+        json_data["sheet"],
+        json_data["method"],
+        json_data["input"],
+    )
+
+    filter_id = DB.add_filter(method, input)
+    ok, msg = DB.file_filter_relationship(file_id, filter_id, sheet)
+    if ok:
+        return jsonify({"message": msg}), 200
+
+    return jsonify({"error": msg}), 500
 
 
 if __name__ == "__main__":
