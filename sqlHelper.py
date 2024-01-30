@@ -1,14 +1,13 @@
-import sqlite3
 from sqlite3 import Cursor, Connection
 import os
-
+import sqlite3
 from enum import Enum
 
 
-class tables(Enum):
-    File: "File"
-    Filter: "Filter"
-    FileFilter: "FileFilter"
+class Tables(Enum):
+    File = "File"
+    Filter = "Filter"
+    FileFilter = "FileFilter"
 
 
 class FileColumns(Enum):
@@ -31,51 +30,54 @@ class FileFilterColumns(Enum):
 
 
 class DB:
-    def __init__(self, DB_Path: os.PathLike, auto_commit: bool = False):
+    def __init__(self, db_path: os.PathLike, auto_commit: bool = False):
         if auto_commit:
             isolation_level = None  # Auto-commit mode
         else:
             isolation_level = ""  # Default isolation level
         self.__conn: Connection = sqlite3.connect(
-            DB_Path, isolation_level=isolation_level
+            db_path, isolation_level=isolation_level
         )
-        self.initTables()
+        self.init_tables()
 
-    def conn(self):
+    def conn(self) -> Connection:
         return self.__conn
 
-    def initTables(self):
+    def init_tables(self):
         # Initialize tables
         c: Cursor = self.conn().cursor()
+        try:
+            # Create File table
+            c.execute(
+                f"""CREATE TABLE IF NOT EXISTS {Tables.File.value}
+                        ({FileColumns.ID.value} INTEGER PRIMARY KEY,
+                        {FileColumns.NAME.value} TEXT,
+                        {FileColumns.EXT.value} TEXT,
+                        {FileColumns.BLOB.value} BLOB)"""
+            )
 
-        # Create File table
-        c.execute(
-            f"""CREATE TABLE IF NOT EXISTS {tables.File.value}
-                    ({FileColumns.ID.value} INTEGER PRIMARY KEY,
-                    {FileColumns.NAME.value} TEXT,
-                    {FileColumns.EXT.value} TEXT,
-                    {FileColumns.BLOB.value} BLOB)"""
-        )
+            # Create Filter table
+            c.execute(
+                f"""CREATE TABLE IF NOT EXISTS {Tables.Filter.value}
+                        ({FilterColumns.ID.value} INTEGER PRIMARY KEY,
+                        {FilterColumns.METHOD.value} TEXT,
+                        {FilterColumns.INPUT.value} TEXT)"""
+            )
 
-        # Create Filter table
-        c.execute(
-            f"""CREATE TABLE IF NOT EXISTS {tables.Filter.value}
-                    ({FilterColumns.ID.value} INTEGER PRIMARY KEY,
-                    {FilterColumns.METHOD.value} TEXT,
-                    {FilterColumns.INPUT.value} TEXT)"""
-        )
+            # Create Relationship table (Junction table)
+            c.execute(
+                f"""CREATE TABLE IF NOT EXISTS {Tables.FileFilter.value}
+                        ({FileFilterColumns.FILE_ID.value} INTEGER,
+                        {FileFilterColumns.FILTER_ID.value} INTEGER,
+                        FOREIGN KEY({FileFilterColumns.FILE_ID.value}) REFERENCES {Tables.File.value}({FileColumns.ID.value}),
+                        FOREIGN KEY({FileFilterColumns.FILTER_ID.value}) REFERENCES {Tables.Filter.value}({FilterColumns.ID.value}),
+                        UNIQUE({FileFilterColumns.FILE_ID.value}, {FileFilterColumns.FILTER_ID.value}))"""
+            )
 
-        # Create Relationship table (Junction table)
-        c.execute(
-            f"""CREATE TABLE IF NOT EXISTS {tables.FileFilter.value}
-                    ({FileFilterColumns.FILTER_ID.value} INTEGER,
-                    {FileFilterColumns.FILE_ID.value} INTEGER,
-                    FOREIGN KEY({FileFilterColumns.FILTER_ID.value}) REFERENCES {tables.Filter.value}({FilterColumns.ID.value}),
-                    FOREIGN KEY({FileFilterColumns.FILE_ID.value}) REFERENCES {tables.File.value}({FileColumns.ID.value}),
-                    UNIQUE({FileFilterColumns.FILTER_ID.value}, {FileFilterColumns.FILE_ID.value}))"""
-        )
-
-        self.__conn.commit()
+            self.__conn.commit()
+        except sqlite3.Error as e:
+            self.__conn.rollback()
+            raise e
 
     def commit(self):
         self.__conn.commit()
@@ -83,23 +85,18 @@ class DB:
     def close(self):
         self.__conn.close()
 
-    # CRUD operation helpers
-
-    def addFile(self, filename, fileBlob) -> (bool, str, int):
-        # Add the fileBlob to database
-        filename = os.path.basename(filename)
+    def add_file(self, filename: str, file_blob: bytes) -> (bool, str, int):
+        # Add the file_blob to database
         name, ext = os.path.splitext(filename)
-
         c: Cursor = self.conn().cursor()
-
         try:
             c.execute(
-                f"""INSERT INTO {tables.File.value} 
+                f"""INSERT INTO {Tables.File.value} 
                 ({FileColumns.NAME.value}, 
                 {FileColumns.EXT.value}, 
                 {FileColumns.BLOB.value})
                 VALUES (?, ?, ?)""",
-                (name, ext, fileBlob),
+                (name, ext, file_blob),
             )
 
             file_id = c.lastrowid
@@ -108,12 +105,11 @@ class DB:
         except sqlite3.Error as e:
             return False, f"Failed to add {name}: {e}", None
 
-    def addFilter(self, method: str, input: str) -> (bool, str, int):
+    def add_filter(self, method: str, input: str) -> (bool, str, int):
         c: Cursor = self.conn().cursor()
-
         try:
             c.execute(
-                f"""INSERT INTO {tables.Filter.value} 
+                f"""INSERT INTO {Tables.Filter.value} 
                 ({FilterColumns.METHOD.value}, 
                 {FilterColumns.INPUT.value})
                 VALUES (?, ?)""",
@@ -126,16 +122,15 @@ class DB:
         except sqlite3.Error as e:
             return False, f"Failed to add filter: {e}", None
 
-    def fileFilterRelationship(self, fileID: int, filterID: int) -> (bool, str):
+    def file_filter_relationship(self, file_id: int, filter_id: int) -> (bool, str):
         c: Cursor = self.conn().cursor()
-
         try:
             c.execute(
-                f"""INSERT INTO {tables.FileFilter.value} 
+                f"""INSERT INTO {Tables.FileFilter.value} 
                 ({FileFilterColumns.FILE_ID.value},
                 {FileFilterColumns.FILTER_ID.value})
                 VALUES (?, ?)""",
-                (fileID, filterID),
+                (file_id, filter_id),
             )
 
             return True, f"Relationship created successfully"
@@ -143,15 +138,15 @@ class DB:
             return False, f"Failed to create relationship: {e}"
 
 
-def initDB(parent: os.PathLike, dbName: str) -> DB:
+def init_db(parent: os.PathLike, db_name: str) -> DB:
     if not os.path.exists(parent):
         os.mkdir(parent)
 
-    DB_path: str = os.path.join(parent, dbName) + ".db"
+    db_path: str = os.path.join(parent, db_name) + ".db"
 
     # Create an empty db file if it doesn't exist
-    if not os.path.exists(DB_path):
-        with open(DB_path, "a"):
+    if not os.path.exists(db_path):
+        with open(db_path, "a"):
             pass
 
-    return DB(DB_path)
+    return DB(db_path)
