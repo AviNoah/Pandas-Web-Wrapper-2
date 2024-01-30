@@ -47,8 +47,12 @@ def get_template(template):
     return render_template(template)
 
 
+@app.route("/files/validate", methods=["POST"])
+def validate_files():
+    
+
 @app.route("/files/upload", methods=["POST"])
-def file_upload():
+def upload_file():
     # Save files into database.
     files: list = list(request.files.values())
     dropped: list = list(filter(lambda f: not isAValidExt(f), files))
