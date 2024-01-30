@@ -67,7 +67,11 @@ def validate_files():
 @app.route("/files/upload", methods=["POST"])
 def upload_file():
     # Save files into database.
-    files: list = list(request.files.values())
+    try:
+        files: list = list(request.files.values())
+    except Exception as e:
+        return jsonify({"error": "Failed to retrieve files from form"}), 500
+
     file_statuses: list = list()
     for file in files:
         ok, msg, id = DB.addFile(file.name, file)
