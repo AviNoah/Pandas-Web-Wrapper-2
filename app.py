@@ -51,6 +51,16 @@ def file_upload():
     # Save files into database.
     files: list = list(request.files.values())
 
+    file_statuses: list = list()
     for file in files:
         ok, msg, id = DB.addFile(file.name, file)
         print(msg)
+        file_statuses((ok, file.name))
+
+    failed: list = [name for ok, name in file_statuses if not ok]
+    succeeded: list = [name for ok, name in file_statuses if ok]
+
+    msg = f"Files uploaded successfully: {''.join(succeeded)}\n"
+    msg += f"Files that failed uploading: {''.join(failed)}\n"
+
+    return jsonify(msg), 200
