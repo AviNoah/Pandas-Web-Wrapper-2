@@ -66,9 +66,6 @@ def validate_files():
 def upload_file():
     # Save files into database.
     files: list = list(request.files.values())
-    dropped: list = list(filter(lambda f: not isAValidExt(f), files))
-    files: list = list(filter(isAValidExt, files))
-
     file_statuses: list = list()
     for file in files:
         ok, msg, id = DB.addFile(file.name, file)
