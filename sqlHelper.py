@@ -1,4 +1,4 @@
-from sqlite3 import Cursor, Connection, Error
+from sqlite3 import Cursor, Connection, Error, connect
 from enum import Enum
 from typing import Optional, List, Tuple
 
@@ -37,7 +37,7 @@ class DB:
             isolation_level = None  # Auto-commit mode
         else:
             isolation_level = ""  # Default isolation level
-        self.__conn: Connection = sqlite3.connect(
+        self.__conn: Connection = connect(
             db_path, isolation_level=isolation_level
         )
         self.init_tables()
