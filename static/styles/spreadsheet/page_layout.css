@@ -1,3 +1,21 @@
-body{
+body {
     background-color: red;
+}
+
+#sheetSelector {
+    position: fixed;
+    opacity: 0.4;
+    z-index: 2;
+    transition: opacity 1s, transform 0.5s;
+
+    /* Needs to hover in bottom right corner*/
+    bottom: 0;
+    right: 0;
+    margin: 15px;
+}
+
+#sheetSelector:hover {
+    /* Make more opaque */
+    opacity: 1;
+    transform: scale(1.2);
 }
