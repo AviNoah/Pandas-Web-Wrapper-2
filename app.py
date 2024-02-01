@@ -284,7 +284,7 @@ def update_filter():
 
 
 @app.route("/filters/delete", methods=["POST"])
-def update_filter():
+def delete_filter():
     # Delete a filter matching the given id.
     keys = {"filterId"}
 
