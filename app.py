@@ -34,7 +34,7 @@ ALLOWED_EXTENSIONS: set = set(readers.keys())
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("index.html")
+    return render_template("main/index.html")
 
 
 @app.route("/resources/<path:path>", methods=["GET"])
