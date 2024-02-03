@@ -77,7 +77,7 @@ def upload_file():
 
     file_statuses: list = list()
     for file in files:
-        ok, msg, id = DB.addFile(file.name, file)
+        ok, msg, id = DB.add_file(file.name, file)
         print(msg)
         file_statuses((ok, id))
 
