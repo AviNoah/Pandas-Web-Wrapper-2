@@ -20,6 +20,7 @@ export function addFiles(passedIds) {
                 addFileView(blob, id);
                 console.log(`Added file view for ${blob.name}`);
             })
+            .catch(error => console.error(error))
 
     });
 }
