@@ -51,15 +51,18 @@ def get_template(template):
 
 @app.route("/files/validate", methods=["POST"])
 def validate_files():
+    global ALLOWED_EXTENSIONS
     try:
         file_blobs: list = list(request.files.values())
         indices: list = request.form.getlist("index")
     except Exception as e:
         return jsonify({"error": "Failed to retrieve files from form"}), 500
 
-    files = zip(file_blobs, indices)
+    files = list(zip(file_blobs, indices))
 
-    passed = [id for file, id in files if isAValidExt(file.name)]
+    passed = [
+        id for file, id in files if isAValidExt(file.filename, ALLOWED_EXTENSIONS)
+    ]
     data = {"acceptedIndices": passed}
     return jsonify(data), 200
 
