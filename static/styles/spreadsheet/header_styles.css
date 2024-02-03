@@ -6,11 +6,3 @@
     /* Push them as far apart */
     justify-content: space-between;
 }
-
-.header-cell img {
-    --side_length: 16px;
-    cursor: pointer;
-    margin-left: 5px;
-    height: var(--side_length);
-    width: var(--side_length);
-}
