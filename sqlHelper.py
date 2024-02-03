@@ -232,8 +232,8 @@ class DB:
                     {FileColumns.ID.value}
                     FROM {Tables.File.value}"""
             )
-
-            files: List[int] = [id for id in c.fetchall()]
+            rows = c.fetchall()
+            files: List[int] = [id for id, *_ in rows]
             return files
         except Error as e:
             return None  # Failed to fetch files
