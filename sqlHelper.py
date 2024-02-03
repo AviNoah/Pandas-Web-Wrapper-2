@@ -30,6 +30,7 @@ class FileFilterColumns(Enum):
     FILE_ID = "file_id"
     FILTER_ID = "filter_id"
     SHEET = "sheet"
+    COLUMN = "column"
 
 
 class DB:
@@ -73,6 +74,8 @@ class DB:
                 f"""CREATE TABLE IF NOT EXISTS {Tables.FileFilter.value}
                         ({FileFilterColumns.FILE_ID.value} INTEGER,
                         {FileFilterColumns.FILTER_ID.value} INTEGER,
+                        {FileFilterColumns.SHEET.value} INTEGER,
+                        {FileFilterColumns.COLUMN.value} INTEGER,
                         FOREIGN KEY({FileFilterColumns.FILE_ID.value}) REFERENCES {Tables.File.value}({FileColumns.ID.value}),
                         FOREIGN KEY({FileFilterColumns.FILTER_ID.value}) REFERENCES {Tables.Filter.value}({FilterColumns.ID.value}),
                         UNIQUE({FileFilterColumns.FILE_ID.value}, {FileFilterColumns.FILTER_ID.value}))"""
@@ -133,7 +136,7 @@ class DB:
             return False, f"Failed to add filter: {e}", None
 
     def file_filter_relationship(
-        self, file_id: int, filter_id: int, sheet: int
+        self, file_id: int, filter_id: int, sheet: int, column: int
     ) -> Tuple[bool, str]:
         c: Cursor = self.cursor()
         try:
@@ -141,9 +144,10 @@ class DB:
                 f"""INSERT INTO {Tables.FileFilter.value} 
                 ({FileFilterColumns.FILE_ID.value},
                 {FileFilterColumns.FILTER_ID.value},
-                {FileFilterColumns.SHEET.value})
-                VALUES (?, ?, ?)""",
-                (file_id, filter_id, sheet),
+                {FileFilterColumns.SHEET.value},
+                {FileFilterColumns.COLUMN.value})
+                VALUES (?, ?, ?, ?)""",
+                (file_id, filter_id, sheet, column),
             )
             self.commit()
             return True, f"Relationship created successfully"
@@ -218,13 +222,13 @@ class DB:
 
         try:
             c.execute(
-                f"""SELECT {FilterColumns.INPUT.value}, {FilterColumns.METHOD.value}
+                f"""SELECT {FilterColumns.INPUT.value}, {FilterColumns.METHOD.value}, {FileFilterColumns.COLUMN.value}
                 FROM {Tables.Filter.value}
                 WHERE {FilterColumns.ID.value}=?""",
                 (filter_id,),
             )
-            input, method = c.fetchone()
-            data: dict = {"input": input, "method": method}
+            input, method, column = c.fetchone()
+            data: dict = {"input": input, "method": method, "column": column}
             return json.dumps(data)
         except Exception as e:
             return None  # Filter not found
@@ -235,15 +239,17 @@ class DB:
 
         try:
             c.execute(
-                f"""SELECT {FilterColumns.INPUT.value}, {FilterColumns.METHOD.value}
+                f"""SELECT  {FilterColumns.INPUT.value}, {FilterColumns.METHOD.value}, {FileFilterColumns.COLUMN.value}
                 FROM {Tables.Filter.value}
                 WHERE {FileFilterColumns.FILE_ID.value}=? AND {FileFilterColumns.SHEET.value}=?""",
                 (file_id, sheet),
             )
 
             filters_data = []
-            for input, method in c.fetchall():
-                filters_data.append({"input": input, "method": method})
+            for input, method, column in c.fetchall():
+                filters_data.append(
+                    {"input": input, "method": method, "column": column}
+                )
             return json.dumps(filters_data)
         except Exception as e:
             return None  # Filters not found

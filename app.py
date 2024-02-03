@@ -291,15 +291,16 @@ class filter_management:
     @app.route("/filters/add", methods=["POST"])
     def add_filter():
         # Add a filter to the matching fileId
-        keys = {"fileId", "sheet", "method", "input"}
+        keys = {"fileId", "sheet", "column", "method", "input"}
 
         json_data = request.get_json()
         if not verifyKeys(json_data, keys):
             return jsonify({"error": "Missing one or more required keys"}), 400
 
-        file_id, sheet, method, input = (
+        file_id, sheet, column, method, input = (
             json_data["fileId"],
             json_data["sheet"],
+            json_data["column"],
             json_data["method"],
             json_data["input"],
         )
@@ -307,7 +308,7 @@ class filter_management:
         db: DB = DB(db_path)
 
         filter_id = db.add_filter(method, input)
-        ok, msg = db.file_filter_relationship(file_id, filter_id, sheet)
+        ok, msg = db.file_filter_relationship(file_id, filter_id, sheet, column)
 
         db.commit()
         db.close()
