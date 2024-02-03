@@ -213,6 +213,29 @@ class file_fetching:
 
         return send_df(df)
 
+    @app.route("/files/get/sheet_count", methods=["POST"])
+    def get_sheet_count():
+        # Get a sheet matching given id and sheet
+        keys = {"fileId"}
+
+        json_data = request.get_json()
+        if not verifyKeys(json_data, keys):
+            return jsonify({"error": "Missing one or more required keys"}), 400
+
+        file_id: int = int(json_data["fileId"])
+
+        db: DB = DB(db_path)
+        file: FileStorage = db.get_file(file_id)
+        db.close()
+
+        if not file:
+            return jsonify({"error": "No files found"}), 500
+
+        sheets: dict = readFile(file)
+        sheet_count: int = len(sheets)
+
+        return jsonify({"sheets": sheet_count}), 200
+
     @app.route("/files/get/all", methods=["POST"])
     def get_all_files():
         # Get all files
