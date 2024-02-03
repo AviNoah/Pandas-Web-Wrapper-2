@@ -69,7 +69,8 @@ function handleDroppedFiles(event) {
             return { passed: passedFiles, dropped: failedFiles };
         })
         .then(({ passed, dropped }) => {
-            console.error(`Warning: these files have invalid extensions and have been dropped: ${dropped.join(", ")}`);
+            if (dropped)
+                console.warn(`Warning: these files have invalid extensions and have been dropped: ${dropped.join(", ")}`);
             return passed;
         })
         .then(passedFiles => {
