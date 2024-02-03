@@ -74,7 +74,7 @@ def upload_file():
 
     file_statuses: list = list()
     for file in files:
-        ok, msg, id = db.add_file(file.name, file)
+        ok, msg, id = db.add_file(file.filename, file)
         print(msg)
         file_statuses.append((ok, id))
 
@@ -101,7 +101,7 @@ def update_file():
     file_statuses: list = list()
     db: DB = DB(db_path)
     for file, file_id in files:
-        ok, msg, id = db.update_file(file_id, file.name, file)
+        ok, msg, id = db.update_file(file_id, file.filename, file)
         print(msg)
         file_statuses((ok, id))
 
@@ -165,7 +165,7 @@ def get_file():
     return send_file(
         file,
         as_attachment=False,
-        download_name=file.name,
+        download_name=file.filename,
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
 
@@ -184,7 +184,7 @@ def get_all_files():
     file_list = []
     for file in files:
         file_data = {
-            "name": file.name,
+            "name": file.filename,
             "content": base64.b64encode(file).decode(),  # Convert bytes to base64
         }
         file_list.append(file_data)
