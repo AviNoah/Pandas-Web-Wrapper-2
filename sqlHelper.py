@@ -257,8 +257,8 @@ class DB:
                 {Tables.FileFilter.value}.{FileFilterColumns.COLUMN.value}
                 FROM {Tables.Filter.value}
                 LEFT JOIN {Tables.FileFilter.value}
-                ON {Tables.Filter.value}.{FileFilterColumns.FILE_ID.value} = {Tables.FileFilter.value}.{FileColumns.ID.value}
-                WHERE {FileFilterColumns.FILE_ID.value}=? AND {FileFilterColumns.SHEET.value}=?""",
+                ON {Tables.Filter.value}.{FileColumns.ID.value} = {Tables.FileFilter.value}.{FileFilterColumns.FILE_ID.value}
+                WHERE {FileColumns.ID.value}=? AND {FileFilterColumns.SHEET.value}=?""",
                 (
                     file_id,
                     sheet,
