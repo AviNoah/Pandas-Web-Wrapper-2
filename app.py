@@ -219,7 +219,6 @@ class file_fetching:
 
         db: DB = DB(db_path)
         file: FileStorage = db.get_file(file_id)
-        db.close()
 
         if not file:
             return jsonify({"error": "No files found"}), 500
@@ -235,6 +234,8 @@ class file_fetching:
         filters: list = db.get_sheets_filters(file_id, sheet)
         if filters:
             df = applyFilters(df, filters)  # Only if not empty or None
+
+        db.close()
 
         return sendDF(df)
 
