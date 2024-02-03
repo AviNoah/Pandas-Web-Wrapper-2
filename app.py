@@ -81,7 +81,7 @@ def upload_file():
     for file in files:
         ok, msg, id = db.add_file(file.name, file)
         print(msg)
-        file_statuses((ok, id))
+        file_statuses.append((ok, id))
 
     db.commit()
     db.close()
