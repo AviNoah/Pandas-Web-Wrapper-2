@@ -104,4 +104,5 @@ function openFile(id) {
         .catch(error => console.error(error));
 }
 
+// TODO Remove this example
 document.addEventListener('DOMContentLoaded', openFile(5));
