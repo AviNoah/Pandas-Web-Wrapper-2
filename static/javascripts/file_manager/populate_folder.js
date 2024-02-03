@@ -3,7 +3,7 @@ const folderDiv = document.getElementById('drop-zone');
 export function addFiles(passedIds) {
     Array.from(passedIds).forEach(id => {
         const data = JSON.stringify({ fileId: id });
-        fetch("/file/get", {
+        fetch("/files/get", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
