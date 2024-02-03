@@ -266,7 +266,7 @@ class file_fetching:
     def get_all_files():
         # Get all files
         db: DB = DB(db_path)
-        files: list = db.get_all_files()
+        files: list = db.get_all_file_ids()
 
         db.close()
 

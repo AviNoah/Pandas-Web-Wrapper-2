@@ -223,6 +223,21 @@ class DB:
         except Error as e:
             return None  # Failed to fetch files
 
+    def get_all_file_ids(self) -> Optional[List[int]]:
+        c: Cursor = self.cursor()
+
+        try:
+            c.execute(
+                f"""SELECT 
+                    {FileColumns.ID.value}
+                    FROM {Tables.File.value}"""
+            )
+
+            files: List[int] = [id for id in c.fetchall()]
+            return files
+        except Error as e:
+            return None  # Failed to fetch files
+
     def get_filter(self, filter_id) -> Optional[dict]:
         # Return a json representing filter data
         c: Cursor = self.cursor()
