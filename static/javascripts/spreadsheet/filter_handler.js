@@ -14,12 +14,13 @@ export function addFilter(event, column) {
 }
 
 function applyFilter(column) {
+    // TODO: Fixed filter-input not changing value
     const data = {
         fileId: document.getElementById("spreadsheet").getAttribute('data-id'),
         sheet: getSelectedSheetIndex(),
         column: column,
         method: document.getElementById("filter-selector").value,
-        input: escapeRegExp(document.getElementById('filter-input').value),
+        input: escapeRegExp(document.getElementById('filter-input').textContent),
         enabled: Boolean(document.getElementById("visibility-icon").classList.contains('toggled')),
     }
 
@@ -63,10 +64,12 @@ function createPopup(column) {
             document.body.appendChild(filterPopup);
 
             const submitBtn = document.getElementById('filter-submit-button');
-            // Make the filter submit button run process_input every time it is clicked
+
             submitBtn.addEventListener('click', () => {
-                if (!submitBtn.classList.contains("disabled"))
+                if (!submitBtn.classList.contains("disabled")) {
                     applyFilter(column);  // Apply only if not disabled
+                    closePopupHelper(filterPopup);  // Close pop up after submitting
+                }
             });
             submitBtn.classList.add("disabled");
 
