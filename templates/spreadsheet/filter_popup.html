@@ -1,18 +1,16 @@
 <!-- filter_popup.html -->
-<div>
-  <h2>Filter</h2>
-  <div class="filter-popup-content">
+<div class="filter-popup-content">
+  <div class="select-wrapper">
     <select name="Filter selector" id="filter_selector">
       <option value="exact">Exact match</option>
       <option value="contains">Contains</option>
       <option value="not contains">Does not contain</option>
       <option value="regex">RegEx</option>
     </select>
-    <!-- Input field for filter -->
-    <input type="text" required id="filter_input" />
-    <!-- Button for submitting the filter -->
-    <button id="filter_submit_button">Submit</button>
-    <!-- Button for dropping column, should create a new version or ask if the user is sure -->
-    <button id="filter_drop_column_button" class="dangerous">Drop column</button>
+    <img class="visibility" src="/resources/images/Hide.svg" alt="Hide" />
   </div>
+  <!-- Input field for filter -->
+  <input type="text" required id="filter_input" />
+  <!-- Button for submitting the filter -->
+  <button id="filter_submit_button">Submit</button>
 </div>

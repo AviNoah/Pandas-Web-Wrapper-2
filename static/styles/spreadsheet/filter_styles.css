@@ -22,11 +22,23 @@
     padding: 4px;
 }
 
-
 .filter-popup-content input:focus {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
+.filter-popup-content .select-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.select-wrapper img.visibility {
+    --side_length: 24px;
+    cursor: pointer;
+    height: var(--side_length);
+    width: var(--side_length);
+}
 
 .filter-popup-content select {
     padding: 8px;
@@ -45,10 +57,4 @@
 #filter_submit_button {
     --submit_button: #3c60ff;
     background-color: var(--submit_button);
-}
-
-
-.dangerous {
-    --dangerous_button: rgb(233, 71, 71);
-    background-color: var(--dangerous_button);
 }
