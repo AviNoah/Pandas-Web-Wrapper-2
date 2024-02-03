@@ -27,6 +27,7 @@ readers = {
 ALLOWED_EXTENSIONS: set = set(readers.keys())
 
 
+# Serving methods
 @app.route("/", methods=["GET"])
 def index():
     return render_template("main/index.html")
@@ -44,6 +45,7 @@ def get_template(template):
     return render_template(template)
 
 
+# File management
 @app.route("/files/validate", methods=["POST"])
 def validate_files():
     global ALLOWED_EXTENSIONS
@@ -221,6 +223,7 @@ def get_all_files_zipped():
     )
 
 
+# Filter management
 @app.route("/filters/add", methods=["POST"])
 def add_filter():
     # Add a filter to the matching fileId
