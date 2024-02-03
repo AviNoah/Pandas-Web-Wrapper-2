@@ -38,7 +38,7 @@ function updateSpreadsheetElement(sheet, editable = false) {
 
 // Fetch sheet and call to updateSpreadsheet
 function openSheet(sheet_num) {
-    data = { fileId: spreadsheetElement.getAttribute('data-id'), sheet: sheet_num };
+    const data = { fileId: spreadsheetElement.getAttribute('data-id'), sheet: sheet_num };
 
     fetch('/files/get/sheet', {
         method: 'POST',
