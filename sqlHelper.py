@@ -157,7 +157,7 @@ class DB:
         try:
             c.execute(
                 f"""SELECT {FileColumns.BLOB.value} FROM {Tables.File.value}
-                     WHERE {FileColumns.ID}=?""",
+                     WHERE {FileColumns.ID.value}=?""",
                 (file_id,),
             )
             blob = c.fetchone()[0]
