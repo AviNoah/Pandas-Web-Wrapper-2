@@ -16,13 +16,8 @@ from helperMethods import isAValidExt, verifyKeys
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
-APP_FOLDER: str = tempfile.mkdtemp()
-app.config["APP_FOLDER"] = APP_FOLDER
-
-db_path: os.PathLike = init_db(parent=app.config["APP_FOLDER"], db_name="files")
-# Open directory TODO: Remove this after finishing
-# os.startfile(app.config["APP_FOLDER"])
-
+APP_FOLDER: str = ""
+db_path: os.PathLike = init_db(parent=APP_FOLDER, db_name="files")
 
 readers = {
     ".csv": pd.read_csv,

@@ -297,7 +297,7 @@ class DB:
 
 def init_db(parent: os.PathLike, db_name: str) -> os.PathLike:
     # Initialize DB and return path
-    if not os.path.exists(parent):
+    if parent and not os.path.exists(parent):
         os.mkdir(parent)
 
     db_path: str = os.path.join(parent, db_name) + ".db"
