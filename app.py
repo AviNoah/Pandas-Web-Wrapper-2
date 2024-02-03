@@ -291,23 +291,24 @@ class filter_management:
     @app.route("/filters/add", methods=["POST"])
     def add_filter():
         # Add a filter to the matching fileId
-        keys = {"fileId", "sheet", "column", "method", "input"}
+        keys = {"fileId", "sheet", "column", "method", "input", "enabled"}
 
         json_data = request.get_json()
         if not verifyKeys(json_data, keys):
             return jsonify({"error": "Missing one or more required keys"}), 400
 
-        file_id, sheet, column, method, input = (
+        file_id, sheet, column, method, input, enabled = (
             json_data["fileId"],
             json_data["sheet"],
             json_data["column"],
             json_data["method"],
             json_data["input"],
+            json_data["enabled"],
         )
 
         db: DB = DB(db_path)
 
-        filter_id = db.add_filter(method, input)
+        filter_id = db.add_filter(method, input, enabled)
         ok, msg = db.file_filter_relationship(file_id, filter_id, sheet, column)
 
         db.commit()
@@ -321,20 +322,21 @@ class filter_management:
     @app.route("/filters/update", methods=["POST"])
     def update_filter():
         # Update a filter matching the given id.
-        keys = {"filterId", "method", "input"}
+        keys = {"filterId", "method", "input", "enabled"}
 
         json_data = request.get_json()
         if not verifyKeys(json_data, keys):
             return jsonify({"error": "Missing one or more required keys"}), 400
 
-        filter_id, method, input = (
+        filter_id, method, input, enabled = (
             json_data["filterId"],
             json_data["method"],
             json_data["input"],
+            json_data["enabled"],
         )
 
         db: DB = DB(db_path)
-        ok = db.update_filter(filter_id, method, input)
+        ok = db.update_filter(filter_id, method, input, enabled)
 
         db.commit()
         db.close()

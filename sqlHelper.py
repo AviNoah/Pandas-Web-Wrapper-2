@@ -24,6 +24,7 @@ class FilterColumns(Enum):
     ID = "id"
     METHOD = "method"
     INPUT = "input"
+    ENABLED = "enabled"
 
 
 class FileFilterColumns(Enum):
@@ -66,7 +67,8 @@ class DB:
                 f"""CREATE TABLE IF NOT EXISTS {Tables.Filter.value}
                         ({FilterColumns.ID.value} INTEGER PRIMARY KEY,
                         {FilterColumns.METHOD.value} TEXT,
-                        {FilterColumns.INPUT.value} TEXT)"""
+                        {FilterColumns.INPUT.value} TEXT,
+                        {FilterColumns.ENABLED.value} INTEGER)"""
             )
 
             # Create Relationship table (Junction table)
@@ -117,15 +119,18 @@ class DB:
             self.rollback()
             return False, f"Failed to add {name}: {e}", None
 
-    def add_filter(self, method: str, input: str) -> Tuple[bool, str, int]:
+    def add_filter(
+        self, method: str, input: str, enabled: bool
+    ) -> Tuple[bool, str, int]:
         c: Cursor = self.cursor()
         try:
             c.execute(
                 f"""INSERT INTO {Tables.Filter.value} 
                 ({FilterColumns.METHOD.value}, 
-                {FilterColumns.INPUT.value})
-                VALUES (?, ?)""",
-                (method, input),
+                {FilterColumns.INPUT.value}, 
+                {FilterColumns.ENABLED.value})
+                VALUES (?, ?, ?)""",
+                (method, input, enabled),
             )
 
             filter_id = c.lastrowid
@@ -222,13 +227,21 @@ class DB:
 
         try:
             c.execute(
-                f"""SELECT {FilterColumns.INPUT.value}, {FilterColumns.METHOD.value}, {FileFilterColumns.COLUMN.value}
+                f"""SELECT {FilterColumns.INPUT.value}, 
+                {FilterColumns.METHOD.value}, 
+                {FilterColumns.ENABLED.value}, 
+                {FileFilterColumns.COLUMN.value}
                 FROM {Tables.Filter.value}
                 WHERE {FilterColumns.ID.value}=?""",
                 (filter_id,),
             )
-            input, method, column = c.fetchone()
-            data: dict = {"input": input, "method": method, "column": column}
+            input, method, enabled, column = c.fetchone()
+            data: dict = {
+                "input": input,
+                "method": method,
+                "enabled": enabled == 1,  # Convert to bool
+                "column": column,
+            }
             return json.dumps(data)
         except Exception as e:
             return None  # Filter not found
@@ -239,22 +252,33 @@ class DB:
 
         try:
             c.execute(
-                f"""SELECT  {FilterColumns.INPUT.value}, {FilterColumns.METHOD.value}, {FileFilterColumns.COLUMN.value}
+                f"""SELECT  {FilterColumns.INPUT.value}, 
+                {FilterColumns.METHOD.value}, 
+                {FilterColumns.ENABLED.value}, 
+                {FileFilterColumns.COLUMN.value}
                 FROM {Tables.Filter.value}
                 WHERE {FileFilterColumns.FILE_ID.value}=? AND {FileFilterColumns.SHEET.value}=?""",
-                (file_id, sheet),
+                (
+                    file_id,
+                    sheet,
+                ),
             )
 
             filters_data = []
-            for input, method, column in c.fetchall():
+            for input, method, enabled, column in c.fetchall():
                 filters_data.append(
-                    {"input": input, "method": method, "column": column}
+                    {
+                        "input": input,
+                        "method": method,
+                        "enabled": enabled,
+                        "column": column,
+                    }
                 )
             return json.dumps(filters_data)
         except Exception as e:
             return None  # Filters not found
 
-    def update_filter(self, filter_id, method: str, input: str) -> bool:
+    def update_filter(self, filter_id, method: str, input: str, enabled: bool) -> bool:
         # Update filter data matching id
         c: Cursor = self.cursor()
 
@@ -262,9 +286,10 @@ class DB:
             c.execute(
                 f"""UPDATE {Tables.FILTER.value}
                 SET {FilterColumns.INPUT.value} = ?,
-                    {FilterColumns.METHOD.value} = ?
+                    {FilterColumns.METHOD.value} = ?,
+                    {FilterColumns.ENABLED.value} = ?
                 WHERE {FilterColumns.ID.value} = ?""",
-                (input, method, filter_id),
+                (input, method, enabled, filter_id),
             )
 
             self.commit()
