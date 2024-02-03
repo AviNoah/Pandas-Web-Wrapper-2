@@ -15,8 +15,25 @@ function applyFilter(column) {
         fileId: spreadsheetElement.getAttribute('data-id'),
         sheet: getSelectedSheetIndex(),
         column: column,
-        
+        method: document.getElementById("Filter selector").value,
+        input: escapeRegExp(document.getElementById('filter_input').value),
     }
+
+    fetch("/filters/add", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    })
+        .then(response => {
+            if (!response.ok)
+                throw new Error("Server did not respond");
+
+            console.log("Added successfully");
+            openSheet(getSelectedSheetIndex());  // Show updated table
+        })
+        .catch(error => console.error(error))
 }
 
 function createPopup(column) {
