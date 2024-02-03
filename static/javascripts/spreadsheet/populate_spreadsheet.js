@@ -18,7 +18,7 @@ function updateSpreadsheetElement(sheet, editable = false) {
             if (!response.ok)
                 throw new Error("Server did not respond");
 
-            return response.text;
+            return response.text();
         })
         .then(content => {
             firstRowCells.forEach(cell => {
@@ -30,7 +30,8 @@ function updateSpreadsheetElement(sheet, editable = false) {
                 cell.querySelector('div[name="cell-name"]').textContent = oldText;
 
                 // Apply filter when the filter image is clicked; cellIndex is 0-based
-                filterImg.addEventListener('click', (event) => addFilter(event, cell.cellIndex));
+                cell.querySelector('img[name="cell-filter"]')
+                    .addEventListener('click', (event) => addFilter(event, cell.cellIndex));
             })
         })
         .catch(error => console.error(error));
