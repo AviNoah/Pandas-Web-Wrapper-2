@@ -64,6 +64,7 @@ def sendDF(df: pd.DataFrame) -> Response:
         return jsonify({"error": e}), 500
 
 
+# TODO: Test all methods
 def applyFilters(df: pd.DataFrame, filters: list) -> pd.DataFrame:
     # Apply filters to dataframe, return new dataframe
     # filters is a list of dicts with the following keys: input, method, column, enabled
