@@ -1,4 +1,4 @@
-// TODO: make an add a add files method import { addFiles } from "./populate_folder.js";
+import { addFiles } from "./populate_folder.js";
 
 // Handle dropping files into folder
 const dropArea = document.getElementById('drop-zone')
