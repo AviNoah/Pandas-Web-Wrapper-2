@@ -33,7 +33,7 @@
     align-items: center;
 }
 
-.select-wrapper img.visibility {
+.select-wrapper #visibility-icon {
     --side_length: 24px;
     cursor: pointer;
     height: var(--side_length);

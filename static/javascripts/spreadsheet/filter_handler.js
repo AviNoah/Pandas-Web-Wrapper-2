@@ -60,9 +60,46 @@ function createPopup(column) {
 
             // Make the filter submit button run process_input every time it is clicked
             document.getElementById('filter_submit_button').addEventListener('click', () => applyFilter(column));
+
+            // Add a listener to toggle View on and off
+            document.getElementById('visibility-icon').addEventListener('click', (event) => toggleFilter(event));
+
         }).catch(error => console.error(error))
 
     return filterPopup;
+}
+
+function toggleFilter(event) {
+    // Toggle view on and off
+    const imageDiv = event.target;
+    let url;
+    let alt;
+    if (imageDiv.classList.contains('toggled')) {
+        // Toggle off == hide
+        imageDiv.classList.remove('toggled');
+        url = "/resources/images/Hide.svg";
+        alt = "Hide";
+    }
+    else {
+        // Toggle on == show
+        imageDiv.classList.add('toggled');
+        url = "/resources/images/View.svg";
+        alt = "Show";
+    }
+
+    imageDiv.setAttribute('alt', alt);
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok)
+                throw new Error("Failed to fetch image");
+
+            return response.blob();
+        })
+        .then(blob => {
+            const blobUrl = URL.createObjectURL(blob);
+            imageDiv.setAttribute('src', blobUrl)
+        })
 }
 
 function positionPopup(target, popup) {
