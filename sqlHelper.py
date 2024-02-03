@@ -198,24 +198,27 @@ class DB:
         except Error as e:
             return None  # Failed to fetch file
 
-    def get_all_files(self) -> Optional[List[FileStorage]]:
+    def get_all_files(self) -> Optional[List[tuple]]:
         c: Cursor = self.cursor()
 
         try:
             c.execute(
                 f"""SELECT 
-                    {FileColumns.BLOB.value}, 
+                    {FileColumns.ID.value}, 
                     {FileColumns.NAME.value},
                     {FileColumns.EXT.value} 
                     FROM {Tables.File.value}"""
             )
 
-            files: list[FileStorage] = [
-                FileStorage(
-                    blob, filename=name + ext, content_type="application/octet-stream"
+            files: List[tuple] = [
+                (
+                    id,
+                    name,
+                    ext,
                 )
-                for blob, name, ext in c.fetchall()
+                for id, name, ext in c.fetchall()
             ]
+
             return files
         except Error as e:
             return None  # Failed to fetch files
