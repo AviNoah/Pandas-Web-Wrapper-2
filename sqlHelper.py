@@ -151,27 +151,38 @@ class DB:
             self.rollback()
             return False, f"Failed to create relationship: {e}"
 
-    def get_file(self, file_id) -> Optional[bytes]:
+    def get_file(self, file_id) -> Optional[FileStorage]:
         c: Cursor = self.cursor()
 
         try:
             c.execute(
-                f"""SELECT {FileColumns.BLOB.value} FROM {Tables.File.value}
+                f"""SELECT ({
+                    FileColumns.BLOB.value, 
+                    FileColumns.NAME.value,
+                    FileColumns.EXT.value}) FROM {Tables.File.value}
                      WHERE {FileColumns.ID.value}=?""",
                 (file_id,),
             )
-            blob = c.fetchone()[0]
-            return blob
+            blob, name, ext = c.fetchone()
+            return FileStorage(blob, filename=name + ext)
         except Error as e:
             return None  # Failed to fetch file
 
-    def get_all_files(self) -> Optional[List[bytes]]:
+    def get_all_files(self) -> Optional[List[FileStorage]]:
         c: Cursor = self.cursor()
 
         try:
-            c.execute(f"""SELECT {FileColumns.BLOB.value} FROM {Tables.File.value}""")
-            blobs = [record[0] for record in c.fetchall()]
-            return blobs
+            c.execute(
+                f"""SELECT ({
+                    FileColumns.BLOB.value, 
+                    FileColumns.NAME.value,
+                    FileColumns.EXT.value}) FROM {Tables.File.value}"""
+            )
+            files: list[FileStorage] = [
+                FileStorage(blob, filename=name + ext)
+                for blob, name, ext in c.fetchall()
+            ]
+            return files
         except Error as e:
             return None  # Failed to fetch files
 
