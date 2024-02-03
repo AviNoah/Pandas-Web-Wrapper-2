@@ -50,7 +50,7 @@ function addFileView(file, id) {
             fileViewDiv.setAttribute('data-file-id', id);
             fileViewDiv.classList.add('file-view');
 
-            container.appendChild(fileViewDiv);
+            folderDiv.appendChild(fileViewDiv);
         })
         .catch(error => console.error(error));
 }
