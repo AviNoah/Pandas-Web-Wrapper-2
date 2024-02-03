@@ -63,7 +63,10 @@ function createPopup(column) {
 
             const submitBtn = document.getElementById('filter-submit-button');
             // Make the filter submit button run process_input every time it is clicked
-            submitBtn.addEventListener('click', () => applyFilter(column));
+            submitBtn.addEventListener('click', () => {
+                if (!submitBtn.classList.contains("disabled"))
+                    applyFilter(column);  // Apply only if not disabled
+            });
             submitBtn.classList.add("disabled");
 
             const handleChange = () => {
