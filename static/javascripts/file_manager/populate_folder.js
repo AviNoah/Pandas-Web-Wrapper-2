@@ -53,7 +53,7 @@ function addFileView(filename, id) {
             tooltipDiv.textContent = filename;
 
             // Append filename data to element
-            fileViewDiv.setAttribute('data-file-id', id);
+            fileViewDiv.setAttribute('data-id', id);
             fileViewDiv.classList.add('file-view');
 
             folderDiv.appendChild(fileViewDiv);
