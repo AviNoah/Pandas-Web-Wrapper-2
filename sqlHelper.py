@@ -165,7 +165,9 @@ class DB:
                 (file_id,),
             )
             blob, name, ext = c.fetchone()
-            return FileStorage(blob, filename=name + ext)
+            return FileStorage(
+                blob, filename=name + ext, content_type="application/octet-stream"
+            )
         except Error as e:
             return None  # Failed to fetch file
 
@@ -182,7 +184,9 @@ class DB:
             )
 
             files: list[FileStorage] = [
-                FileStorage(blob, filename=name + ext)
+                FileStorage(
+                    blob, filename=name + ext, content_type="application/octet-stream"
+                )
                 for blob, name, ext in c.fetchall()
             ]
             return files
