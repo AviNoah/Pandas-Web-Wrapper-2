@@ -262,7 +262,7 @@ class file_fetching:
 
         return jsonify({"sheets": sheet_count}), 200
 
-    @app.route("/files/get/all", methods=["POST"])
+    @app.route("/files/get/all", methods=["GET"])
     def get_all_files():
         # Get all files
         db: DB = DB(db_path)
@@ -275,7 +275,7 @@ class file_fetching:
 
         return jsonify(files)
 
-    @app.route("/files/get/all/compressed", methods=["POST"])
+    @app.route("/files/get/all/compressed", methods=["GET"])
     def get_all_files_zipped():
         # Get all files in a zip file
         db: DB = DB(db_path)
