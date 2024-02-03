@@ -158,7 +158,7 @@ def get_file():
 
     file_id: int = int(json_data["fileId"])
     db: DB = DB(db_path)
-    file = db.get_file(file_id=file_id)
+    file: FileStorage = db.get_file(file_id=file_id)
 
     db.close()
 
