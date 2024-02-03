@@ -254,8 +254,10 @@ class DB:
                 f"""SELECT  {FilterColumns.INPUT.value}, 
                 {FilterColumns.METHOD.value}, 
                 {FilterColumns.ENABLED.value}, 
-                {FileFilterColumns.COLUMN.value}
+                {Tables.FileFilter.value}.{FileFilterColumns.COLUMN.value}
                 FROM {Tables.Filter.value}
+                LEFT JOIN {Tables.FileFilter.value}
+                ON {Tables.Filter.value}.{FileFilterColumns.FILE_ID.value} = {Tables.FileFilter.value}.{FileFilterColumns.FILE_ID.value}
                 WHERE {FileFilterColumns.FILE_ID.value}=? AND {FileFilterColumns.SHEET.value}=?""",
                 (
                     file_id,
