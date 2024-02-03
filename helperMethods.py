@@ -4,7 +4,10 @@ import os
 import pandas as pd
 from werkzeug.datastructures import FileStorage
 
+from Flask import jsonify, Response, send_file
 from typing import Optional
+
+from io import BytesIO
 
 readers = {
     ".csv": pd.read_csv,
@@ -38,3 +41,22 @@ def readFile(file: FileStorage, ext: str = None) -> Optional[dict[pd.DataFrame]]
     except Exception as e:
         print(e)
         return None
+
+
+def send_df(df: pd.DataFrame) -> Response:
+    try:
+        # Save the DataFrame to BytesIO using openpyxl as the engine
+        output = BytesIO()
+        df.to_excel(output, engine="openpyxl", index=False)
+        output.seek(0)  # Move to beginning of file
+
+        response = send_file(
+            output,
+            as_attachment=False,
+            download_name="sheet.xlsx",
+            mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+
+        return response
+    except Exception as e:
+        return jsonify({"error": e}), 500
