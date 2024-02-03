@@ -17,6 +17,7 @@ function applyFilter(column) {
         column: column,
         method: document.getElementById("Filter selector").value,
         input: escapeRegExp(document.getElementById('filter_input').value),
+        enabled: Boolean(document.getElementById("visibility-icon").classList.contains('toggled')),
     }
 
     fetch("/filters/add", {
