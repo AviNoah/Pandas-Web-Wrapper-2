@@ -53,7 +53,7 @@ function openSheet(sheet_num) {
 
         return response.blob();  // Return the response as a blob
     }).then(blob => {
-        reader = new FileReader();
+        const reader = new FileReader();
 
         reader.onload = function (event) {
             const data = event.target.result;
