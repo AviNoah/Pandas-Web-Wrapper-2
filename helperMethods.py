@@ -31,12 +31,14 @@ def verifyKeys(json, key_set: set) -> bool:
     return json and key_set.issubset(json.keys())
 
 
-def readFile(file: FileStorage, ext: str = None) -> Optional[dict[pd.DataFrame]]:
+def readFile(file: FileStorage, ext: str = None) -> Optional[dict[str, pd.DataFrame]]:
     try:
         if not ext:
             ext = os.path.splitext(file.filename)[1]  # Try to find ext
 
-        df: dict[pd.DataFrame] = readers[ext](file, sheet_name=None)
+        file_content = BytesIO(file.stream)
+
+        df: dict[str, pd.DataFrame] = readers[ext](file_content, sheet_name=None)
         return df
     except Exception as e:
         print(e)
