@@ -59,11 +59,27 @@ function createPopup(column) {
             filterPopup.innerHTML = content;
             document.body.appendChild(filterPopup);
 
+            const submitBtn = document.getElementById('filter_submit_button');
             // Make the filter submit button run process_input every time it is clicked
-            document.getElementById('filter_submit_button').addEventListener('click', () => applyFilter(column));
+            submitBtn.addEventListener('click', () => applyFilter(column));
+            submitBtn.classList.add("disabled");
 
+            const handleChange = () => {
+                submitBtn.classList.remove("disabled");
+
+                filterPopup.removeEventListener('input', handleChange);
+                filterPopup.removeEventListener('change', handleChange);
+            };
+
+            filterPopup.addEventListener('input', handleChange);
+            filterPopup.addEventListener('change', handleChange);
+
+            const filterDiv = document.getElementById('visibility-icon')
             // Add a listener to toggle View on and off
-            document.getElementById('visibility-icon').addEventListener('click', (event) => toggleFilter(event));
+            filterDiv.addEventListener('click', (event) => toggleFilter(event));
+            filterDiv.addEventListener('dragstart', (event) => {
+                event.preventDefault();  // Prevent dragging image
+            })
 
         }).catch(error => console.error(error))
 

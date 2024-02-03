@@ -58,3 +58,8 @@
     --submit_button: #3c60ff;
     background-color: var(--submit_button);
 }
+
+#filter_submit_button.disabled {
+    --disabled_submit_button: #6a6b6c;
+    background-color: var(--disabled_submit_button);
+}
