@@ -1,6 +1,7 @@
 venv
 test_file
 __pycache__
+*.db
 
 # Logs
 logs
