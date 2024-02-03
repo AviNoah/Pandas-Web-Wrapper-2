@@ -58,8 +58,8 @@ function positionPopup(target, popup) {
     popup.style.display = 'block';
 }
 
-// Function to handle closing the filter popup
 function closeFilterPopup(event) {
+    // Function to handle closing the filter popup
     const filterPopup = document.querySelector('.filter-popup');
 
     // Check if the clicked element or its parent is outside the filter popup
