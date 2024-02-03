@@ -1,0 +1,27 @@
+/* Handle tooltip text */
+.tooltip p {
+    /* Wrapping */
+    height: 55px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    /* Layout */
+    word-wrap: break-word;
+    max-width: 100%;
+    text-align: center;
+}
+
+.tooltip span {
+    position: absolute;
+    visibility: hidden;
+    max-width: 80%;
+    word-wrap: break-word;
+    padding: 3px;
+    color: white;
+}
+
+.tooltip:hover span {
+    --background-color: rgb(105, 100, 96);
+    visibility: visible;
+    background-color: var(--background-color);
+}
