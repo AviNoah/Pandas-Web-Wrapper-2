@@ -156,11 +156,12 @@ class DB:
 
         try:
             c.execute(
-                f"""SELECT {
-                    FileColumns.BLOB.value, 
-                    FileColumns.NAME.value,
-                    FileColumns.EXT.value} FROM {Tables.File.value}
-                     WHERE {FileColumns.ID.value}=?""",
+                f"""SELECT 
+                {FileColumns.BLOB.value}, 
+                {FileColumns.NAME.value},
+                {FileColumns.EXT.value} 
+                FROM {Tables.File.value}
+                WHERE {FileColumns.ID.value}=?""",
                 (file_id,),
             )
             blob, name, ext = c.fetchone()
@@ -173,11 +174,13 @@ class DB:
 
         try:
             c.execute(
-                f"""SELECT {
-                    FileColumns.BLOB.value, 
-                    FileColumns.NAME.value,
-                    FileColumns.EXT.value} FROM {Tables.File.value}"""
+                f"""SELECT 
+                    {FileColumns.BLOB.value}, 
+                    {FileColumns.NAME.value},
+                    {FileColumns.EXT.value} 
+                    FROM {Tables.File.value}"""
             )
+
             files: list[FileStorage] = [
                 FileStorage(blob, filename=name + ext)
                 for blob, name, ext in c.fetchall()
