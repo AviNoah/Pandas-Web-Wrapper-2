@@ -40,7 +40,7 @@ function updateSpreadsheetElement(sheet, editable = false) {
 function openSheet(sheet_num) {
     data = { fileId: spreadsheetElement.getAttribute('data-id'), sheet: sheet_num };
 
-    fetch('/file/get/sheet', {
+    fetch('/files/get/sheet', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
