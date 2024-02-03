@@ -22,7 +22,7 @@ function handleDrop(e) {
 
     // Check if the drop occurred on the zone or its children
     if (dropArea.contains(e.target)) {
-        dropArea.classList.add('populated')  // Mark as already populated - remove hint to drag files
+        dropArea.classList.add('populated');  // Mark as already populated - remove hint to drag files
         handleDroppedFiles(e);  // Accept dropped files
     }
 }
