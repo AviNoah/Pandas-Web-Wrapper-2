@@ -77,7 +77,7 @@ def upload_file():
 
     file_statuses: list = list()
     for file in files:
-        ok, msg, id = DB.add_file(file.name, file)
+        ok, msg, id = working_db.add_file(file.name, file)
         print(msg)
         file_statuses((ok, id))
 
@@ -100,7 +100,7 @@ def update_file():
     files = zip(file_blobs, indices)
     file_statuses: list = list()
     for file, file_id in files:
-        ok, msg, id = DB.update_file(file_id, file.name, file)
+        ok, msg, id = working_db.update_file(file_id, file.name, file)
         print(msg)
         file_statuses((ok, id))
 
@@ -129,7 +129,7 @@ def delete_file():
         return jsonify({"error": "Missing one or more required keys"}), 400
 
     file_id: int = int(json_data["fileId"])
-    ok = DB.delete_file(file_id)
+    ok = working_db.delete_file(file_id)
 
     if ok:
         return jsonify({"message": "Successfully deleted file"}), 200
@@ -219,8 +219,8 @@ def add_filter():
         json_data["input"],
     )
 
-    filter_id = DB.add_filter(method, input)
-    ok, msg = DB.file_filter_relationship(file_id, filter_id, sheet)
+    filter_id = working_db.add_filter(method, input)
+    ok, msg = working_db.file_filter_relationship(file_id, filter_id, sheet)
     if ok:
         return jsonify({"message": msg}), 200
 
@@ -238,7 +238,7 @@ def get_filter():
 
     filter_id = json_data["filterId"]
 
-    filter_json: str = DB.get_filter(filter_id)
+    filter_json: str = working_db.get_filter(filter_id)
     if not filter_json:
         return jsonify({"error": "Failed to fetch filter"}), 500
 
@@ -257,7 +257,7 @@ def get_filter_for_sheet():
     file_id = json_data["fileId"]
     sheet = json_data["sheet"]
 
-    filters_json: str = DB.get_sheets_filters(file_id, sheet)
+    filters_json: str = working_db.get_sheets_filters(file_id, sheet)
     if not filters_json:
         return jsonify({"error": "Failed to fetch filter"}), 500
 
@@ -279,7 +279,7 @@ def update_filter():
         json_data["input"],
     )
 
-    ok = DB.update_filter(filter_id, method, input)
+    ok = working_db.update_filter(filter_id, method, input)
     if ok:
         return jsonify({"message": "Filter updated successfully"}), 200
 
@@ -297,7 +297,7 @@ def delete_filter():
 
     filter_id = json_data["filterId"]
 
-    ok = DB.delete_filter(filter_id)
+    ok = working_db.delete_filter(filter_id)
     if ok:
         return jsonify({"message": "Filter deleted successfully"}), 200
 
