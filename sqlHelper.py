@@ -231,6 +231,8 @@ class DB:
                 {FilterColumns.ENABLED.value}, 
                 {FileFilterColumns.COLUMN.value}
                 FROM {Tables.Filter.value}
+                LEFT JOIN {Tables.FileFilter.value}
+                ON {Tables.Filter.value}.{FilterColumns.ID.value} = {Tables.FileFilter.value}.{FileFilterColumns.FILTER_ID.value}
                 WHERE {FilterColumns.ID.value}=?""",
                 (filter_id,),
             )
