@@ -251,14 +251,14 @@ class DB:
         # TODO: Check if this query is wrong or not
         try:
             c.execute(
-                f"""SELECT  {FilterColumns.INPUT.value}, 
+                f"""SELECT {FilterColumns.INPUT.value}, 
                 {FilterColumns.METHOD.value}, 
                 {FilterColumns.ENABLED.value}, 
                 {Tables.FileFilter.value}.{FileFilterColumns.COLUMN.value}
                 FROM {Tables.Filter.value}
                 LEFT JOIN {Tables.FileFilter.value}
                 ON {Tables.Filter.value}.{FilterColumns.ID.value} = {Tables.FileFilter.value}.{FileFilterColumns.FILTER_ID.value}
-                WHERE {FileColumns.ID.value}=? AND {FileFilterColumns.SHEET.value}=?""",
+                WHERE {Tables.FileFilter.value}.{FileFilterColumns.FILE_ID.value}=? AND {Tables.FileFilter.value}.{FileFilterColumns.SHEET.value}=?""",
                 (
                     file_id,
                     sheet,
