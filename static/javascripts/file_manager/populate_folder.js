@@ -53,4 +53,3 @@ function addFileView(file, id) {
         })
         .catch(error => console.error(error));
 }
-}
