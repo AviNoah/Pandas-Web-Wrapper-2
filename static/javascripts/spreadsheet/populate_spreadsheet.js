@@ -38,7 +38,7 @@ function updateSpreadsheetElement(sheet, editable = false) {
 }
 
 // Fetch sheet and call to updateSpreadsheet
-function openSheet(sheet_num) {
+export function openSheet(sheet_num) {
     const data = { fileId: spreadsheetElement.getAttribute('data-id'), sheet: sheet_num };
 
     fetch('/files/get/sheet', {
@@ -102,6 +102,23 @@ function openFile(id) {
             adjustSpinner(sheet_count);
         })
         .catch(error => console.error(error));
+}
+
+const selectedSheetSpinner = document.getElementById('sheetSelector');
+selectedSheetSpinner.addEventListener('change', () => {
+    openSheet(getSelectedSheetIndex());
+});
+
+// Function to adjust the selected sheet spinner properties
+function adjustSpinner(sheetCount) {
+    // Set the value to 1 and change the maximum value to sheet count
+    selectedSheetSpinner.value = 1;
+    selectedSheetSpinner.max = sheetCount;
+}
+
+// Function to fetch index adjusted for 0-based indexing
+function getSelectedSheetIndex() {
+    return selectedSheetSpinner.value - 1;
 }
 
 // TODO Remove this example
