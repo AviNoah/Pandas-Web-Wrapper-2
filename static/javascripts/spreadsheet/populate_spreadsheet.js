@@ -73,7 +73,7 @@ function openSheet(sheet_num) {
 }
 
 function openFile(id) {
-    data = JSON.stringify({ fileId: id })
+    const data = JSON.stringify({ fileId: id })
 
     fetch('/files/get/sheet_count', {
         method: "POST",
@@ -102,3 +102,5 @@ function openFile(id) {
         })
         .catch(error => console.error(error));
 }
+
+document.addEventListener('DOMContentLoaded', openFile(5));
