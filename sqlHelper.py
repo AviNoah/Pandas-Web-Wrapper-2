@@ -156,10 +156,10 @@ class DB:
 
         try:
             c.execute(
-                f"""SELECT ({
+                f"""SELECT {
                     FileColumns.BLOB.value, 
                     FileColumns.NAME.value,
-                    FileColumns.EXT.value}) FROM {Tables.File.value}
+                    FileColumns.EXT.value} FROM {Tables.File.value}
                      WHERE {FileColumns.ID.value}=?""",
                 (file_id,),
             )
@@ -173,10 +173,10 @@ class DB:
 
         try:
             c.execute(
-                f"""SELECT ({
+                f"""SELECT {
                     FileColumns.BLOB.value, 
                     FileColumns.NAME.value,
-                    FileColumns.EXT.value}) FROM {Tables.File.value}"""
+                    FileColumns.EXT.value} FROM {Tables.File.value}"""
             )
             files: list[FileStorage] = [
                 FileStorage(blob, filename=name + ext)
@@ -192,7 +192,7 @@ class DB:
 
         try:
             c.execute(
-                f"""SELECT ({FilterColumns.INPUT.value}, {FilterColumns.METHOD.value})
+                f"""SELECT {FilterColumns.INPUT.value}, {FilterColumns.METHOD.value}
                 FROM {Tables.Filter.value}
                 WHERE {FilterColumns.ID.value}=?""",
                 (filter_id,),
