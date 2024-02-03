@@ -74,12 +74,15 @@ function createPopup(column) {
             filterPopup.addEventListener('input', handleChange);
             filterPopup.addEventListener('change', handleChange);
 
-            const filterDiv = document.getElementById('visibility-icon')
+            const filterImg = document.getElementById('visibility-icon');
             // Add a listener to toggle View on and off
-            filterDiv.addEventListener('click', (event) => toggleFilter(event));
-            filterDiv.addEventListener('dragstart', (event) => {
+            filterImg.addEventListener('click', (event) => toggleFilter(event));
+            filterImg.addEventListener('dragstart', (event) => {
                 event.preventDefault();  // Prevent dragging image
             })
+
+            const deleteImg = document.getElementById('delete-icon');
+            deleteImg.addEventListener('click', () => closeFilterPopup(filterPopup));
 
         }).catch(error => console.error(error))
 
@@ -151,6 +154,10 @@ function closeFilterPopup(event) {
     }
 
     // An element outside of filterPopup was selected
+    closePopupHelper(filterPopup);
+}
+
+function closePopupHelper(filterPopup) {
     filterPopup.style.display = 'none';
     document.removeEventListener('click', closeFilterPopup);
 }
