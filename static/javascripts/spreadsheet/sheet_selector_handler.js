@@ -1,6 +1,6 @@
 const selectedSheetSpinner = document.getElementById('sheetSelector');
 selectedSheetSpinner.addEventListener('change', () => {
-    fetchSheet(getSelectedSheetIndex());
+    openSheet(getSelectedSheetIndex());
 });
 
 // Function to adjust the selected sheet spinner properties
