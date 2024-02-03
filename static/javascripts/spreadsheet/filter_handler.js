@@ -1,3 +1,5 @@
+import { getSelectedSheetIndex } from "/resources/javascripts/spreadsheet/sheet_selector_handler.js";
+
 function escapeRegExp(string) {
     // Escape regex
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
@@ -12,7 +14,7 @@ export function addFilter(event, column) {
 
 function applyFilter(column) {
     const data = {
-        fileId: spreadsheetElement.getAttribute('data-id'),
+        fileId: document.getElementById("spreadsheet").getAttribute('data-id'),
         sheet: getSelectedSheetIndex(),
         column: column,
         method: document.getElementById("Filter selector").value,

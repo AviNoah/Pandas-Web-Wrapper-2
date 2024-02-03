@@ -1,4 +1,5 @@
 import { addFilter } from "/resources/javascripts/spreadsheet/filter_handler.js";
+import { adjustSpinner, getSelectedSheetIndex } from "/resources/javascripts/spreadsheet/sheet_selector_handler.js";
 
 const spreadsheetElement = document.getElementById('spreadsheet');
 spreadsheetElement.setAttribute('data-id', '1');  // Will be changed when clicking on another file
@@ -104,22 +105,11 @@ function openFile(id) {
         .catch(error => console.error(error));
 }
 
+// Add event listener to enable switching sheets
 const selectedSheetSpinner = document.getElementById('sheetSelector');
 selectedSheetSpinner.addEventListener('change', () => {
     openSheet(getSelectedSheetIndex());
 });
-
-// Function to adjust the selected sheet spinner properties
-function adjustSpinner(sheetCount) {
-    // Set the value to 1 and change the maximum value to sheet count
-    selectedSheetSpinner.value = 1;
-    selectedSheetSpinner.max = sheetCount;
-}
-
-// Function to fetch index adjusted for 0-based indexing
-function getSelectedSheetIndex() {
-    return selectedSheetSpinner.value - 1;
-}
 
 // TODO Remove this example
 document.addEventListener('DOMContentLoaded', openFile(1));
