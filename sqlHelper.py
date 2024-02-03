@@ -270,7 +270,7 @@ class DB:
                     {
                         "input": input,
                         "method": method,
-                        "enabled": enabled,
+                        "enabled": enabled == 1,  # Convert to bool
                         "column": column,
                     }
                 )
