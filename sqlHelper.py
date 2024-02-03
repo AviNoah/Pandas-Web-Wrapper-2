@@ -250,7 +250,7 @@ class DB:
     def get_sheets_filters(self, file_id, sheet) -> Optional[List[dict]]:
         # Return a json representing a list of filter data's
         c: Cursor = self.cursor()
-        # TODO: Check if this query is wrong or not
+
         try:
             c.execute(
                 f"""SELECT {FilterColumns.INPUT.value}, 
