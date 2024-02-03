@@ -122,4 +122,4 @@ function getSelectedSheetIndex() {
 }
 
 // TODO Remove this example
-document.addEventListener('DOMContentLoaded', openFile(5));
+document.addEventListener('DOMContentLoaded', openFile(1));
