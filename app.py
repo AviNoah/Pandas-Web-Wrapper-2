@@ -19,7 +19,7 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 APP_FOLDER: str = tempfile.mkdtemp()
 app.config["APP_FOLDER"] = APP_FOLDER
 
-working_db: DB = init_db(parent=app.config["APP_FOLDER"], db_name="files")
+db_path: os.PathLike = init_db(parent=app.config["APP_FOLDER"], db_name="files")
 # Open directory TODO: Remove this after finishing
 # os.startfile(app.config["APP_FOLDER"])
 
@@ -75,11 +75,16 @@ def upload_file():
     except Exception as e:
         return jsonify({"error": "Failed to retrieve files from form"}), 500
 
+    db: DB = DB(db_path)
+
     file_statuses: list = list()
     for file in files:
-        ok, msg, id = working_db.add_file(file.name, file)
+        ok, msg, id = db.add_file(file.name, file)
         print(msg)
         file_statuses((ok, id))
+
+    db.commit()
+    db.close()
 
     succeeded_ids: list = [id for ok, id in file_statuses if ok]
     return (
@@ -99,10 +104,14 @@ def update_file():
 
     files = zip(file_blobs, indices)
     file_statuses: list = list()
+    db: DB = DB(db_path)
     for file, file_id in files:
-        ok, msg, id = working_db.update_file(file_id, file.name, file)
+        ok, msg, id = db.update_file(file_id, file.name, file)
         print(msg)
         file_statuses((ok, id))
+
+    db.commit()
+    db.close()
 
     succeeded_ids: list = [id for ok, id in file_statuses if ok]
     failed_ids: list = [id for ok, id in file_statuses if not ok]
@@ -129,8 +138,11 @@ def delete_file():
         return jsonify({"error": "Missing one or more required keys"}), 400
 
     file_id: int = int(json_data["fileId"])
-    ok = working_db.delete_file(file_id)
+    db: DB = DB(db_path)
+    ok = db.delete_file(file_id)
 
+    db.commit()
+    db.close()
     if ok:
         return jsonify({"message": "Successfully deleted file"}), 200
 
@@ -147,7 +159,10 @@ def get_file():
         return jsonify({"error": "Missing one or more required keys"}), 400
 
     file_id: int = int(json_data["fileId"])
-    file = working_db.get_file(file_id=file_id)
+    db: DB = DB(db_path)
+    file = db.get_file(file_id=file_id)
+
+    db.close()
 
     if not file:
         return jsonify({"error": "No files found"}), 500
@@ -163,7 +178,11 @@ def get_file():
 @app.route("/files/get/all", methods=["POST"])
 def get_all_files():
     # Get all files
-    files = working_db.get_all_files()
+    db: DB = DB(db_path)
+    files = db.get_all_files()
+
+    db.close()
+
     if not files:
         return jsonify({"error": "No files found"}), 500
 
@@ -181,7 +200,11 @@ def get_all_files():
 @app.route("/files/get/all/compressed", methods=["POST"])
 def get_all_files_zipped():
     # Get all files in a zip file
-    files = working_db.get_all_files()
+    db: DB = DB(db_path)
+    files = db.get_all_files()
+
+    db.close()
+
     if not files:
         return jsonify({"error": "No files found"}), 500
 
@@ -219,8 +242,14 @@ def add_filter():
         json_data["input"],
     )
 
-    filter_id = working_db.add_filter(method, input)
-    ok, msg = working_db.file_filter_relationship(file_id, filter_id, sheet)
+    db: DB = DB(db_path)
+
+    filter_id = db.add_filter(method, input)
+    ok, msg = db.file_filter_relationship(file_id, filter_id, sheet)
+
+    db.commit()
+    db.close()
+
     if ok:
         return jsonify({"message": msg}), 200
 
@@ -238,7 +267,11 @@ def get_filter():
 
     filter_id = json_data["filterId"]
 
-    filter_json: str = working_db.get_filter(filter_id)
+    db: DB = DB(db_path)
+    filter_json: str = db.get_filter(filter_id)
+
+    db.close()
+
     if not filter_json:
         return jsonify({"error": "Failed to fetch filter"}), 500
 
@@ -257,7 +290,11 @@ def get_filter_for_sheet():
     file_id = json_data["fileId"]
     sheet = json_data["sheet"]
 
-    filters_json: str = working_db.get_sheets_filters(file_id, sheet)
+    db: DB = DB(db_path)
+    filters_json: str = db.get_sheets_filters(file_id, sheet)
+
+    db.close()
+
     if not filters_json:
         return jsonify({"error": "Failed to fetch filter"}), 500
 
@@ -279,7 +316,12 @@ def update_filter():
         json_data["input"],
     )
 
-    ok = working_db.update_filter(filter_id, method, input)
+    db: DB = DB(db_path)
+    ok = db.update_filter(filter_id, method, input)
+
+    db.commit()
+    db.close()
+
     if ok:
         return jsonify({"message": "Filter updated successfully"}), 200
 
@@ -297,7 +339,12 @@ def delete_filter():
 
     filter_id = json_data["filterId"]
 
-    ok = working_db.delete_filter(filter_id)
+    db: DB = DB(db_path)
+    ok = db.delete_filter(filter_id)
+
+    db.commit()
+    db.close()
+
     if ok:
         return jsonify({"message": "Filter deleted successfully"}), 200
 

@@ -294,7 +294,8 @@ class DB:
             return False  # File not found
 
 
-def init_db(parent: os.PathLike, db_name: str) -> DB:
+def init_db(parent: os.PathLike, db_name: str) -> os.PathLike:
+    # Initialize DB and return path
     if not os.path.exists(parent):
         os.mkdir(parent)
 
@@ -305,4 +306,8 @@ def init_db(parent: os.PathLike, db_name: str) -> DB:
         with open(db_path, "a"):
             pass
 
-    return DB(db_path)
+    tmp = DB(db_path)
+    tmp.commit()
+    tmp.close()
+
+    return db_path
