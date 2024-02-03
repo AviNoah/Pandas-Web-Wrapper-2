@@ -9,7 +9,7 @@ from werkzeug.datastructures import FileStorage
 import os
 
 from sqlHelper import DB, init_db
-from helperMethods import isAValidExt, verifyKeys, readFile, send_df
+from helperMethods import isAValidExt, verifyKeys, readFile, sendDF
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
@@ -211,7 +211,7 @@ class file_fetching:
 
         # TODO apply filters on df
 
-        return send_df(df)
+        return sendDF(df)
 
     @app.route("/files/get/sheet_count", methods=["POST"])
     def get_sheet_count():

@@ -45,7 +45,7 @@ def readFile(file: FileStorage, ext: str = None) -> Optional[dict[str, pd.DataFr
         return None
 
 
-def send_df(df: pd.DataFrame) -> Response:
+def sendDF(df: pd.DataFrame) -> Response:
     try:
         # Save the DataFrame to BytesIO using openpyxl as the engine
         output = BytesIO()
