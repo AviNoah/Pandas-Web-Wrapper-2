@@ -9,7 +9,7 @@ from werkzeug.datastructures import FileStorage
 import os
 
 from sqlHelper import DB, init_db
-from helperMethods import isAValidExt, verifyKeys, readFile, sendDF
+from helperMethods import isAValidExt, verifyKeys, readFile, sendDF, applyFilters
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
@@ -232,7 +232,9 @@ class file_fetching:
         sheets: list = list(sheets.values())
         df = sheets[sheet]
 
-        # TODO apply filters on df
+        filters: list = db.get_sheets_filters(file_id, sheet)
+        if filters:
+            df = applyFilters(df, filters)  # Only if not empty or None
 
         return sendDF(df)
 
