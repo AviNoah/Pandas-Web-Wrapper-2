@@ -61,8 +61,31 @@ function addFileView(filename, id) {
         .catch(error => console.error(error));
 }
 
+function loadFilesFromDB() {
+    // Add files from DB to view
+    const dropArea = document.getElementById('drop-zone')
+    dropArea.classList.add('populated');  // Mark as already populated - remove hint to drag files
+
+    fetch("/files/get/all")
+        .then(response => {
+            if (!response.ok)
+                throw new Error("Failed to retrieve files");
+
+            return response.json();
+        })
+        .then(fileIds => {
+            // Files is a list of valid ids
+            if (fileIds.length > 0) {
+                addFiles(fileIds)
+            }
+        })
+        .catch(error => console.error(error))
+}
+
 // Don't allow any image from the folder to be dragged.
 folderDiv.addEventListener('dragstart', (event) => {
     if (event.target.tagName === 'IMG')
         event.preventDefault();
 })
+
+document.addEventListener('DOMContentLoaded', loadFilesFromDB)
