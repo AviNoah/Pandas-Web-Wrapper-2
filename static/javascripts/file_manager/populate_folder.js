@@ -17,11 +17,40 @@ export function addFiles(passedIds) {
                 return response.blob();
             })
             .then(blob => {
-                addFileView(blob);
+                addFileView(blob, id);
                 console.log(`Added file view for ${blob.name}`);
             })
 
     });
 }
 
-function addFileView(file) { }
+function addFileView(file, id) {
+    const fileViewDiv = document.createElement('div');
+
+    // Make file-view
+    fetch("/templates/file_manager/file.html")
+        .then(response => {
+            if (!response.ok)
+                throw new console.error("Failed fetching file view template");
+
+            return response.text();
+        })
+        .then((content) => {
+            fileViewDiv.innerHTML = content;
+
+            // Update file name
+            const paragraphDiv = fileViewDiv.querySelector('p');
+            paragraphDiv.textContent = file.name;
+
+            const tooltipDiv = fileViewDiv.querySelector('span');
+            tooltipDiv.textContent = file.name;
+
+            // Append filename data to element
+            fileViewDiv.setAttribute('data-file-id', id);
+            fileViewDiv.classList.add('file-view');
+
+            container.appendChild(fileViewDiv);
+        })
+        .catch(error => console.error(error));
+}
+}
