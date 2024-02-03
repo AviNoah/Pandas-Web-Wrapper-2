@@ -111,6 +111,29 @@ class file_management:
             200,
         )
 
+    @app.route("/files/update/name", methods=["POST"])
+    def update_file_name():
+        # Update files at the given ids.
+        keys = {"fileId", "name", "ext"}
+
+        json_data = request.get_json()
+        if not verifyKeys(json_data, keys):
+            return jsonify({"error": "Missing one or more required keys"}), 400
+
+        file_id, name, ext = json_data["fileId"], json_data["name"], json_data["ext"]
+
+        db: DB = DB(db_path)
+
+        isOk, msg, id = db.update_file_name(file_id, name, ext)
+
+        db.commit()
+        db.close()
+
+        if isOk:
+            return jsonify({"message": msg}), 200
+
+        return jsonify({"error": msg}), 500
+
     @app.route("/files/delete", methods=["POST"])
     def delete_file():
         # Delete the file at the given id
