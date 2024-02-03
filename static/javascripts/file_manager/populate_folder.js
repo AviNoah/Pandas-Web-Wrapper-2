@@ -60,3 +60,9 @@ function addFileView(filename, id) {
         })
         .catch(error => console.error(error));
 }
+
+// Don't allow any image from the folder to be dragged.
+folderDiv.addEventListener('dragstart', (event) => {
+    if (event.target.tagName === 'IMG')
+        event.preventDefault();
+})
