@@ -4,6 +4,7 @@ from typing import Optional, List, Tuple
 
 import os
 import json
+from werkzeug.datastructures import FileStorage
 
 
 class Tables(Enum):
@@ -91,7 +92,7 @@ class DB:
     def close(self):
         self.__conn.close()
 
-    def add_file(self, filename: str, file_blob: bytes) -> Tuple[bool, str, int]:
+    def add_file(self, filename: str, file: FileStorage) -> Tuple[bool, str, int]:
         # Add the file_blob to database
         filename = os.path.basename(filename)
         name, ext = os.path.splitext(filename)
@@ -103,7 +104,7 @@ class DB:
                 {FileColumns.EXT.value}, 
                 {FileColumns.BLOB.value})
                 VALUES (?, ?, ?)""",
-                (name, ext, file_blob),
+                (name, ext, file.read()),
             )
 
             file_id = c.lastrowid
@@ -251,7 +252,7 @@ class DB:
             return False  # Filter not found
 
     def update_file(
-        self, file_id, filename: str, file_blob: bytes
+        self, file_id, filename: str, file: FileStorage
     ) -> Tuple[bool, str, int]:
         # Update the file_blob in database at the given id
         filename = os.path.basename(filename)
@@ -264,7 +265,7 @@ class DB:
                     {FileColumns.EXT.value} = ?,
                     {FileColumns.BLOB.value} = ?
                 WHERE {FileColumns.ID.value} = ?""",
-                (name, ext, file_blob, file_id),
+                (name, ext, file.read(), file_id),
             )
 
             self.commit()
