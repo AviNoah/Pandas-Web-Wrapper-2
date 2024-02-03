@@ -62,3 +62,38 @@ def sendDF(df: pd.DataFrame) -> Response:
         return response
     except Exception as e:
         return jsonify({"error": e}), 500
+
+
+def applyFilters(df: pd.DataFrame, filters: list) -> pd.DataFrame:
+    # Apply filters to dataframe, return new dataframe
+    # filters is a list of dicts with the following keys: input, method, column, enabled
+    new_df: pd.DataFrame = df.copy()  # Dont destroy original
+    for filter in filters:
+        inp, method, column, enabled = (
+            filter["input"],
+            filter["method"],
+            filter["column"],
+            filter["enabled"],
+        )
+
+        if not enabled:
+            continue  # Skip
+
+        column_name = new_df.columns[column]  # Get column name
+
+        if method == "exact":
+            # Filter rows where the column values exactly match the input string
+            new_df = new_df[new_df[column_name].astype(str).eq(inp)]
+        elif method == "contains":
+            # Filter rows where the column values contain the input string
+            new_df = new_df[new_df[column_name].astype(str).str.contains(inp)]
+        elif method == "not contains":
+            # Filter rows where the column values do not contain the input string
+            new_df = new_df[~new_df[column_name].astype(str).str.contains(inp)]
+        elif method == "regex":
+            # Filter rows where the column values match the regex pattern
+            new_df = new_df[new_df[column_name].astype(str).str.match(inp)]
+        else:
+            raise ValueError("Unsupported method")
+
+    return new_df
