@@ -1,4 +1,5 @@
 import { getSelectedSheetIndex } from "/resources/javascripts/spreadsheet/sheet_selector_handler.js";
+import { openSheet } from "/resources/javascripts/spreadsheet/populate_spreadsheet.js";
 
 function escapeRegExp(string) {
     // Escape regex
