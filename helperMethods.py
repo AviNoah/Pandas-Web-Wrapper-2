@@ -28,8 +28,11 @@ def verifyKeys(json, key_set: set) -> bool:
     return json and key_set.issubset(json.keys())
 
 
-def readFile(file: FileStorage, ext) -> Optional[dict[pd.DataFrame]]:
+def readFile(file: FileStorage, ext: str = None) -> Optional[dict[pd.DataFrame]]:
     try:
+        if not ext:
+            ext = "." + os.path.splitext(file.filename)[1]  # Try to find ext
+
         df: dict[pd.DataFrame] = readers[ext](file, sheet_name=None)
         return df
     except Exception as e:
