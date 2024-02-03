@@ -17,8 +17,8 @@ function applyFilter(column) {
         fileId: document.getElementById("spreadsheet").getAttribute('data-id'),
         sheet: getSelectedSheetIndex(),
         column: column,
-        method: document.getElementById("Filter selector").value,
-        input: escapeRegExp(document.getElementById('filter_input').value),
+        method: document.getElementById("filter-selector").value,
+        input: escapeRegExp(document.getElementById('filter-input').value),
         enabled: Boolean(document.getElementById("visibility-icon").classList.contains('toggled')),
     }
 
@@ -61,7 +61,7 @@ function createPopup(column) {
             filterPopup.innerHTML = content;
             document.body.appendChild(filterPopup);
 
-            const submitBtn = document.getElementById('filter_submit_button');
+            const submitBtn = document.getElementById('filter-submit-button');
             // Make the filter submit button run process_input every time it is clicked
             submitBtn.addEventListener('click', () => applyFilter(column));
             submitBtn.classList.add("disabled");
