@@ -14,13 +14,12 @@ export function addFilter(event, column) {
 }
 
 function applyFilter(column) {
-    // TODO: Fixed filter-input not changing value
     const data = {
         fileId: document.getElementById("spreadsheet").getAttribute('data-id'),
         sheet: getSelectedSheetIndex(),
         column: column,
         method: document.getElementById("filter-selector").value,
-        input: escapeRegExp(document.getElementById('filter-input').textContent),
+        input: escapeRegExp(document.getElementById('filter-input').value),
         enabled: Boolean(document.getElementById("visibility-icon").classList.contains('toggled')),
     }
 
