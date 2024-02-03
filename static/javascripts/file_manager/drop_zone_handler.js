@@ -103,10 +103,11 @@ function handleDroppedFiles(event) {
                 .then(json => {
                     // TODO attach the ID returned from the database to each of the created file-views.
                     const passedIds = json.passed;
-                    console.log('Files added successfully');
 
-                    if (passedFiles.length > 0)
+                    if (passedFiles.length > 0) {
+                        console.log('Files added successfully');
                         addFiles(passedIds);  // Send only valid files
+                    }
                 })
                 .catch(error => {
                     console.error(`These files weren't added successfully ${passedFiles}\n${error}`);
