@@ -1,9 +1,8 @@
 from sqlite3 import Cursor, Connection, Error, connect
 from enum import Enum
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, List
 
 import os
-import json
 from werkzeug.datastructures import FileStorage
 
 
@@ -221,7 +220,7 @@ class DB:
         except Error as e:
             return None  # Failed to fetch files
 
-    def get_filter(self, filter_id) -> Optional[str]:
+    def get_filter(self, filter_id) -> Optional[dict]:
         # Return a json representing filter data
         c: Cursor = self.cursor()
 
@@ -242,11 +241,11 @@ class DB:
                 "enabled": enabled == 1,  # Convert to bool
                 "column": column,
             }
-            return json.dumps(data)
+            return data
         except Exception as e:
             return None  # Filter not found
 
-    def get_sheets_filters(self, file_id, sheet) -> Optional[str]:
+    def get_sheets_filters(self, file_id, sheet) -> Optional[List[dict]]:
         # Return a json representing a list of filter data's
         c: Cursor = self.cursor()
 
@@ -274,7 +273,7 @@ class DB:
                         "column": column,
                     }
                 )
-            return json.dumps(filters_data)
+            return filters_data
         except Exception as e:
             return None  # Filters not found
 
