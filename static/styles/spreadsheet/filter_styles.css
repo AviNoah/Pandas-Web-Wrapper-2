@@ -1,0 +1,54 @@
+/* For the pop up box when filter is selected */
+.filter-popup {
+    --filter_background_color: rgb(251, 244, 244);
+    position: absolute;
+    background-color: var(--filter_background_color);
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    display: none;
+    width: 200px;
+    border-radius: 10px;
+}
+
+.filter-popup-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-popup-content input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 4px;
+}
+
+
+.filter-popup-content input:focus {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+
+.filter-popup-content select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+}
+
+.filter-popup-content button {
+    /* Specific styling for buttons inside the filter popup */
+    border-radius: 10px;
+    margin-top: 3px;
+    color: white;
+}
+
+#filter_submit_button {
+    --submit_button: #3c60ff;
+    background-color: var(--submit_button);
+}
+
+
+.dangerous {
+    --dangerous_button: rgb(233, 71, 71);
+    background-color: var(--dangerous_button);
+}
