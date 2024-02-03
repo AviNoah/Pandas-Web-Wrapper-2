@@ -2,6 +2,12 @@ body {
     background-color: red;
 }
 
+#spreadsheet {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
 #sheetSelector {
     position: fixed;
     opacity: 0.4;
