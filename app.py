@@ -266,22 +266,14 @@ class file_fetching:
     def get_all_files():
         # Get all files
         db: DB = DB(db_path)
-        files = db.get_all_files()
+        files: list = db.get_all_files()
 
         db.close()
 
         if not files:
             return jsonify({"error": "No files found"}), 500
 
-        file_list = []
-        for file in files:
-            file_data = {
-                "name": file.filename,
-                "content": base64.b64encode(file).decode(),  # Convert bytes to base64
-            }
-            file_list.append(file_data)
-
-        return jsonify({"files": file_list})
+        return jsonify(files)
 
     @app.route("/files/get/all/compressed", methods=["POST"])
     def get_all_files_zipped():

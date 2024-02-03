@@ -198,7 +198,7 @@ class DB:
         except Error as e:
             return None  # Failed to fetch file
 
-    def get_all_files(self) -> Optional[List[tuple]]:
+    def get_all_files(self) -> Optional[List[dict]]:
         c: Cursor = self.cursor()
 
         try:
@@ -210,12 +210,12 @@ class DB:
                     FROM {Tables.File.value}"""
             )
 
-            files: List[tuple] = [
-                (
-                    id,
-                    name,
-                    ext,
-                )
+            files: List[dict] = [
+                {
+                    "id": id,
+                    "name": name,
+                    "ext": ext,
+                }
                 for id, name, ext in c.fetchall()
             ]
 
