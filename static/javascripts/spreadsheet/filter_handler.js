@@ -10,6 +10,15 @@ export function addFilter(event, column) {
     document.addEventListener('click', (event) => closeFilterPopup(event));  // Listen to closing
 }
 
+function applyFilter(column) {
+    const data = {
+        fileId: spreadsheetElement.getAttribute('data-id'),
+        sheet: getSelectedSheetIndex(),
+        column: column,
+        
+    }
+}
+
 function createPopup(column) {
     // Create popup at view target
     const existingPopup = document.querySelector('.filter-popup');
