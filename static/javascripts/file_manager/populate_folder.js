@@ -24,7 +24,7 @@ export function addFiles(passedIds) {
             })
             .then(({ name, ext }) => {
                 addFileView(name + ext, id);
-                console.log(`Added file view for ${blob.name}`);
+                console.log(`Added file view for ${name}`);
             })
             .catch(error => console.error(error))
 
