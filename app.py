@@ -331,14 +331,19 @@ class filter_management:
 
         db: DB = DB(db_path)
 
-        filter_id = db.add_filter(method, input, enabled)
-        ok, msg = db.file_filter_relationship(file_id, filter_id, sheet, column)
+        isOk, msg, filter_id = db.add_filter(method, input, enabled)
+
+        # Check if added successfully
+        if not isOk:
+            return jsonify({"error": msg}), 500
+
+        isOk, msg = db.file_filter_relationship(file_id, filter_id, sheet, column)
 
         db.commit()
         db.close()
 
-        if ok:
-            return jsonify({"message": msg}), 200
+        if isOk:
+            return jsonify({"message": msg, "filterId": filter_id}), 200
 
         return jsonify({"error": msg}), 500
 
@@ -359,12 +364,12 @@ class filter_management:
         )
 
         db: DB = DB(db_path)
-        ok = db.update_filter(filter_id, method, input, enabled)
+        isOk = db.update_filter(filter_id, method, input, enabled)
 
         db.commit()
         db.close()
 
-        if ok:
+        if isOk:
             return jsonify({"message": "Filter updated successfully"}), 200
 
         return jsonify({"error": "Filter failed to update"}), 200
