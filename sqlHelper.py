@@ -152,6 +152,7 @@ class DB:
             return False, f"Failed to create relationship: {e}"
 
     def get_file(self, file_id) -> Optional[FileStorage]:
+        # Return file blob as FileStorage
         c: Cursor = self.cursor()
 
         try:
@@ -168,6 +169,24 @@ class DB:
             return FileStorage(
                 blob, filename=name + ext, content_type="application/octet-stream"
             )
+        except Error as e:
+            return None  # Failed to fetch file
+
+    def get_file_name(self, file_id) -> Optional[tuple[str, str]]:
+        # Return file name and ext
+        c: Cursor = self.cursor()
+
+        try:
+            c.execute(
+                f"""SELECT 
+                {FileColumns.NAME.value},
+                {FileColumns.EXT.value} 
+                FROM {Tables.File.value}
+                WHERE {FileColumns.ID.value}=?""",
+                (file_id,),
+            )
+            name, ext = c.fetchone()
+            return name, ext
         except Error as e:
             return None  # Failed to fetch file
 

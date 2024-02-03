@@ -173,6 +173,30 @@ def get_file():
     )
 
 
+@app.route("/files/get/name", methods=["POST"])
+def get_file_name():
+    # Get a file name matching given id
+    keys = {"fileId"}
+
+    json_data = request.get_json()
+    if not verifyKeys(json_data, keys):
+        return jsonify({"error": "Missing one or more required keys"}), 400
+
+    file_id: int = int(json_data["fileId"])
+    db: DB = DB(db_path)
+    filename = db.get_file_name(file_id=file_id)
+
+    db.close()
+
+    if not filename:
+        return jsonify({"error": "No files found"}), 500
+
+    name, ext = filename
+    return jsonify(
+        {"message": "Fetched filename successfully", "name": name, "ext": ext}
+    )
+
+
 @app.route("/files/get/all", methods=["POST"])
 def get_all_files():
     # Get all files

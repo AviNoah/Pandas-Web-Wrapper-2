@@ -3,7 +3,7 @@ const folderDiv = document.getElementById('drop-zone');
 export function addFiles(passedIds) {
     Array.from(passedIds).forEach(id => {
         const data = JSON.stringify({ fileId: id });
-        fetch("/files/get", {
+        fetch("/files/get/name", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -14,10 +14,16 @@ export function addFiles(passedIds) {
                 if (!response.ok)
                     throw new Error("Server did not respond");
 
-                return response.blob();
+                return response.json();
             })
-            .then(blob => {
-                addFileView(blob, id);
+            .then(json => {
+                if (!json.hasOwnProperty("name") || !json.hasOwnProperty("ext"))
+                    throw new Error("Name or ext keys are missing from response");
+
+                return { name: json.name, ext: json.ext };
+            })
+            .then(({ name, ext }) => {
+                addFileView(name + ext, id);
                 console.log(`Added file view for ${blob.name}`);
             })
             .catch(error => console.error(error))
@@ -25,7 +31,7 @@ export function addFiles(passedIds) {
     });
 }
 
-function addFileView(file, id) {
+function addFileView(filename, id) {
     const fileViewDiv = document.createElement('div');
 
     // Make file-view
@@ -41,10 +47,10 @@ function addFileView(file, id) {
 
             // Update file name
             const paragraphDiv = fileViewDiv.querySelector('p');
-            paragraphDiv.textContent = file.name;
+            paragraphDiv.textContent = filename;
 
             const tooltipDiv = fileViewDiv.querySelector('span');
-            tooltipDiv.textContent = file.name;
+            tooltipDiv.textContent = filename;
 
             // Append filename data to element
             fileViewDiv.setAttribute('data-file-id', id);
