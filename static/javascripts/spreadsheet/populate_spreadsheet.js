@@ -120,6 +120,9 @@ window.addEventListener('message', (event) => {
         return;
 
     const jsonData = JSON.parse(event.data);
-    const fileId = jsonData.fileId;
+    const fileId = parseInt(jsonData.fileId, 10);
+    const s = document.getElementById('spreadsheet');
+
     openFile(fileId);
+    s.setAttribute('data-id', fileId);
 })
