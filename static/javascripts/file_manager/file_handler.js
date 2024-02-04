@@ -1,15 +1,15 @@
-function handleSelect(event, dataId) {
+function handleSelect(fileView, dataId) {
     console.log("handleSelect executed with dataId:", dataId);
     data = { fileId: dataId };
     target = "/";  // Index will handle communication
     parent.postMessage(JSON.stringify(data), target);
 }
 
-function handleEdit(event, dataId) {
+function handleEdit(fileView, dataId) {
     console.log("handleEdit executed with dataId:", dataId);
 }
 
-function handleQueryList(event, dataId) {
+function handleQueryList(fileView, dataId) {
     console.log("handleQueryList executed with dataId:", dataId);
 }
 

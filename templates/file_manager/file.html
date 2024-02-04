@@ -10,8 +10,8 @@
   </div>
 </div>
 <div class="buttons-wrapper">
-  <img class="edit" onclick="handleEdit(event, this.parentElement.parentElement.getAttribute('data-id'))" src="/resources/images/Edit.svg" alt="Edit" />
-  <img class="query-list" onclick="handleQueryList(event, this.parentElement.parentElement.getAttribute('data-id'))" src="/resources/images/QueryList.svg" alt="Manage filters" />
+  <img class="edit" onclick="handleEdit(this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/resources/images/Edit.svg" alt="Edit" />
+  <img class="query-list" onclick="handleQueryList(this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/resources/images/QueryList.svg" alt="Manage filters" />
   <img class="download" onclick="handleDownload(this.parentElement.parentElement.getAttribute('data-id'))" src="/resources/images/Download.svg" alt="Download file" />
   <img class="delete" onclick="handleDelete(this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/resources/images/Delete.svg" alt="Delete file" />
 </div>
