@@ -88,4 +88,6 @@ folderDiv.addEventListener('dragstart', (event) => {
         event.preventDefault();
 })
 
+
+// TODO: maybe we want each tab to have its own environment? consider disabling this
 document.addEventListener('DOMContentLoaded', loadFilesFromDB)
