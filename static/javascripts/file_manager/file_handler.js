@@ -61,7 +61,7 @@ function handleDelete(fileView, dataId) {
 
     const data = JSON.stringify({ fileId: dataId });
 
-    fetch("/files/get/download", {
+    fetch("/files/delete", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
