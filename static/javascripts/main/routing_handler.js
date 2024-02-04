@@ -3,8 +3,9 @@ const spreadsheetFrame = document.getElementById('spreadsheetFrame');
 const fileManagerFrame = document.getElementById('fileManagerFrame');
 
 window.addEventListener('message', (event) => {
-    if (event.origin !== fileManagerFrame)
-        return;  // Don't accept any messages not from fileManagerFrame
+    // Reject any messages not from fileManagerFrame
+    if (event.origin !== fileManagerFrame.src)
+        return;
 
     // Forward message data to spreadsheetFrame
     spreadsheetFrame.contentWindow.postMessage(event.data, event.origin);
