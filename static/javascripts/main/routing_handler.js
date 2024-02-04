@@ -4,7 +4,7 @@ window.addEventListener('message', (event) => {
     const spreadsheetFrame = document.getElementById('spreadsheetFrame');
     const fileManagerFrame = document.getElementById('fileManagerFrame');
     // Reject any messages not from fileManagerFrame
-    if (event.origin !== fileManagerFrame.src)
+    if (event.origin + "/" !== fileManagerFrame.baseURI)
         return;
 
     // Forward message data to spreadsheetFrame
