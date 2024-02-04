@@ -13,7 +13,7 @@ function handleQueryList(event, dataId) {
     console.log("handleQueryList executed with dataId:", dataId);
 }
 
-function handleDownload(event, dataId) {
+function handleDownload(dataId) {
     console.log("handleDownload executed with dataId:", dataId);
 
     const data = JSON.stringify({ fileId: dataId });
@@ -51,6 +51,29 @@ function handleDownload(event, dataId) {
 
 }
 
-function handleDelete(event, dataId) {
+function handleDelete(fileView, dataId) {
     console.log("handleDelete executed with dataId:", dataId);
+
+    const choice = confirm("Are you sure you want to delete this file?");
+
+    if (!choice)
+        return;  // User declined
+
+    const data = JSON.stringify({ fileId: dataId });
+
+    fetch("/files/get/download", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: data
+    })
+        .then(response => {
+            if (!response.ok)
+                throw new Error("Failed to delete file");
+
+            console.log("Deleted file successfully");
+            fileView.parentElement.removeChild(fileView);  // Remove view
+            return response;
+        })
 }
