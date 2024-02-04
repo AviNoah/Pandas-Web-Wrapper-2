@@ -111,6 +111,25 @@ class file_management:
             200,
         )
 
+    @app.route("/files/update/name/validate", methods=["POST"])
+    def validate_file_name():
+        # Update files at the given ids.
+        keys = {"filename"}
+
+        json_data = request.get_json()
+        if not verifyKeys(json_data, keys):
+            return jsonify({"error": "Missing one or more required keys"}), 400
+
+        filename = json_data["filename"]
+
+        filename = os.path.basename(filename)
+
+        if isAValidExt(filename):
+            name, ext = os.path.splitext(filename)
+            return jsonify({"name": name, "ext": ext}), 200
+
+        return jsonify({"error": "Invalid name"}), 500
+
     @app.route("/files/update/name", methods=["POST"])
     def update_file_name():
         # Update files at the given ids.

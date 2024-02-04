@@ -7,6 +7,83 @@ function handleSelect(fileView, dataId) {
 
 function handleEdit(fileView, dataId) {
     console.log("handleEdit executed with dataId:", dataId);
+
+    const filenameP = fileView.querySelector('p.file-name');
+    const tooltipSpan = fileView.querySelector('span');
+    const oldName = filenameP.textContent;
+
+    filenameP.focus();
+    filenameP.setAttribute('contenteditable', true);
+    const submitRename = function () {
+        const data = { filename: filenameP.textContent };
+        // TODO validate file name
+        fetch('files/update/name/validate', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: data
+        })
+            .then(response => {
+                if (!response.ok) {
+                    alert("Invalid file name");
+                    throw new Error("Invalid file name");
+                }
+
+                response.json();
+            })
+            .then(json => {
+                if (!json.hasOwnProperty("name") || !json.hasOwnProperty("ext"))
+                    throw new Error("Response json doesn't have name or ext");
+
+                return json
+            })
+            .then((json) => {
+                fetch('files/update/name', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: json
+                })
+                    .then(response => {
+                        if (!response.ok)
+                            throw new Error("Failed to update name");
+
+                        filenameP.setAttribute('contenteditable', false);
+                        filenameP.removeEventListener('keydown');
+                        tooltipSpan.textContent = filenameP.textContent;
+
+                    })
+            })
+            .catch(error => {
+                filenameP.textContent = oldName;  // Revert to old name
+                console.error(error);
+            });
+
+    };
+
+    const pressedEnter = function (event) {
+        if (event.key !== "Enter")
+            return;  // Ignore any other key
+
+
+        filenameP.removeEventListener("keydown", pressedEnter);
+        submitRename();
+    }
+
+    const clickedOutside = function (event) {
+        if (event.target === filenameP || event.target.classList.contains("edit"))
+            return;  // ignore clicking on paragraph or on edit
+
+        document.removeEventListener("click", clickedOutside);
+        submitRename()
+    }
+
+    // Listen until user finishes entering input
+    filenameP.addEventListener('keydown', pressedEnter);
+
+    document.addEventListener('click', clickedOutside);
 }
 
 function handleQueryList(fileView, dataId) {
