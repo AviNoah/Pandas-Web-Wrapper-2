@@ -16,7 +16,7 @@ function handleEdit(fileView, dataId) {
     filenameP.setAttribute('contenteditable', true);
     const submitRename = function () {
         const data = { filename: filenameP.textContent };
-        // TODO validate file name
+        // TODO fix validating file name
         fetch('files/update/name/validate', {
             method: "POST",
             headers: {
