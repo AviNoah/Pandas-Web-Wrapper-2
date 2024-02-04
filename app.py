@@ -182,6 +182,36 @@ class file_fetching:
             mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
 
+    @app.route("/files/get/download", methods=["POST"])
+    def download_file():
+        # Get a file matching given id
+        keys = {"fileId"}
+
+        json_data = request.get_json()
+        if not verifyKeys(json_data, keys):
+            return jsonify({"error": "Missing one or more required keys"}), 400
+
+        file_id: int = int(json_data["fileId"])
+        db: DB = DB(db_path)
+        file: FileStorage = db.get_file(file_id=file_id)
+
+        db.close()
+
+        if not file:
+            return jsonify({"error": "No files found"}), 500
+
+        filename = file.filename
+
+        file = BytesIO(file.stream)  # Convert to BytesIO object
+        file.seek(0)  # Point to start of file
+
+        return send_file(
+            file,
+            as_attachment=True,
+            download_name=filename,
+            mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+
     @app.route("/files/get/name", methods=["POST"])
     def get_file_name():
         # Get a file name matching given id
