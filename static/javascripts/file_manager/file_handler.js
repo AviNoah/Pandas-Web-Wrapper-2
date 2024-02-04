@@ -1,5 +1,8 @@
 function handleSelect(event, dataId) {
     console.log("handleSelect executed with dataId:", dataId);
+    data = { fileId: dataId };
+    target = "/";  // Index will handle communication
+    parent.postMessage(JSON.stringify(data), target);
 }
 
 function handleEdit(event, dataId) {
