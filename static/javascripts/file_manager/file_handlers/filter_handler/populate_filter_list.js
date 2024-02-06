@@ -1,3 +1,5 @@
-function populateFilterList(fileView, dataId) {
+function handleFilterList(fileView, dataId) {
     console.log("handleQueryList executed with dataId:", dataId);
+    
+
 }
