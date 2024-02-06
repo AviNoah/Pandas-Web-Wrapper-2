@@ -111,9 +111,6 @@ selectedSheetSpinner.addEventListener('change', () => {
     openSheet(getSelectedSheetIndex());
 });
 
-// TODO Remove this example
-document.addEventListener('DOMContentLoaded', openFile(1));
-
 window.addEventListener('message', (event) => {
     // Reject any messages not from parent of iframe
     if (event.source !== parent)
