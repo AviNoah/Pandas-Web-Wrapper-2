@@ -206,13 +206,13 @@ class file_fetching:
         return send_file(
             file,
             as_attachment=False,
-            download_name=file.filename,
+            download_name="excel_file",
             mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
 
     @app.route("/files/get/download", methods=["POST"])
     def download_file():
-        # Get a file matching given id
+        # Download a file matching given id
         keys = {"fileId"}
 
         json_data = request.get_json()
@@ -222,13 +222,10 @@ class file_fetching:
         file_id: int = int(json_data["fileId"])
         db: DB = DB(db_path)
         file: FileStorage = db.get_file(file_id=file_id)
-
         db.close()
 
         if not file:
             return jsonify({"error": "No files found"}), 500
-
-        filename = file.filename
 
         file = BytesIO(file.stream)  # Convert to BytesIO object
         file.seek(0)  # Point to start of file
@@ -236,7 +233,7 @@ class file_fetching:
         return send_file(
             file,
             as_attachment=True,
-            download_name=filename,
+            download_name="excel_file",
             mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
 
