@@ -62,6 +62,7 @@ function handleEdit(editView, fileView, dataId) {
 
                         filenameP.setAttribute('contenteditable', false);
                         tooltipSpan.textContent = filenameP.textContent;  // Update contents of tooltip
+                        handleTooltip(fileView.querySelector('span'));
                     })
             })
             .catch(error => {
@@ -177,4 +178,12 @@ function handleDelete(fileView, dataId) {
             fileView.parentElement.removeChild(fileView);  // Remove view
             return response;
         })
+}
+
+function handleTooltip(tooltipSpan) {
+    // Disable/enable tooltipSpan depending on length of file name
+    if (tooltipSpan.textContent.length < 25)
+        tooltipSpan.classList.add('short');
+    else
+        tooltipSpan.classList.remove('short');
 }

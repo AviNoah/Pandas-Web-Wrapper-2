@@ -51,6 +51,7 @@ function addFileView(filename, id) {
 
             const tooltipDiv = fileViewDiv.querySelector('span');
             tooltipDiv.textContent = filename;
+            handleTooltip(tooltipDiv);
 
             // Append filename data to element
             fileViewDiv.setAttribute('data-id', id);
