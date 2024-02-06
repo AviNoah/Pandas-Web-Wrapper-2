@@ -133,7 +133,7 @@ class file_management:
 
         if isAValidFileName(filename):
             return (
-                jsonify({"message": "Rename file successfully", "name": filename}),
+                jsonify({"message": "File name is valid", "name": filename}),
                 200,
             )
 
