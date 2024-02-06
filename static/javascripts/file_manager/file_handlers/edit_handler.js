@@ -106,6 +106,7 @@ function handleEdit(editView, fileView, dataId) {
 }
 
 function handleTooltip(tooltipSpan) {
+    // TODO: Fix where tool tip spawns
     // Disable/enable tooltipSpan depending on length of file name
     if (tooltipSpan.textContent.length < 18)
         tooltipSpan.classList.add('short');
