@@ -5,8 +5,15 @@ function handleSelect(fileView, dataId) {
     parent.postMessage(JSON.stringify(data), target);
 }
 
-function handleEdit(fileView, dataId) {
+function handleEdit(editView, fileView, dataId) {
     console.log("handleEdit executed with dataId:", dataId);
+
+    if (editView.classList.contains('clicked')) {
+        editView.classList.remove('clicked');
+        return;  // Don't do anything besides marking it as un-clicked
+    }
+
+    editView.classList.add('clicked');
 
     const filenameP = fileView.querySelector('p.file-name');
     const tooltipSpan = fileView.querySelector('span');
@@ -15,6 +22,8 @@ function handleEdit(fileView, dataId) {
     filenameP.focus();
     filenameP.setAttribute('contenteditable', true);
     const submitRename = function () {
+        removeListeners();  // Remove listeners
+
         const data = { filename: filenameP.textContent };
         fetch('files/update/name/validate', {
             method: "POST",
@@ -70,7 +79,6 @@ function handleEdit(fileView, dataId) {
             return;  // Ignore any other key
 
 
-        filenameP.removeEventListener("keydown", pressedEnter);
         submitRename();
     }
 
@@ -82,14 +90,26 @@ function handleEdit(fileView, dataId) {
             filenameP.parentElement === event.target)
             return;  // ignore clicking on a text container
 
-        document.removeEventListener("click", clickedOutside);
         submitRename()
+    }
+
+    const clickedEditAgain = function () {
+        submitRename();
+    }
+
+    const removeListeners = function () {
+        editView.classList.remove('clicked');
+        document.removeEventListener("click", clickedOutside);
+        editView.removeEventListener("click", clickedEditAgain);
+        filenameP.removeEventListener("keydown", pressedEnter);
     }
 
     // Listen until user finishes entering input
     filenameP.addEventListener('keydown', pressedEnter);
 
     document.addEventListener('click', clickedOutside);
+
+    editView.addEventListener('click', clickedEditAgain);
 }
 
 function handleQueryList(fileView, dataId) {
