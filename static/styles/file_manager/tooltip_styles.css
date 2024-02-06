@@ -12,6 +12,12 @@
     text-align: center;
 }
 
+.editing {
+    border: 1px solid blue;
+    background-color: #f0f8ff;
+    /* Light blue background color */
+}
+
 .tooltip span {
     position: absolute;
     visibility: hidden;

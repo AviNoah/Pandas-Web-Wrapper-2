@@ -10,14 +10,15 @@ function handleSelect(fileView, dataId) {
 function handleEdit(editView, fileView, dataId) {
     console.log("handleEdit executed with dataId:", dataId);
 
-    if (editView.classList.contains('clicked')) {
-        editView.classList.remove('clicked');
-        return;  // Don't do anything besides marking it as un-clicked
+    const filenameP = fileView.querySelector('p.file-name');
+
+    if (filenameP.classList.contains('editing')) {
+        filenameP.classList.remove('editing');
+        return;  // Don't do anything besides marking it as un-editing
     }
 
-    editView.classList.add('clicked');
+    filenameP.classList.add('editing');
 
-    const filenameP = fileView.querySelector('p.file-name');
     const tooltipSpan = fileView.querySelector('span');
     const oldName = filenameP.textContent;
 
@@ -99,7 +100,7 @@ function handleEdit(editView, fileView, dataId) {
     }
 
     const removeListeners = function () {
-        editView.classList.remove('clicked');
+        filenameP.classList.remove('editing');
         document.removeEventListener("click", clickedOutside);
         editView.removeEventListener("click", clickedEditAgain);
         filenameP.removeEventListener("keydown", pressedEnter);
