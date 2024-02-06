@@ -59,6 +59,7 @@ function handleEdit(fileView, dataId) {
             })
             .catch(error => {
                 filenameP.textContent = oldName;  // Revert to old name
+                filenameP.setAttribute('contenteditable', false);
                 console.error(error);
             });
 
