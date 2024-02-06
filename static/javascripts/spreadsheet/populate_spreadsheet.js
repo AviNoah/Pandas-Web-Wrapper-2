@@ -1,5 +1,5 @@
-import { addFilter } from "/resources/javascripts/spreadsheet/filter_handler.js";
-import { adjustSpinner, getSelectedSheetIndex } from "/resources/javascripts/spreadsheet/sheet_selector_handler.js";
+import { addFilter } from "/scripts/spreadsheet/filter_handler.js";
+import { adjustSpinner, getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handler.js";
 
 const spreadsheetElement = document.getElementById('spreadsheet');
 spreadsheetElement.setAttribute('data-id', '1');  // Will be changed when clicking on another file

@@ -1,5 +1,5 @@
-import { getSelectedSheetIndex } from "/resources/javascripts/spreadsheet/sheet_selector_handler.js";
-import { openSheet } from "/resources/javascripts/spreadsheet/populate_spreadsheet.js";
+import { getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handler.js";
+import { openSheet } from "/scripts/spreadsheet/populate_spreadsheet.js";
 
 function escapeRegExp(string) {
     // Escape regex
@@ -105,13 +105,13 @@ function toggleFilter(event) {
     if (imageDiv.classList.contains('toggled')) {
         // Toggle off == hide
         imageDiv.classList.remove('toggled');
-        url = "/resources/images/Hide.svg";
+        url = "/images/Hide.svg";
         alt = "Hide";
     }
     else {
         // Toggle on == show
         imageDiv.classList.add('toggled');
-        url = "/resources/images/View.svg";
+        url = "/images/View.svg";
         alt = "Show";
     }
 

@@ -1,17 +1,17 @@
-<link rel="stylesheet" href="/resources/styles/file_manager/file_styles.css" />
-<link rel="stylesheet" href="/resources/styles/file_manager/tooltip_styles.css" />
+<link rel="stylesheet" href="/styles/file_manager/file_styles.css" />
+<link rel="stylesheet" href="/styles/file_manager/tooltip_styles.css" />
 
 <!-- File view, will become the innerHTML of a div with the ID data of the corresponding file in DB -->
 <div class="data-wrapper">
-  <img onclick="handleSelect(this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/resources/images/excel_logo_closed.svg" alt="Excel icon closed" />
+  <img onclick="handleSelect(this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/images/excel_logo_closed.svg" alt="Excel icon closed" />
   <div class="text-container tooltip">
     <p class="file-name"></p> <!-- File name -->
     <span></span> <!-- ToolTip -->
   </div>
 </div>
 <div class="buttons-wrapper">
-  <img class="edit" onclick="handleEdit(this, this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/resources/images/Edit.svg" alt="Edit" />
-  <img class="query-list" onclick="handleQueryList(this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/resources/images/QueryList.svg" alt="Manage filters" />
-  <img class="download" onclick="handleDownload(this.parentElement.parentElement.getAttribute('data-id'))" src="/resources/images/Download.svg" alt="Download file" />
-  <img class="delete" onclick="handleDelete(this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/resources/images/Delete.svg" alt="Delete file" />
+  <img class="edit" onclick="handleEdit(this, this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/images/Edit.svg" alt="Edit" />
+  <img class="query-list" onclick="handleQueryList(this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/images/QueryList.svg" alt="Manage filters" />
+  <img class="download" onclick="handleDownload(this.parentElement.parentElement.getAttribute('data-id'))" src="/images/Download.svg" alt="Download file" />
+  <img class="delete" onclick="handleDelete(this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/images/Delete.svg" alt="Delete file" />
 </div>

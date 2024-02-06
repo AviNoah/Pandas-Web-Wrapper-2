@@ -35,6 +35,21 @@ class static_servers:
         # Serve static files from back-end
         return send_from_directory("static", path)
 
+    @app.route("/scripts/<path:path>", methods=["GET"])
+    def get_scripts(path):
+        # Serve static files from back-end
+        return send_from_directory("static/javascripts", path)
+
+    @app.route("/styles/<path:path>", methods=["GET"])
+    def get_styles(path):
+        # Serve static files from back-end
+        return send_from_directory("static/styles", path)
+
+    @app.route("/images/<path:path>", methods=["GET"])
+    def get_images(path):
+        # Serve static files from back-end
+        return send_from_directory("static/images", path)
+
     @app.route("/templates/<path:template>", methods=["GET"])
     def get_template(template):
         # Serve template files from back-end
