@@ -29,3 +29,16 @@
 .header-cell * {
     background-color: var(--header_color);
 }
+
+/* For the pop up box when filter is selected */
+.filter-popup {
+    --filter_background_color: rgb(251, 244, 244);
+    position: absolute;
+    background-color: var(--filter_background_color);
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    display: none;
+    width: 200px;
+    border-radius: 10px;
+}
