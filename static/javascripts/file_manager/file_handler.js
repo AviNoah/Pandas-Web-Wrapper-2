@@ -75,8 +75,12 @@ function handleEdit(fileView, dataId) {
     }
 
     const clickedOutside = function (event) {
-        if (event.target === filenameP || event.target.classList.contains("edit"))
-            return;  // ignore clicking on paragraph or on edit
+        if (event.target.classList.contains("edit"))
+            return;  // ignore clicking on edit
+
+        if (filenameP.parentElement.contains(event.target) ||
+            filenameP.parentElement === event.target)
+            return;  // ignore clicking on a text container
 
         document.removeEventListener("click", clickedOutside);
         submitRename()
