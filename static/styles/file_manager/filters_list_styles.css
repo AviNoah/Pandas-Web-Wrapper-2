@@ -1,0 +1,13 @@
+.filters-list {
+    display: flex;
+    flex-direction: column;
+    max-height: 300px;
+    /* Prevent overflow */
+    overflow-y: scroll;
+}
+
+.filter-item {
+    flex: 1;
+    /* Assign each of them an equal amount of space */
+    border: 1px solid black;
+}
