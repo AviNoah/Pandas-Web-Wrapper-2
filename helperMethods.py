@@ -26,6 +26,10 @@ def isAValidExt(filename: str) -> bool:
     return ext in ALLOWED_EXTENSIONS
 
 
+def isAValidFileName(filename: str) -> bool:
+    return bool(filename)  # If not null or empty
+
+
 def verifyKeys(json, key_set: set) -> bool:
     # Verifies if json contains every key from the given set
     return json and key_set.issubset(json.keys())
