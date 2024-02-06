@@ -184,7 +184,7 @@ function handleDelete(fileView, dataId) {
 
 function handleTooltip(tooltipSpan) {
     // Disable/enable tooltipSpan depending on length of file name
-    if (tooltipSpan.textContent.length < 15)
+    if (tooltipSpan.textContent.length < 20)
         tooltipSpan.classList.add('short');
     else
         tooltipSpan.classList.remove('short');
