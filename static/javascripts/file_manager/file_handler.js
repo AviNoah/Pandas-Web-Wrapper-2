@@ -49,7 +49,7 @@ function handleEdit(editView, fileView, dataId) {
             .then((name) => {
                 const data = JSON.stringify({ fileId: dataId, name })
 
-                fetch('files/update/name', {
+                fetch('/files/update/name', {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -61,9 +61,7 @@ function handleEdit(editView, fileView, dataId) {
                             throw new Error("Failed to update name");
 
                         filenameP.setAttribute('contenteditable', false);
-                        filenameP.removeEventListener('keydown');
-                        tooltipSpan.textContent = filenameP.textContent;
-
+                        tooltipSpan.textContent = filenameP.textContent;  // Update contents of tooltip
                     })
             })
             .catch(error => {
