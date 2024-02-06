@@ -24,8 +24,8 @@ function handleEdit(editView, fileView, dataId) {
     const submitRename = function () {
         removeListeners();  // Remove listeners
 
-        const data = { filename: filenameP.textContent };
-        fetch('files/update/name/validate', {
+        const data = JSON.stringify({ filename: filenameP.textContent });
+        fetch('/files/update/name/validate', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -38,7 +38,7 @@ function handleEdit(editView, fileView, dataId) {
                     throw new Error("Invalid file name");
                 }
 
-                response.json();
+                return response.json();
             })
             .then(json => {
                 if (!json.hasOwnProperty("name"))
