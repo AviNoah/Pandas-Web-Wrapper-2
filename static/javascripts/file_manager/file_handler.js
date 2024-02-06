@@ -1,4 +1,6 @@
 function handleSelect(fileView, dataId) {
+    // TODO implement multi select and change view's contents
+
     console.log("handleSelect executed with dataId:", dataId);
     data = { fileId: dataId };
     target = "/";  // Index will handle communication
@@ -182,7 +184,7 @@ function handleDelete(fileView, dataId) {
 
 function handleTooltip(tooltipSpan) {
     // Disable/enable tooltipSpan depending on length of file name
-    if (tooltipSpan.textContent.length < 25)
+    if (tooltipSpan.textContent.length < 15)
         tooltipSpan.classList.add('short');
     else
         tooltipSpan.classList.remove('short');
