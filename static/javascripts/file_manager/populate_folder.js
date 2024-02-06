@@ -23,8 +23,8 @@ export function addFiles(passedIds) {
                 return { name: json.name, ext: json.ext };
             })
             .then(({ name, ext }) => {
-                addFileView(name + ext, id);
-                console.log(`Added file view for ${name}`);
+                addFileView(name, id);
+                console.log(`Added file view for ${name + ext}`);
             })
             .catch(error => console.error(error))
 

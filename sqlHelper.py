@@ -364,16 +364,15 @@ class DB:
             self.rollback()
             return False, f"Failed to update {name}: {e}", file_id
 
-    def update_file_name(self, file_id, name, ext) -> Tuple[bool, str, int]:
+    def update_file_name(self, file_id, name) -> Tuple[bool, str, int]:
         # Update the file name and ext in database at the given id
         c: Cursor = self.cursor()
         try:
             c.execute(
                 f"""UPDATE {Tables.File.value}
-                SET {FileColumns.NAME.value} = ?,
-                    {FileColumns.EXT.value} = ?
+                SET {FileColumns.NAME.value} = ?
                 WHERE {FileColumns.ID.value} = ?""",
-                (name, ext, file_id),
+                (name, file_id),
             )
 
             self.commit()

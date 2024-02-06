@@ -16,7 +16,6 @@ function handleEdit(fileView, dataId) {
     filenameP.setAttribute('contenteditable', true);
     const submitRename = function () {
         const data = { filename: filenameP.textContent };
-        // TODO fix validating file name
         fetch('files/update/name/validate', {
             method: "POST",
             headers: {
@@ -33,18 +32,20 @@ function handleEdit(fileView, dataId) {
                 response.json();
             })
             .then(json => {
-                if (!json.hasOwnProperty("name") || !json.hasOwnProperty("ext"))
-                    throw new Error("Response json doesn't have name or ext");
+                if (!json.hasOwnProperty("name"))
+                    throw new Error("Response json doesn't have name key");
 
-                return json
+                return json.name;
             })
-            .then((json) => {
+            .then((name) => {
+                const data = JSON.stringify({ fileId: dataId, name })
+
                 fetch('files/update/name', {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: json
+                    body: data
                 })
                     .then(response => {
                         if (!response.ok)

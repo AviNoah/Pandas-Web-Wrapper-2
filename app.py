@@ -9,7 +9,14 @@ from werkzeug.datastructures import FileStorage
 import os
 
 from sqlHelper import DB, init_db
-from helperMethods import isAValidExt, verifyKeys, readFile, sendDF, applyFilters
+from helperMethods import (
+    isAValidExt,
+    isAValidFileName,
+    verifyKeys,
+    readFile,
+    sendDF,
+    applyFilters,
+)
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
@@ -124,26 +131,28 @@ class file_management:
 
         filename = os.path.basename(filename)
 
-        if isAValidExt(filename):
-            name, ext = os.path.splitext(filename)
-            return jsonify({"name": name, "ext": ext}), 200
+        if isAValidFileName(filename):
+            return (
+                jsonify({"message": "Rename file successfully", "name": filename}),
+                200,
+            )
 
         return jsonify({"error": "Invalid name"}), 500
 
     @app.route("/files/update/name", methods=["POST"])
     def update_file_name():
         # Update files at the given ids.
-        keys = {"fileId", "name", "ext"}
+        keys = {"fileId", "name"}
 
         json_data = request.get_json()
         if not verifyKeys(json_data, keys):
             return jsonify({"error": "Missing one or more required keys"}), 400
 
-        file_id, name, ext = json_data["fileId"], json_data["name"], json_data["ext"]
+        file_id, name = json_data["fileId"], json_data["name"]
 
         db: DB = DB(db_path)
 
-        isOk, msg, id = db.update_file_name(file_id, name, ext)
+        isOk, msg, id = db.update_file_name(file_id, name)
 
         db.commit()
         db.close()
