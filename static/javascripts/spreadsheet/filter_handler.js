@@ -12,7 +12,7 @@ export function handleFilter(filterView, column) {
     const submitBtn = document.querySelector('button[name="filter-submit-button"]');
     submitBtn.addEventListener('click', () => {
         if (!submitBtn.classList.contains("disabled")) {
-            handleSubmit(column);  // Apply only if not disabled
+            handleUpdate(column);  // Update only if not disabled - once a change is detected
         }
     });
 
@@ -42,6 +42,8 @@ function detectChange(filterView, submitBtn) {
     filterView.removeEventListener('input', detectChange);
     filterView.removeEventListener('change', detectChange);
 }
+
+function handleUpdate(filterView, column) { }
 
 function handleSubmit(filterView, column) {
     const data = {
