@@ -106,7 +106,7 @@ function createPopup(column) {
 
                 return response.text();
             })
-            .then(content => {
+            .then(async content => {
                 const container = document.createElement('div');
                 container.classList.add('filters-list-container');
 
@@ -118,13 +118,10 @@ function createPopup(column) {
 
                 filtersList.setAttribute('data-column', column);
 
-                return getFiltersFromDB(column)
-                    .then((filters) => populateFilterList(filtersList, filters)
-                        .then(() => {
-                            addSeparators(filtersList);
-                            resolve(container); // Resolve the promise after popup creation
-                        })
-                    );
+                const filters = await getFiltersFromDB(column);
+                await populateFilterList(filtersList, filters);
+                addSeparators(filtersList);
+                resolve(container); // Resolve the promise after popup creation
             })
             .catch(error => reject(error));
     });
