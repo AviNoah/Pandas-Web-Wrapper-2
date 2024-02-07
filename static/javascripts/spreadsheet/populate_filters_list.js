@@ -185,6 +185,7 @@ function addNewFilterView(container, column) {
             const filterItemView = document.createElement('div');
             filterItemView.classList.add("filter-item");
             filterItemView.innerHTML = content;
+            filterItemView.setAttribute('data-id', null);  // Not in DB yet
 
             handleFilter(filterItemView, column);
 
