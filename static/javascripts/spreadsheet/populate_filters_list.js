@@ -1,4 +1,5 @@
 import { addFilter } from "/scripts/spreadsheet/filter_handler.js";
+import { getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handler.js";
 
 export function viewFilterList(event, column) {
     const popUp = createPopup(column); // Make popup
@@ -84,6 +85,10 @@ function positionPopup(target, popup) {
     popup.style.display = 'block';
 }
 
-function getFiltersFromDB(column) { }
+function getFiltersFromDB(column) {
+    const fileId = document.getElementById('spreadsheet').getAttribute('data-id');
+    const sheet = getSelectedSheetIndex();
+    const data = JSON.stringify({ fileId: fileId, sheet: sheet, column: column });
+}
 
 function populateFilterList(container, filters) { }

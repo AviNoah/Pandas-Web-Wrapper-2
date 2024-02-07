@@ -2,7 +2,6 @@ import { viewFilterList } from "/scripts/spreadsheet/populate_filters_list.js"
 import { adjustSpinner, getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handler.js";
 
 const spreadsheetElement = document.getElementById('spreadsheet');
-spreadsheetElement.setAttribute('data-id', '1');  // Will be changed when clicking on another file
 
 function updateSpreadsheetElement(sheet, editable = false) {
     // Convert sheet data to HTML with grid lines
