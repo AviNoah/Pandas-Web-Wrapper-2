@@ -9,7 +9,7 @@ function escapeRegExp(string) {
 // Handle listeners
 export function handleFilter(filterView, column) {
     // Submit button
-    const submitBtn = document.querySelector('button[name="filter-submit-button"]');
+    const submitBtn = filterView.querySelector('button[name="filter-submit-button"]');
     submitBtn.addEventListener('click', () => {
         if (!submitBtn.classList.contains("disabled")) {
             handleUpdate(filterView, column);  // Update only if not disabled - once a change is detected
@@ -23,7 +23,7 @@ export function handleFilter(filterView, column) {
 
 
     // Visibility icon
-    const visibilityImg = document.querySelector('img[name="visibility-icon"]');
+    const visibilityImg = filterView.querySelector('img[name="visibility-icon"]');
     // Add a listener to toggle View on and off
     visibilityImg.addEventListener('click', () => toggleFilter(visibilityImg));
     visibilityImg.addEventListener('dragstart', (event) => {
@@ -32,7 +32,7 @@ export function handleFilter(filterView, column) {
 
 
     // Delete icon
-    const deleteImg = document.querySelector('img[name="delete-icon"]');
+    const deleteImg = filterView.querySelector('img[name="delete-icon"]');
     deleteImg.addEventListener('click', () => handleDelete(filterView));
 }
 
