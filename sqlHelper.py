@@ -299,14 +299,14 @@ class DB:
         except Exception as e:
             return None  # Filters not found
 
-
     def get_filters_at(self, file_id, sheet, column) -> Optional[List[dict]]:
         # Return a json representing a list of filter data's
         c: Cursor = self.cursor()
 
         try:
             c.execute(
-                f"""SELECT {FilterColumns.INPUT.value}, 
+                f"""SELECT {FilterColumns.ID.value}, 
+                {FilterColumns.INPUT.value}, 
                 {FilterColumns.METHOD.value}, 
                 {FilterColumns.ENABLED.value}
                 FROM {Tables.Filter.value}
@@ -323,9 +323,10 @@ class DB:
             )
 
             filters_data = []
-            for input, method, enabled in c.fetchall():
+            for filter_id, input, method, enabled in c.fetchall():
                 filters_data.append(
                     {
+                        "id": filter_id,
                         "input": input,
                         "method": method,
                         "enabled": enabled == 1,  # Convert to bool
