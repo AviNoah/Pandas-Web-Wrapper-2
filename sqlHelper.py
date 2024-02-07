@@ -299,6 +299,42 @@ class DB:
         except Exception as e:
             return None  # Filters not found
 
+
+    def get_filters_at(self, file_id, sheet, column) -> Optional[List[dict]]:
+        # Return a json representing a list of filter data's
+        c: Cursor = self.cursor()
+
+        try:
+            c.execute(
+                f"""SELECT {FilterColumns.INPUT.value}, 
+                {FilterColumns.METHOD.value}, 
+                {FilterColumns.ENABLED.value}
+                FROM {Tables.Filter.value}
+                LEFT JOIN {Tables.FileFilter.value}
+                ON {Tables.Filter.value}.{FilterColumns.ID.value} = {Tables.FileFilter.value}.{FileFilterColumns.FILTER_ID.value}
+                WHERE {Tables.FileFilter.value}.{FileFilterColumns.FILE_ID.value}=? AND 
+                {Tables.FileFilter.value}.{FileFilterColumns.SHEET.value}=? AND
+                {Tables.FileFilter.value}.{FileFilterColumns.COLUMN.value}=?""",
+                (
+                    file_id,
+                    sheet,
+                    column,
+                ),
+            )
+
+            filters_data = []
+            for input, method, enabled in c.fetchall():
+                filters_data.append(
+                    {
+                        "input": input,
+                        "method": method,
+                        "enabled": enabled == 1,  # Convert to bool
+                    }
+                )
+            return filters_data
+        except Exception as e:
+            return None  # Filters not found
+
     def update_filter(self, filter_id, method: str, input: str, enabled: bool) -> bool:
         # Update filter data matching id
         c: Cursor = self.cursor()
