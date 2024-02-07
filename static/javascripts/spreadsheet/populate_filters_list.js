@@ -45,7 +45,10 @@ function createPopup(column) {
             // Populate filters from DB
             return getFiltersFromDB(column)
                 .then((filters) => populateFilterList(filtersList, filters)
-                    .then(() => addSeparators(filtersList))
+                    .then(() => {
+                        addSeparators(filtersList);
+                        return container;
+                    })
                 );
         })
         .catch(error => console.error(error));
