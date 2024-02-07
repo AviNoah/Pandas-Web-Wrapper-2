@@ -6,7 +6,7 @@ function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
-export function addFilter(event, column) {
+export function addFilter(container, column) {
     // Create filter pop up and attach an event listener to it to send filter data
     const popUp = createPopup(column); // Make popup
 }
@@ -39,13 +39,6 @@ function applyFilter(column) {
 }
 
 function createPopup(column) {
-    // Create popup at view target
-    const existingPopup = document.querySelector('.filter-popup');
-    if (existingPopup) {
-        existingPopup.parentNode.removeChild(existingPopup);  // Close existing
-    }
-
-
     // Create a filter popup element
     const filterPopup = document.createElement('div');
     filterPopup.className = 'filter-popup';

@@ -1,6 +1,6 @@
 import { addFilter } from "/scripts/spreadsheet/filter_handler.js";
 
-export function populateFilterList(event, column) {
+export function viewFilterList(event, column) {
     const popUp = createPopup(column); // Make popup
     positionPopup(event.target, popUp); // position it under filter img
     document.addEventListener('click', (event) => closeFilterPopup(event));  // Listen to closing
@@ -19,6 +19,25 @@ function closePopup() {
 function createPopup(column) {
     closePopup();  // Close old pop up
 
+    fetch("/templates/filter/filter_list.html")
+        .then(response => {
+            if (!response.ok)
+                throw new Error("Server failed to retrieve filter template");
+
+            return response.text();
+        })
+        .then(content => {
+            const container = document.createElement('div');
+            container.classList.add('filters-list-container');
+
+            container.innerHTML = content;
+            const filters_list = container.querySelector('filters-list');
+            const filters = getFiltersFromDB();
+            filters.then()
+
+        })
+        .catch(error => console.error(error));
+
     const filtersListDiv = document.createElement('div');
     filtersListDiv.classList.add("filters-list");
 
@@ -26,6 +45,7 @@ function createPopup(column) {
     const addFilterDiv = document.createElement('div');
     addFilterDiv.classList.add('add-filter');
     addFilterDiv.classList.add('filter-item');
+    addFilterDiv.addEventListener('click', () => addFilter(container, column));
 
     filtersListDiv.appendChild(addFilterDiv);
 
@@ -50,7 +70,6 @@ function closeFilterPopup(event) {
     closePopup();
 }
 
-
 function positionPopup(target, popup) {
     // Position popup at target
     const rect = target.getBoundingClientRect();
@@ -69,3 +88,7 @@ function positionPopup(target, popup) {
 
     popup.style.display = 'block';
 }
+
+function getFiltersFromDB() { }
+
+function populateFilterList() { }

@@ -1,4 +1,4 @@
-import { populateFilterList } from "/scripts/spreadsheet/populate_filters_list.js"
+import { viewFilterList } from "/scripts/spreadsheet/populate_filters_list.js"
 import { adjustSpinner, getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handler.js";
 
 const spreadsheetElement = document.getElementById('spreadsheet');
@@ -32,7 +32,7 @@ function updateSpreadsheetElement(sheet, editable = false) {
 
                 // Apply filter when the filter image is clicked; cellIndex is 0-based
                 cell.querySelector('img[name="cell-filter"]')
-                    .addEventListener('click', (event) => populateFilterList(event, cell.cellIndex));
+                    .addEventListener('click', (event) => viewFilterList(event, cell.cellIndex));
             })
         })
         .catch(error => console.error(error));

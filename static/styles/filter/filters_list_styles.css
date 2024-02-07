@@ -1,6 +1,14 @@
 .filters-list-container {
     display: none;
     position: absolute;
+    flex-direction: column;
+}
+
+.add-filter {
+    content: "+";
+    font-size: 40sp;
+    justify-content: center;
+    align-items: center;
 }
 
 .filters-list {
@@ -9,13 +17,6 @@
     max-height: 300px;
     /* Prevent overflow */
     overflow-y: scroll;
-}
-
-.add-filter {
-    content: "+";
-    font-size: 40sp;
-    justify-content: center;
-    align-items: center;
 }
 
 .filter-item {
