@@ -54,6 +54,11 @@ function handleUpdate(filterView, column) {
         updateFilter(filterView, filterId);
     else
         addFilter(filterView, column);
+
+    // Disable submit button until new change
+    const submitBtn = filterView.querySelector('button[name="filter-submit-button"]');
+    submitBtn.classList.add("disabled");  // Disable by default until change is triggered
+
 }
 
 function addFilter(filterView, column) {
