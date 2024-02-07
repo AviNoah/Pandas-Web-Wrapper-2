@@ -147,6 +147,18 @@ function toggleFilter(visibilityImg) {
 
 function handleDelete(filterView) {
     // Fetch filter id from data, delete from DB and remove from container parent
+    const choice = confirm("Are you sure you wish to delete this filter?");
+    if (!choice)
+        return;  // User cancelled action
+
+    const filterId = filterView.getAttribute('data-id');
+    if (filterId)
+        removeFromDB(filterId);  // Only remove if registered in DB
+
+    filterView.parentElement.removeChild(filterView);  // Remove self from filter list div
+}
+
+function removeFromDB(filterId) {
 
 }
 
