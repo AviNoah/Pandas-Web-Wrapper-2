@@ -44,7 +44,7 @@ function createPopup(column) {
             // Populate filters from DB
             const filters = getFiltersFromDB(column);
             return filters.then(filters => {
-                return populateFilterList(container, filters);
+                return populateFilterList(filtersList, filters);
             })
         })
         .catch(error => console.error(error));
