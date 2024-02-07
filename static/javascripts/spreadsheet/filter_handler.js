@@ -72,7 +72,7 @@ function addFilter(filterView, column) {
         column: column,
         method: filterView.querySelector('select[name="filter-selector"]').value,
         input: escapeRegExp(filterView.querySelector('input[name="filter-input"]').value),
-        enabled: !filterView.querySelector('img[name="visibility-icon"]').classList.contains('toggled'),
+        enabled: filterView.querySelector('img[name="visibility-icon"]').classList.contains('toggled'),
     }
 
     fetch("/filters/add", {
@@ -108,7 +108,7 @@ function updateFilter(filterView, filterId) {
         filterId: filterId,
         method: filterView.querySelector('select[name="filter-selector"]').value,
         input: escapeRegExp(filterView.querySelector('input[name="filter-input"]').value),
-        enabled: !filterView.querySelector('img[name="visibility-icon"]').classList.contains('toggled'),
+        enabled: filterView.querySelector('img[name="visibility-icon"]').classList.contains('toggled'),
     }
 
     // POST to back-end and request update
@@ -123,6 +123,8 @@ function updateFilter(filterView, filterId) {
             if (!response.ok)
                 throw new Error("Server did not respond");
 
+
+            openSheet(getSelectedSheetIndex());  // Show updated table
             console.log("Updated filter successfully");
         })
         .catch(error => console.error(error));
