@@ -134,7 +134,7 @@ function populateFilterItem(filterItem, filterData) {
     methodSelector.value = filterData.method;
 
     const inputField = filterItem.querySelector('input[name="filter-input"]');
-    inputField.textContent = filterData.input;
+    inputField.value = filterData.input;
 
     const visibilityIcon = filterItem.querySelector('img[name="visibility-icon"]');
 
