@@ -6,6 +6,7 @@ function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
+// Handle listeners
 export function handleFilter(filterView, column) {
     // Submit button
     const submitBtn = document.querySelector('button[name="filter-submit-button"]');
@@ -104,6 +105,6 @@ function toggleFilter(visibilityImg) {
 
 function handleDelete(filterView) {
     // Fetch filter id from data, delete from DB and remove from container parent
-    
+
 }
 
