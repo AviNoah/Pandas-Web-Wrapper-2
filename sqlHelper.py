@@ -364,7 +364,7 @@ class DB:
 
         try:
             c.execute(
-                f"""DELETE FROM {Tables.FILTER.value}
+                f"""DELETE FROM {Tables.Filter.value}
                 WHERE {FilterColumns.ID.value} = ?""",
                 (filter_id,),
             )
