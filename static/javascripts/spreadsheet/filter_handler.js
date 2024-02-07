@@ -12,7 +12,7 @@ export function handleFilter(filterView, column) {
     const submitBtn = document.querySelector('button[name="filter-submit-button"]');
     submitBtn.addEventListener('click', () => {
         if (!submitBtn.classList.contains("disabled")) {
-            handleUpdate(column);  // Update only if not disabled - once a change is detected
+            handleUpdate(filterView, column);  // Update only if not disabled - once a change is detected
         }
     });
 
@@ -43,9 +43,17 @@ function detectChange(filterView, submitBtn) {
     filterView.removeEventListener('change', detectChange);
 }
 
-function handleUpdate(filterView, column) { }
+function handleUpdate(filterView, column) {
+    // Register filter in DB if it has no ID yet
+    const filterId = filterView.getAttribute('data-id');
+    if (filterId)
+        updateFilter(filterView, filterId);
+    else
+        addFilter(filterView, column);
+}
 
-function handleSubmit(filterView, column) {
+function addFilter(filterView, column) {
+    // Data for relationships should be attached to data
     const data = {
         fileId: document.getElementById("spreadsheet").getAttribute('data-id'),
         sheet: getSelectedSheetIndex(),
@@ -66,10 +74,30 @@ function handleSubmit(filterView, column) {
             if (!response.ok)
                 throw new Error("Server did not respond");
 
-            console.log("Added successfully");
+            return response.json();
+        })
+        .then(json => {
+            if (!json.hasOwnProperty('id'))
+                throw new Error("Server did not return filter id");
+
+            return json.id;
+        })
+        .then(filterId => {
+            filterView.setAttribute('data-id', filterId);  // update id data
             openSheet(getSelectedSheetIndex());  // Show updated table
         })
         .catch(error => console.error(error))
+}
+
+function updateFilter(filterView, filterId) {
+    const data = {
+        filterId: filterId,
+        method: filterView.querySelector('select[name="filter-selector"]').value,
+        input: escapeRegExp(filterView.querySelector('input[name="filter-input"]').value),
+        enabled: Boolean(filterView.querySelector('img[name="visibility-icon"]').classList.contains('toggled')),
+    }
+
+    // POST to back-end and request update
 }
 
 function toggleFilter(visibilityImg) {
