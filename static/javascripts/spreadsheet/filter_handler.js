@@ -18,8 +18,8 @@ export function handleFilter(filterView, column) {
 
     // Listen for changes
     submitBtn.classList.add("disabled");  // Disable by default until change is triggered
-    filterView.addEventListener('input', detectChange);
-    filterView.addEventListener('change', detectChange);
+    filterView.addEventListener('input', () => detectChange(filterView, submitBtn));
+    filterView.addEventListener('change', () => detectChange(filterView, submitBtn));
 
 
     // Visibility icon
