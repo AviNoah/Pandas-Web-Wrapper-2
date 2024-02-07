@@ -159,6 +159,18 @@ function handleDelete(filterView) {
 }
 
 function removeFromDB(filterId) {
+    const data = { filterId: filterId };
 
+    fetch("/filters/delete", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    })
+        .then(response => {
+            if (!response.ok)
+                throw new Error("Server did not respond, failed to delete");
+        })
 }
 
