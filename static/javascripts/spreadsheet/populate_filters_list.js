@@ -183,7 +183,7 @@ function addNewFilterView(container, column) {
         })
         .then(content => {
             const filterItemView = document.createElement('div');
-            filterItemView.classList.add('filter-item');
+            filterItemView.classList.add("filter-item");
             filterItemView.innerHTML = content;
 
             handleFilter(filterItemView, column);
