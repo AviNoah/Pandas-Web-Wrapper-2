@@ -43,11 +43,10 @@ function createPopup(column) {
             addFiltersButton.addEventListener("click", () => addFilter(filtersList, column));
 
             // Populate filters from DB
-            const filters = getFiltersFromDB(column);
-            const populate = filters.then(filters => populateFilterList(filtersList, filters));
-            const separate = populate.then(() => addSeparators(filtersList));
-
-            return separate.then(() => container);
+            return getFiltersFromDB(column)
+                .then((filters) => populateFilterList(filtersList, filters)
+                    .then(() => addSeparators(filtersList))
+                );
         })
         .catch(error => console.error(error));
 }
@@ -147,11 +146,13 @@ function populateFilterItem(filterItem, filterData) {
 
 function addSeparators(container) {
     // Iterate over each child element of the container
-    for (let i = 1; i < container.children.length; i++) {
-        // Insert a separator element between each child element
+    const children = Array.from(container.children);
+
+    // Iterate over the children array and insert separators
+    for (let i = 1; i < children.length; i++) {
         const separator = document.createElement('div');
-        separator.classList.add('separator'); // Add a CSS class to style the separator
-        container.insertBefore(separator, container.children[i]);
+        separator.classList.add('separator');
+        container.insertBefore(separator, children[i]);
     }
 
     return container;
