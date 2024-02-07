@@ -98,6 +98,18 @@ function updateFilter(filterView, filterId) {
     }
 
     // POST to back-end and request update
+    fetch("/filters/update", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    })
+        .then(response => {
+            if (!response.ok)
+                throw new Error("Server did not respond");
+        })
+        .catch(error => console.error(error));
 }
 
 function toggleFilter(visibilityImg) {
