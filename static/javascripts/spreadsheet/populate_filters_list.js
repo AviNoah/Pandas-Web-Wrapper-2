@@ -133,6 +133,7 @@ function populateFilterList(container, filters) {
 }
 
 function populateFilterItem(filterItem, filterData) {
+    // TODO: Add change listeners, and activate submit when changed.
     const methodSelector = filterItem.querySelector('select[name="filter-selector"]');
     methodSelector.value = filterData.method;
 
