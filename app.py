@@ -503,7 +503,7 @@ class filter_fetching:
 
         db.close()
 
-        if not filters_json:
+        if filters_json is None:
             return jsonify({"error": "Failed to fetch filter"}), 500
 
         return filters_json, 200
