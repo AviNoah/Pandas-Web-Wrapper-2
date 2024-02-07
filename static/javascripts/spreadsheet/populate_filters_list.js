@@ -2,12 +2,14 @@ import { handleFilter } from "/scripts/spreadsheet/filter_handler.js";
 import { getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handler.js";
 
 export function viewFilterList(event, column) {
-    const popUp = createPopup(column); // Make popup
-    popUp.then((popUp) => {
-        document.body.appendChild(popUp);
-        positionPopup(event.target, popUp); // position it under filter img
-        document.addEventListener('click', (event) => clickedOutsideOfPopup(event));  // Listen to closing
-    })
+    // Make popup
+    createPopup(column)
+        .then((popUp) => {
+            document.body.appendChild(popUp);
+            positionPopup(event.target, popUp); // position it under filter img
+            document.addEventListener('click', (event) => clickedOutsideOfPopup(event));  // Listen to closing
+        })
+        .catch(error => console.error(error));
 }
 
 // Helper methods
@@ -94,38 +96,38 @@ function clickedOutsideOfPopup(event) {
 
 // Handle pop up creation
 function createPopup(column) {
-    closePopup();  // Close old pop up
+    return new Promise((resolve, reject) => {
+        closePopup();
 
-    return fetch("/templates/filter/filters_list.html")
-        .then(response => {
-            if (!response.ok)
-                throw new Error("Server failed to retrieve filter list template");
+        fetch("/templates/filter/filters_list.html")
+            .then(response => {
+                if (!response.ok)
+                    throw new Error("Server failed to retrieve filter list template");
 
-            return response.text();
-        })
-        .then(content => {
-            const container = document.createElement('div');
-            container.classList.add('filters-list-container');
+                return response.text();
+            })
+            .then(content => {
+                const container = document.createElement('div');
+                container.classList.add('filters-list-container');
 
-            container.innerHTML = content;
-            const addFiltersButton = container.querySelector(".add-filter");
-            const filtersList = container.querySelector(".filters-list");
+                container.innerHTML = content;
+                const addFiltersButton = container.querySelector(".add-filter");
+                const filtersList = container.querySelector(".filters-list");
 
-            // Make it produce a new filter item when clicked
-            addFiltersButton.addEventListener("click", () => addNewFilterView(filtersList, column));
+                addFiltersButton.addEventListener("click", () => addNewFilterView(filtersList, column));
 
-            filtersList.setAttribute('data-column', column);  // Embed column into filtersList div
+                filtersList.setAttribute('data-column', column);
 
-            // Populate filters from DB
-            return getFiltersFromDB(column)
-                .then((filters) => populateFilterList(filtersList, filters)
-                    .then(() => {
-                        addSeparators(filtersList);
-                        return container;
-                    })
-                );
-        })
-        .catch(error => console.error(error));
+                return getFiltersFromDB(column)
+                    .then((filters) => populateFilterList(filtersList, filters)
+                        .then(() => {
+                            addSeparators(filtersList);
+                            resolve(container); // Resolve the promise after popup creation
+                        })
+                    );
+            })
+            .catch(error => reject(error));
+    });
 }
 
 // Handle pop up population
