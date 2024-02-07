@@ -2,13 +2,13 @@
     display: none;
     position: absolute;
     flex-direction: column;
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
 }
 
-.add-filter {
+.add-filter::before {
     content: "+";
-    font-size: 40sp;
-    justify-content: center;
-    align-items: center;
 }
 
 .filters-list {
@@ -16,11 +16,10 @@
     flex-direction: column;
     max-height: 300px;
     /* Prevent overflow */
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .filter-item {
     flex: 1;
-    /* Assign each of them an equal amount of space */
-    border: 1px solid black;
+    margin-top: 10px;
 }
