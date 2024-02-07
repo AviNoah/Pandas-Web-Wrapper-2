@@ -43,6 +43,7 @@ function detectChange(filterView, submitBtn) {
     filterView.removeEventListener('change', detectChange);
 }
 
+// Submitting changes
 function handleUpdate(filterView, column) {
     // Register filter in DB if it has no ID yet
     const filterId = filterView.getAttribute('data-id');
@@ -112,6 +113,7 @@ function updateFilter(filterView, filterId) {
         .catch(error => console.error(error));
 }
 
+// Toggling visibility
 function toggleFilter(visibilityImg) {
     // Toggle view on and off
     let url;
@@ -145,6 +147,7 @@ function toggleFilter(visibilityImg) {
         })
 }
 
+// Removing filter
 function handleDelete(filterView) {
     // Fetch filter id from data, delete from DB and remove from container parent
     const choice = confirm("Are you sure you wish to delete this filter?");
