@@ -72,7 +72,7 @@ function addFilter(filterView, column) {
         column: column,
         method: filterView.querySelector('select[name="filter-selector"]').value,
         input: escapeRegExp(filterView.querySelector('input[name="filter-input"]').value),
-        enabled: Boolean(filterView.querySelector('img[name="visibility-icon"]').classList.contains('toggled')),
+        enabled: !filterView.querySelector('img[name="visibility-icon"]').classList.contains('toggled'),
     }
 
     fetch("/filters/add", {
@@ -108,7 +108,7 @@ function updateFilter(filterView, filterId) {
         filterId: filterId,
         method: filterView.querySelector('select[name="filter-selector"]').value,
         input: escapeRegExp(filterView.querySelector('input[name="filter-input"]').value),
-        enabled: Boolean(filterView.querySelector('img[name="visibility-icon"]').classList.contains('toggled')),
+        enabled: !filterView.querySelector('img[name="visibility-icon"]').classList.contains('toggled'),
     }
 
     // POST to back-end and request update
@@ -141,14 +141,14 @@ function showVisibilityIcon(visibilityImg) {
     let url;
     let alt;
     if (visibilityImg.classList.contains('toggled')) {
-        // Toggle off == hide
-        url = "/images/Hide.svg";
-        alt = "Hide";
-    }
-    else {
         // Toggle on == show
         url = "/images/View.svg";
         alt = "Show";
+    }
+    else {
+        // Toggle off == hide
+        url = "/images/Hide.svg";
+        alt = "Hide";
     }
 
     visibilityImg.setAttribute('alt', alt);
