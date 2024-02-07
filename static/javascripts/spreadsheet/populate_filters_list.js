@@ -11,6 +11,7 @@ export function viewFilterList(event, column) {
 }
 
 function closePopup() {
+    // TODO: Fix this, it doesnt close it correctly
     // Create popup at view target
     const existingPopup = document.querySelector('.filters-list-container');
     if (existingPopup) {
@@ -44,7 +45,7 @@ function createPopup(column) {
             // Populate filters from DB
             const filters = getFiltersFromDB(column);
             return filters.then(filters => {
-                return populateFilterList(filtersList, filters);
+                return populateFilterList(filtersList, filters).then(() => container);
             })
         })
         .catch(error => console.error(error));
@@ -125,7 +126,6 @@ function populateFilterList(container, filters) {
 
                 container.appendChild(filterItem);
             })
-            return container;
         })
 }
 
