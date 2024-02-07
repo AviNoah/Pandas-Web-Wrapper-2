@@ -90,7 +90,20 @@ function getFiltersFromDB(column) {
     const sheet = getSelectedSheetIndex();
     const data = JSON.stringify({ fileId: fileId, sheet: sheet, column: column });
 
-    
+    return fetch("/filters/get/at", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: data
+    })
+        .then(response => {
+            if (!response.ok)
+                throw new Error("Server couldn't find filters for specified column");
+
+            return response.json();
+        })
+        .catch(error => console.error(error));
 }
 
 function populateFilterList(container, filters) { }
