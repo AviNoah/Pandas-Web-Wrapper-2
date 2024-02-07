@@ -138,7 +138,7 @@ function populateFilterList(container, filters) {
             return response.text();
         })
         .then(content => {
-            // Each filter contains input, method, enabled keys 
+            // Each filter contains filter_id, input, method, enabled keys 
             Array.from(filters).forEach(filter => {
                 const filterItem = document.createElement('div');
                 filterItem.classList.add("filter-item");
@@ -153,6 +153,8 @@ function populateFilterList(container, filters) {
 
 function populateFilterItem(filterItem, filterData) {
     // Populate data
+    filterItem.setAttribute('data-id', filterData.id);
+
     const methodSelector = filterItem.querySelector('select[name="filter-selector"]');
     methodSelector.value = filterData.method;
 
