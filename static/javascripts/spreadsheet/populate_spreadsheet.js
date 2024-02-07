@@ -1,4 +1,4 @@
-import { populateFilterList } from "/scripts/spreadsheet/populate_filter_list.js"
+import { populateFilterList } from "/scripts/spreadsheet/populate_filters_list.js"
 import { adjustSpinner, getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handler.js";
 
 const spreadsheetElement = document.getElementById('spreadsheet');

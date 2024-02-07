@@ -6,6 +6,10 @@ export function populateFilterList(event, column) {
     document.addEventListener('click', (event) => closeFilterPopup(event));  // Listen to closing
 }
 
+function createPopup(column) {
+
+}
+
 function closeFilterPopup(event) {
     // Function to handle closing the filter popup
     const filterPopup = document.querySelector('.filters-list-container');

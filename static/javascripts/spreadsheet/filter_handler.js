@@ -9,7 +9,6 @@ function escapeRegExp(string) {
 export function addFilter(event, column) {
     // Create filter pop up and attach an event listener to it to send filter data
     const popUp = createPopup(column); // Make popup
-    positionPopup(event.target, popUp); // position it under filter img
     document.addEventListener('click', (event) => closeFilterPopup(event));  // Listen to closing
 }
 
@@ -67,7 +66,6 @@ function createPopup(column) {
             submitBtn.addEventListener('click', () => {
                 if (!submitBtn.classList.contains("disabled")) {
                     applyFilter(column);  // Apply only if not disabled
-                    closePopupHelper(filterPopup);  // Close pop up after submitting
                 }
             });
             submitBtn.classList.add("disabled");
@@ -128,44 +126,4 @@ function toggleFilter(event) {
             const blobUrl = URL.createObjectURL(blob);
             imageDiv.setAttribute('src', blobUrl)
         })
-}
-
-function positionPopup(target, popup) {
-    // Position popup at target
-    const rect = target.getBoundingClientRect();
-
-    // Position from the right top corner
-
-    let right = rect.left + scrollX
-
-    // Make sure it doesn't overflow
-    right = Math.max(250, right);
-
-    // Set the position of the filter popup relative to the clicked filter image
-    popup.style.position = 'absolute';
-    popup.style.right = `${window.innerWidth - right}px`; // Include horizontal scroll
-    popup.style.top = `${rect.bottom + window.scrollY}px`; // Include vertical scroll
-
-    popup.style.display = 'block';
-}
-
-function closeFilterPopup(event) {
-    // Function to handle closing the filter popup
-    const filterPopup = document.querySelector('.filter-popup');
-
-    // Check if the clicked element or its parent is outside the filter popup
-    if (!filterPopup)
-        return;  // Not initialized yet
-
-    if (event.target === filterPopup || filterPopup.contains(event.target)) {
-        return;  // An element inside filterPopup was selected
-    }
-
-    // An element outside of filterPopup was selected
-    closePopupHelper(filterPopup);
-}
-
-function closePopupHelper(filterPopup) {
-    filterPopup.style.display = 'none';
-    document.removeEventListener('click', closeFilterPopup);
 }
