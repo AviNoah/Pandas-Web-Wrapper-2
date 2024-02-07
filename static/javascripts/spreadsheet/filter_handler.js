@@ -89,6 +89,8 @@ function addFilter(filterView, column) {
         .then(filterId => {
             filterView.setAttribute('data-id', filterId);  // update id data
             openSheet(getSelectedSheetIndex());  // Show updated table
+
+            console.log("Added filter successfully");
         })
         .catch(error => console.error(error))
 }
@@ -112,6 +114,8 @@ function updateFilter(filterView, filterId) {
         .then(response => {
             if (!response.ok)
                 throw new Error("Server did not respond");
+
+            console.log("Updated filter successfully");
         })
         .catch(error => console.error(error));
 }
