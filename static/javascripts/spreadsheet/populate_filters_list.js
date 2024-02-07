@@ -133,10 +133,10 @@ function populateFilterItem(filterItem, filterData) {
     const methodSelector = filterItem.querySelector('select[name="filter-selector"]');
     methodSelector.value = filterData.method;
 
-    const inputField = filterItem.querySelector('select[name="filter-input"]');
+    const inputField = filterItem.querySelector('input[name="filter-input"]');
     inputField.textContent = filterData.input;
 
-    const visibilityIcon = filterItem.querySelector('select[name="visibility-icon"]');
+    const visibilityIcon = filterItem.querySelector('img[name="visibility-icon"]');
 
     if (filterData.enabled)
         visibilityIcon.classList.add('toggled');
