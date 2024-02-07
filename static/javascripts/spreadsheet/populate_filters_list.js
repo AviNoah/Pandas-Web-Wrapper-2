@@ -2,8 +2,10 @@ import { addFilter } from "/scripts/spreadsheet/filter_handler.js";
 
 export function viewFilterList(event, column) {
     const popUp = createPopup(column); // Make popup
-    positionPopup(event.target, popUp); // position it under filter img
-    document.addEventListener('click', (event) => closeFilterPopup(event));  // Listen to closing
+    popUp.then((popUp) => {
+        positionPopup(event.target, popUp); // position it under filter img
+        document.addEventListener('click', (event) => closeFilterPopup(event));  // Listen to closing
+    })
 }
 
 function closePopup() {
@@ -19,7 +21,7 @@ function closePopup() {
 function createPopup(column) {
     closePopup();  // Close old pop up
 
-    fetch("/templates/filter/filter_list.html")
+    return fetch("/templates/filter/filter_list.html")
         .then(response => {
             if (!response.ok)
                 throw new Error("Server failed to retrieve filter template");
@@ -45,21 +47,6 @@ function createPopup(column) {
             })
         })
         .catch(error => console.error(error));
-
-    const filtersListDiv = document.createElement('div');
-    filtersListDiv.classList.add("filters-list");
-
-    // Create add button
-    const addFilterDiv = document.createElement('div');
-    addFilterDiv.classList.add('add-filter');
-    addFilterDiv.classList.add('filter-item');
-    addFilterDiv.addEventListener('click', () => addFilter(container, column));
-
-    filtersListDiv.appendChild(addFilterDiv);
-
-    // Populate filters list from DB
-
-    return filtersListDiv;
 }
 
 function closeFilterPopup(event) {
