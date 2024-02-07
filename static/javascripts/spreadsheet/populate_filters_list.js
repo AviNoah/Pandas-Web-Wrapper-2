@@ -1,4 +1,4 @@
-import { addFilter } from "/scripts/spreadsheet/filter_handler.js";
+import { handleFilter } from "/scripts/spreadsheet/filter_handler.js";
 import { getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handler.js";
 
 export function viewFilterList(event, column) {
@@ -133,7 +133,7 @@ function populateFilterList(container, filters) {
 }
 
 function populateFilterItem(filterItem, filterData) {
-    // TODO: Add change listeners, and activate submit when changed.
+    // Populate data
     const methodSelector = filterItem.querySelector('select[name="filter-selector"]');
     methodSelector.value = filterData.method;
 
@@ -146,6 +146,9 @@ function populateFilterItem(filterItem, filterData) {
         visibilityIcon.classList.add('toggled');
     else
         visibilityIcon.classList.remove('toggled');
+
+    // Add listeners and handling
+    handleFilter(filterItem);
 }
 
 function addSeparators(container) {
@@ -160,4 +163,60 @@ function addSeparators(container) {
     }
 
     return container;
+}
+
+function addNewFilterView(container) {
+    // Add a new filter view to the container
+    fetch('/templates/filter/filter.html')
+        .then(response => {
+            if (!response.ok)
+                throw new Error("Failed to fetch filter template");
+
+            return response.text();
+        })
+        .then(content => {
+            const filterItemView = document.createElement('div');
+            filterItemView.classList.add('filter-item');
+            filterItemView.innerHTML = content;
+
+            handleFilter(filterItemView, column);
+
+            container.insertBefore(filterItemView, container.children[0]);  // Push to top
+            return;
+
+            // Submit button, off by default unless data is entered
+            const submitBtn = document.querySelector('button[name="filter-submit-button"]');
+            submitBtn.addEventListener('click', () => {
+                if (!submitBtn.classList.contains("disabled")) {
+                    handleSubmit(column);  // Apply only if not disabled
+                }
+            });
+            submitBtn.classList.add("disabled");
+
+            const handleChange = () => {
+                submitBtn.classList.remove("disabled");
+
+                filterPopup.removeEventListener('input', handleChange);
+                filterPopup.removeEventListener('change', handleChange);
+            };
+
+            filterPopup.addEventListener('input', handleChange);
+            filterPopup.addEventListener('change', handleChange);
+
+
+
+            // Visibility icon, whether to apply the filter or not
+            const filterImg = document.querySelector('img[name="visibility-icon"]');
+            // Add a listener to toggle View on and off
+            filterImg.addEventListener('click', (event) => toggleFilter(event));
+            filterImg.addEventListener('dragstart', (event) => {
+                event.preventDefault();  // Prevent dragging image
+            })
+
+            const deleteImg = document.querySelector('img[name="delete-icon"]');
+            deleteImg.addEventListener('click', () => closeFilterPopup(filterPopup));
+
+        }).catch(error => console.error(error))
+
+    return filterPopup;
 }

@@ -6,12 +6,12 @@ function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
-export function addFilter(container, column) {
-    // Create filter pop up and attach an event listener to it to send filter data
-    const popUp = createPopup(column); // Make popup
+export function handleFilter(filterView, column) {
+    const submitBtn = document.querySelector('button[name="filter-submit-button"]');
+    handleSubmit
 }
 
-function applyFilter(column) {
+function handleSubmit(column) {
     const data = {
         fileId: document.getElementById("spreadsheet").getAttribute('data-id'),
         sheet: getSelectedSheetIndex(),
@@ -38,53 +38,8 @@ function applyFilter(column) {
         .catch(error => console.error(error))
 }
 
-function createPopup(column) {
-    // Create a filter popup element
-    const filterPopup = document.createElement('div');
-    filterPopup.className = 'filter-popup';
-    fetch('/templates/filter/filter.html').then(response => {
-        if (!response.ok) {
-            console.error("Failed to fetch filterPopup html file");
-            return null;
-        }
-        return response.text();
-    })
-        .then(content => {
-            filterPopup.innerHTML = content;
-            document.body.appendChild(filterPopup);
+function handleDelete() {
 
-            const submitBtn = document.querySelector('button[name="filter-submit-button"]');
-
-            submitBtn.addEventListener('click', () => {
-                if (!submitBtn.classList.contains("disabled")) {
-                    applyFilter(column);  // Apply only if not disabled
-                }
-            });
-            submitBtn.classList.add("disabled");
-
-            const handleChange = () => {
-                submitBtn.classList.remove("disabled");
-
-                filterPopup.removeEventListener('input', handleChange);
-                filterPopup.removeEventListener('change', handleChange);
-            };
-
-            filterPopup.addEventListener('input', handleChange);
-            filterPopup.addEventListener('change', handleChange);
-
-            const filterImg = document.querySelector('img[name="visibility-icon"]');
-            // Add a listener to toggle View on and off
-            filterImg.addEventListener('click', (event) => toggleFilter(event));
-            filterImg.addEventListener('dragstart', (event) => {
-                event.preventDefault();  // Prevent dragging image
-            })
-
-            const deleteImg = document.querySelector('img[name="delete-icon"]');
-            deleteImg.addEventListener('click', () => closeFilterPopup(filterPopup));
-
-        }).catch(error => console.error(error))
-
-    return filterPopup;
 }
 
 function toggleFilter(event) {
@@ -119,3 +74,5 @@ function toggleFilter(event) {
             imageDiv.setAttribute('src', blobUrl)
         })
 }
+
+
