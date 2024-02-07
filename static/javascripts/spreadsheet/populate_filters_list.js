@@ -4,6 +4,7 @@ import { getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handl
 export function viewFilterList(event, column) {
     const popUp = createPopup(column); // Make popup
     popUp.then((popUp) => {
+        event.target.appendChild(popUp);
         positionPopup(event.target, popUp); // position it under filter img
         document.addEventListener('click', (event) => closeFilterPopup(event));  // Listen to closing
     })
@@ -43,8 +44,7 @@ function createPopup(column) {
             // Populate filters from DB
             const filters = getFiltersFromDB(column);
             return filters.then(filters => {
-                populateFilterList(container, filters);
-                return container
+                return populateFilterList(container, filters);
             })
         })
         .catch(error => console.error(error));
@@ -107,7 +107,7 @@ function getFiltersFromDB(column) {
 }
 
 function populateFilterList(container, filters) {
-    fetch("/templates/filter/filter.html")
+    return fetch("/templates/filter/filter.html")
         .then(response => {
             if (!response.ok)
                 throw new Error("Server failed to retrieve filter template");
@@ -125,6 +125,7 @@ function populateFilterList(container, filters) {
 
                 container.appendChild(filterItem);
             })
+            return container;
         })
 }
 
