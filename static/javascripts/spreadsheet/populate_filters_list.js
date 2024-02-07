@@ -44,9 +44,10 @@ function createPopup(column) {
 
             // Populate filters from DB
             const filters = getFiltersFromDB(column);
-            return filters.then(filters => {
-                return populateFilterList(filtersList, filters).then(() => container);
-            })
+            const populate = new Promise(populateFilterList(filtersList, filters));
+            const separate = populate.then(() => addSeparators(filtersList));
+
+            return separate.then(() => container);
         })
         .catch(error => console.error(error));
 }
@@ -142,4 +143,8 @@ function populateFilterItem(filterItem, filterData) {
         visibilityIcon.classList.add('toggled');
     else
         visibilityIcon.classList.remove('toggled');
+}
+
+function addSeparators(container) {
+    
 }
