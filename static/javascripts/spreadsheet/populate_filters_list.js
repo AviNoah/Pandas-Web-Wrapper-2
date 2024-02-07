@@ -10,6 +10,62 @@ export function viewFilterList(event, column) {
     })
 }
 
+// Helper methods
+function positionPopup(target, popup) {
+    // Position popup at target
+    const rect = target.getBoundingClientRect();
+
+    // Position from the right top corner
+
+    let right = rect.left + scrollX
+
+    // Make sure it doesn't overflow
+    right = Math.max(250, right);
+
+    // Set the position of the filter popup relative to the clicked filter image
+    popup.style.position = 'absolute';
+    popup.style.right = `${window.innerWidth - right}px`; // Include horizontal scroll
+    popup.style.top = `${rect.bottom + window.scrollY}px`; // Include vertical scroll
+
+    popup.style.display = 'block';
+}
+
+function addSeparators(container) {
+    // Iterate over each child element of the container
+    const children = Array.from(container.children);
+
+    // Iterate over the children array and insert separators
+    for (let i = 1; i < children.length; i++) {
+        const separator = document.createElement('div');
+        separator.classList.add('separator');
+        container.insertBefore(separator, children[i]);
+    }
+
+    return container;
+}
+
+async function getFiltersFromDB(column) {
+    const fileId = document.getElementById('spreadsheet').getAttribute('data-id');
+    const sheet = getSelectedSheetIndex();
+    const data = JSON.stringify({ fileId: fileId, sheet: sheet, column: column });
+
+    return fetch("/filters/get/at", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: data
+    })
+        .then(response => {
+            if (!response.ok)
+                throw new Error("Server couldn't find filters for specified column");
+
+            return response.json();
+        })
+        .catch(error => console.error(error));
+}
+
+// Handle pop up closing
 function closePopup() {
     // Create popup at view target
     const existingPopup = document.querySelector('.filters-list-container');
@@ -20,7 +76,24 @@ function closePopup() {
     document.removeEventListener('click', clickedOutsideOfPopup);
 }
 
-function createPopup(column) {
+function clickedOutsideOfPopup(event) {
+    // Function to handle closing the filter popup
+    const filterPopup = document.querySelector('.filters-list-container');
+
+    // Check if the clicked element or its parent is outside the filter popup
+    if (!filterPopup)
+        return;  // Not initialized yet
+
+    if (event.target === filterPopup || filterPopup.contains(event.target)) {
+        return;  // An element inside filterPopup was selected
+    }
+
+    // An element outside of filterPopup was selected
+    closePopup();
+}
+
+// Handle pop up creation
+async function createPopup(column) {
     closePopup();  // Close old pop up
 
     return fetch("/templates/filter/filters_list.html")
@@ -53,63 +126,8 @@ function createPopup(column) {
         .catch(error => console.error(error));
 }
 
-function clickedOutsideOfPopup(event) {
-    // Function to handle closing the filter popup
-    const filterPopup = document.querySelector('.filters-list-container');
-
-    // Check if the clicked element or its parent is outside the filter popup
-    if (!filterPopup)
-        return;  // Not initialized yet
-
-    if (event.target === filterPopup || filterPopup.contains(event.target)) {
-        return;  // An element inside filterPopup was selected
-    }
-
-    // An element outside of filterPopup was selected
-    closePopup();
-}
-
-function positionPopup(target, popup) {
-    // Position popup at target
-    const rect = target.getBoundingClientRect();
-
-    // Position from the right top corner
-
-    let right = rect.left + scrollX
-
-    // Make sure it doesn't overflow
-    right = Math.max(250, right);
-
-    // Set the position of the filter popup relative to the clicked filter image
-    popup.style.position = 'absolute';
-    popup.style.right = `${window.innerWidth - right}px`; // Include horizontal scroll
-    popup.style.top = `${rect.bottom + window.scrollY}px`; // Include vertical scroll
-
-    popup.style.display = 'block';
-}
-
-function getFiltersFromDB(column) {
-    const fileId = document.getElementById('spreadsheet').getAttribute('data-id');
-    const sheet = getSelectedSheetIndex();
-    const data = JSON.stringify({ fileId: fileId, sheet: sheet, column: column });
-
-    return fetch("/filters/get/at", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: data
-    })
-        .then(response => {
-            if (!response.ok)
-                throw new Error("Server couldn't find filters for specified column");
-
-            return response.json();
-        })
-        .catch(error => console.error(error));
-}
-
-function populateFilterList(container, filters) {
+// Handle pop up population
+async function populateFilterList(container, filters) {
     return fetch("/templates/filter/filter.html")
         .then(response => {
             if (!response.ok)
@@ -148,20 +166,6 @@ function populateFilterItem(filterItem, filterData) {
 
     // Add listeners and handling
     handleFilter(filterItem);
-}
-
-function addSeparators(container) {
-    // Iterate over each child element of the container
-    const children = Array.from(container.children);
-
-    // Iterate over the children array and insert separators
-    for (let i = 1; i < children.length; i++) {
-        const separator = document.createElement('div');
-        separator.classList.add('separator');
-        container.insertBefore(separator, children[i]);
-    }
-
-    return container;
 }
 
 function addNewFilterView(container, column) {
