@@ -485,10 +485,10 @@ class filter_fetching:
 
         return filter_json, 200
 
-    @app.route("/filters/get/for_sheet", methods=["POST"])
-    def get_filter_for_sheet():
+    @app.route("/filters/get/at", methods=["POST"])
+    def get_filters_at():
         # Return all the filters of the given fileId and sheet
-        keys = {"fileId", "sheet"}
+        keys = {"fileId", "sheet", "column"}
 
         json_data = request.get_json()
         if not verifyKeys(json_data, keys):
@@ -496,9 +496,10 @@ class filter_fetching:
 
         file_id = json_data["fileId"]
         sheet = json_data["sheet"]
+        column = json_data["column"]
 
         db: DB = DB(db_path)
-        filters_json: str = db.get_sheets_filters(file_id, sheet)
+        filters_json: str = db.get_filters_at(file_id, sheet, column)
 
         db.close()
 

@@ -89,6 +89,8 @@ function getFiltersFromDB(column) {
     const fileId = document.getElementById('spreadsheet').getAttribute('data-id');
     const sheet = getSelectedSheetIndex();
     const data = JSON.stringify({ fileId: fileId, sheet: sheet, column: column });
+
+    
 }
 
 function populateFilterList(container, filters) { }
