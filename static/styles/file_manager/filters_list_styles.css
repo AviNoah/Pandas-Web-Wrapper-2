@@ -1,3 +1,8 @@
+.filters-list-container {
+    display: none;
+    position: absolute;
+}
+
 .filters-list {
     display: flex;
     flex-direction: column;
