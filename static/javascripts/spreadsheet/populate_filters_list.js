@@ -146,5 +146,13 @@ function populateFilterItem(filterItem, filterData) {
 }
 
 function addSeparators(container) {
+    // Iterate over each child element of the container
+    for (let i = 1; i < container.children.length; i++) {
+        // Insert a separator element between each child element
+        const separator = document.createElement('div');
+        separator.classList.add('separator'); // Add a CSS class to style the separator
+        container.insertBefore(separator, container.children[i]);
+    }
 
+    return container;
 }
