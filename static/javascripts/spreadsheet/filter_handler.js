@@ -24,10 +24,13 @@ export function handleFilter(filterView, column) {
 
     // Visibility icon
     const visibilityImg = filterView.querySelector('img[name="visibility-icon"]');
+    showVisibilityIcon(visibilityImg);
+
     // Add a listener to toggle View on and off
     visibilityImg.addEventListener('click', () => {
         detectChange(filterView, submitBtn);
-        toggleFilter(visibilityImg);
+        toggleVisibilityIcon(visibilityImg);  // Flip state
+        showVisibilityIcon(visibilityImg);
     });
     visibilityImg.addEventListener('dragstart', (event) => {
         event.preventDefault();  // Prevent dragging the image
@@ -126,19 +129,24 @@ function updateFilter(filterView, filterId) {
 }
 
 // Toggling visibility
-function toggleFilter(visibilityImg) {
+function toggleVisibilityIcon(visibilityImg) {
+    if (visibilityImg.classList.contains('toggled'))
+        visibilityImg.classList.remove('toggled');
+    else
+        visibilityImg.classList.add('toggled');
+}
+
+function showVisibilityIcon(visibilityImg) {
     // Toggle view on and off
     let url;
     let alt;
     if (visibilityImg.classList.contains('toggled')) {
         // Toggle off == hide
-        visibilityImg.classList.remove('toggled');
         url = "/images/Hide.svg";
         alt = "Hide";
     }
     else {
         // Toggle on == show
-        visibilityImg.classList.add('toggled');
         url = "/images/View.svg";
         alt = "Show";
     }
