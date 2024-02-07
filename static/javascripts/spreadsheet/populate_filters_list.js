@@ -25,7 +25,7 @@ function createPopup(column) {
     return fetch("/templates/filter/filter_list.html")
         .then(response => {
             if (!response.ok)
-                throw new Error("Server failed to retrieve filter template");
+                throw new Error("Server failed to retrieve filter list template");
 
             return response.text();
         })
@@ -106,4 +106,37 @@ function getFiltersFromDB(column) {
         .catch(error => console.error(error));
 }
 
-function populateFilterList(container, filters) { }
+function populateFilterList(container, filters) {
+    fetch("/templates/filter/filter.html")
+        .then(response => {
+            if (!response.ok)
+                throw new Error("Server failed to retrieve filter template");
+
+            return response.text();
+        })
+        .then(content => {
+            // Each filter contains input, method, enabled keys 
+            Array.from(filters).forEach(filter => {
+                const filterItem = document.createElement('div');
+                filterItem.classList.add("filter-item");
+                filterItem.innerHTML = content;
+
+                populateFilterItem(filterItem, filter);
+            })
+        })
+}
+
+function populateFilterItem(filterItem, filterData) {
+    const methodSelector = filterItem.querySelector('select[name="filter-selector"]');
+    methodSelector.value = filterData.method;
+
+    const inputField = filterItem.querySelector('select[name="filter-input"]');
+    inputField.textContent = filterData.input;
+
+    const visibilityIcon = filterItem.querySelector('select[name="visibility-icon"]');
+
+    if (filterData.enabled)
+        visibilityIcon.classList.add('toggled');
+    else
+        visibilityIcon.classList.remove('toggled');
+}
