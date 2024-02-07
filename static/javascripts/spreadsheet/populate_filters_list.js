@@ -40,7 +40,7 @@ function createPopup(column) {
             const filtersList = container.querySelector(".filters-list");
 
             // Make it produce a new filter item when clicked
-            addFiltersButton.addEventListener("click", () => addFilter(filtersList, column));
+            addFiltersButton.addEventListener("click", () => addNewFilterView(filtersList, column));
 
             // Populate filters from DB
             return getFiltersFromDB(column)
@@ -165,7 +165,7 @@ function addSeparators(container) {
     return container;
 }
 
-function addNewFilterView(container) {
+function addNewFilterView(container, column) {
     // Add a new filter view to the container
     fetch('/templates/filter/filter.html')
         .then(response => {
@@ -183,39 +183,6 @@ function addNewFilterView(container) {
 
             container.insertBefore(filterItemView, container.children[0]);  // Push to top
             return;
-
-            // Submit button, off by default unless data is entered
-            const submitBtn = document.querySelector('button[name="filter-submit-button"]');
-            submitBtn.addEventListener('click', () => {
-                if (!submitBtn.classList.contains("disabled")) {
-                    handleSubmit(column);  // Apply only if not disabled
-                }
-            });
-            submitBtn.classList.add("disabled");
-
-            const handleChange = () => {
-                submitBtn.classList.remove("disabled");
-
-                filterPopup.removeEventListener('input', handleChange);
-                filterPopup.removeEventListener('change', handleChange);
-            };
-
-            filterPopup.addEventListener('input', handleChange);
-            filterPopup.addEventListener('change', handleChange);
-
-
-
-            // Visibility icon, whether to apply the filter or not
-            const filterImg = document.querySelector('img[name="visibility-icon"]');
-            // Add a listener to toggle View on and off
-            filterImg.addEventListener('click', (event) => toggleFilter(event));
-            filterImg.addEventListener('dragstart', (event) => {
-                event.preventDefault();  // Prevent dragging image
-            })
-
-            const deleteImg = document.querySelector('img[name="delete-icon"]');
-            deleteImg.addEventListener('click', () => closeFilterPopup(filterPopup));
-
         }).catch(error => console.error(error))
 
     return filterPopup;

@@ -7,18 +7,49 @@ function escapeRegExp(string) {
 }
 
 export function handleFilter(filterView, column) {
+    // Submit button
     const submitBtn = document.querySelector('button[name="filter-submit-button"]');
-    handleSubmit
+    submitBtn.addEventListener('click', () => {
+        if (!submitBtn.classList.contains("disabled")) {
+            handleSubmit(column);  // Apply only if not disabled
+        }
+    });
+
+    // Listen for changes
+    submitBtn.classList.add("disabled");  // Disable by default until change is triggered
+    filterView.addEventListener('input', detectChange);
+    filterView.addEventListener('change', detectChange);
+
+
+    // Visibility icon
+    const visibilityImg = document.querySelector('img[name="visibility-icon"]');
+    // Add a listener to toggle View on and off
+    visibilityImg.addEventListener('click', () => toggleFilter(visibilityImg));
+    visibilityImg.addEventListener('dragstart', (event) => {
+        event.preventDefault();  // Prevent dragging the image
+    })
+
+
+    // Delete icon
+    const deleteImg = document.querySelector('img[name="delete-icon"]');
+    deleteImg.addEventListener('click', () => handleDelete(filterView));
 }
 
-function handleSubmit(column) {
+function detectChange(filterView, submitBtn) {
+    submitBtn.classList.remove("disabled");
+
+    filterView.removeEventListener('input', detectChange);
+    filterView.removeEventListener('change', detectChange);
+}
+
+function handleSubmit(filterView, column) {
     const data = {
         fileId: document.getElementById("spreadsheet").getAttribute('data-id'),
         sheet: getSelectedSheetIndex(),
         column: column,
-        method: document.querySelector('select[name="filter-selector"]').value,
-        input: escapeRegExp(document.querySelector('input[name="filter-input"]').value),
-        enabled: Boolean(document.querySelector('img[name="visibility-icon"]').classList.contains('toggled')),
+        method: filterView.querySelector('select[name="filter-selector"]').value,
+        input: escapeRegExp(filterView.querySelector('input[name="filter-input"]').value),
+        enabled: Boolean(filterView.querySelector('img[name="visibility-icon"]').classList.contains('toggled')),
     }
 
     fetch("/filters/add", {
@@ -38,30 +69,26 @@ function handleSubmit(column) {
         .catch(error => console.error(error))
 }
 
-function handleDelete() {
-
-}
-
-function toggleFilter(event) {
+function toggleFilter(visibilityImg) {
     // Toggle view on and off
-    const imageDiv = event.target;
     let url;
     let alt;
-    if (imageDiv.classList.contains('toggled')) {
+    if (visibilityImg.classList.contains('toggled')) {
         // Toggle off == hide
-        imageDiv.classList.remove('toggled');
+        visibilityImg.classList.remove('toggled');
         url = "/images/Hide.svg";
         alt = "Hide";
     }
     else {
         // Toggle on == show
-        imageDiv.classList.add('toggled');
+        visibilityImg.classList.add('toggled');
         url = "/images/View.svg";
         alt = "Show";
     }
 
-    imageDiv.setAttribute('alt', alt);
+    visibilityImg.setAttribute('alt', alt);
 
+    // Fetch img
     fetch(url)
         .then(response => {
             if (!response.ok)
@@ -71,8 +98,12 @@ function toggleFilter(event) {
         })
         .then(blob => {
             const blobUrl = URL.createObjectURL(blob);
-            imageDiv.setAttribute('src', blobUrl)
+            visibilityImg.setAttribute('src', blobUrl)
         })
 }
 
+function handleDelete(filterView) {
+    // Fetch filter id from data, delete from DB and remove from container parent
+    
+}
 
