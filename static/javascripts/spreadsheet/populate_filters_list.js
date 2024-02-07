@@ -22,7 +22,7 @@ function closePopup() {
 function createPopup(column) {
     closePopup();  // Close old pop up
 
-    return fetch("/templates/filter/filter_list.html")
+    return fetch("/templates/filter/filters_list.html")
         .then(response => {
             if (!response.ok)
                 throw new Error("Server failed to retrieve filter list template");
@@ -34,8 +34,8 @@ function createPopup(column) {
             container.classList.add('filters-list-container');
 
             container.innerHTML = content;
-            const addFiltersButton = container.querySelector("add-filter");
-            const filtersList = container.querySelector('filters-list');
+            const addFiltersButton = container.querySelector(".add-filter");
+            const filtersList = container.querySelector(".filters-list");
 
             // Make it produce a new filter item when clicked
             addFiltersButton.addEventListener("click", () => addFilter(filtersList, column));
