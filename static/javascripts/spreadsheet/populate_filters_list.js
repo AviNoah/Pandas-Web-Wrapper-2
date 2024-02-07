@@ -192,5 +192,13 @@ function addNewFilterView(container, column) {
                 container.insertBefore(filterItemView, container.children[0]);  // Push to top
             else
                 container.appendChild(filterItemView);  // First child
+
+            // Add separator immediately after the new filter
+            const separator = document.createElement('div');
+            separator.classList.add('separator');
+
+            if (container.children.length != 1)
+                container.insertBefore(separator, container.children[1]);
+
         }).catch(error => console.error(error))
 }
