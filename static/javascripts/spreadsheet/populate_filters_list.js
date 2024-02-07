@@ -15,7 +15,7 @@ function closePopup() {
     // Create popup at view target
     const existingPopup = document.querySelector('.filters-list-container');
     if (existingPopup) {
-        existingPopup.parentNode.removeChild(existingPopup);  // Close existing
+        existingPopup.parentElement.removeChild(existingPopup);  // Close existing
     }
 
     document.removeEventListener('click', clickedOutsideOfPopup);
