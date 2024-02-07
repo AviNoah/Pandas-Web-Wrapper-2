@@ -11,7 +11,6 @@ export function viewFilterList(event, column) {
 }
 
 function closePopup() {
-    // TODO: Fix this, it doesnt close it correctly
     // Create popup at view target
     const existingPopup = document.querySelector('.filters-list-container');
     if (existingPopup) {
