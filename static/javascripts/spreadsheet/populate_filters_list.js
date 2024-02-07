@@ -44,7 +44,7 @@ function createPopup(column) {
 
             // Populate filters from DB
             const filters = getFiltersFromDB(column);
-            const populate = populateFilterList(filtersList, filters);
+            const populate = filters.then(populateFilterList(filtersList, filters));
             const separate = populate.then(() => addSeparators(filtersList));
 
             return separate.then(() => container);
