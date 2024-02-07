@@ -342,7 +342,7 @@ class DB:
 
         try:
             c.execute(
-                f"""UPDATE {Tables.FILTER.value}
+                f"""UPDATE {Tables.Filter.value}
                 SET {FilterColumns.INPUT.value} = ?,
                     {FilterColumns.METHOD.value} = ?,
                     {FilterColumns.ENABLED.value} = ?
