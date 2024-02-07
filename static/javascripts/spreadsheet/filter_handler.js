@@ -77,10 +77,10 @@ function addFilter(filterView, column) {
             return response.json();
         })
         .then(json => {
-            if (!json.hasOwnProperty('id'))
+            if (!json.hasOwnProperty('filterId'))
                 throw new Error("Server did not return filter id");
 
-            return json.id;
+            return json.filterId;
         })
         .then(filterId => {
             filterView.setAttribute('data-id', filterId);  // update id data
