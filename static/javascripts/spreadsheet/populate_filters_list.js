@@ -44,7 +44,7 @@ function createPopup(column) {
             const filters = getFiltersFromDB(column);
             return filters.then(filters => {
                 populateFilterList(container, filters);
-                return filtersList
+                return container
             })
         })
         .catch(error => console.error(error));
@@ -122,6 +122,8 @@ function populateFilterList(container, filters) {
                 filterItem.innerHTML = content;
 
                 populateFilterItem(filterItem, filter);
+
+                container.appendChild(filterItem);
             })
         })
 }
