@@ -44,7 +44,7 @@ function addSeparators(container) {
     return container;
 }
 
-async function getFiltersFromDB(column) {
+function getFiltersFromDB(column) {
     const fileId = document.getElementById('spreadsheet').getAttribute('data-id');
     const sheet = getSelectedSheetIndex();
     const data = JSON.stringify({ fileId: fileId, sheet: sheet, column: column });
@@ -93,7 +93,7 @@ function clickedOutsideOfPopup(event) {
 }
 
 // Handle pop up creation
-async function createPopup(column) {
+function createPopup(column) {
     closePopup();  // Close old pop up
 
     return fetch("/templates/filter/filters_list.html")
@@ -114,6 +114,8 @@ async function createPopup(column) {
             // Make it produce a new filter item when clicked
             addFiltersButton.addEventListener("click", () => addNewFilterView(filtersList, column));
 
+            filtersList.setAttribute('data-column', column);  // Embed column into filtersList div
+
             // Populate filters from DB
             return getFiltersFromDB(column)
                 .then((filters) => populateFilterList(filtersList, filters)
@@ -127,7 +129,7 @@ async function createPopup(column) {
 }
 
 // Handle pop up population
-async function populateFilterList(container, filters) {
+function populateFilterList(container, filters) {
     return fetch("/templates/filter/filter.html")
         .then(response => {
             if (!response.ok)
