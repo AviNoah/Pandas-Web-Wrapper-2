@@ -4,7 +4,7 @@ import { getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handl
 export function viewFilterList(event, column) {
     const popUp = createPopup(column); // Make popup
     popUp.then((popUp) => {
-        event.target.appendChild(popUp);
+        document.body.appendChild(popUp);
         positionPopup(event.target, popUp); // position it under filter img
         document.addEventListener('click', (event) => closeFilterPopup(event));  // Listen to closing
     })
