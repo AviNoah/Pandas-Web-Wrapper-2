@@ -65,6 +65,7 @@ function handleUpdate(filterView, column) {
 }
 
 function addFilter(filterView, column) {
+    //TODO: fix this so it adds a new filter
     // Data for relationships should be attached to data
     const data = {
         fileId: document.getElementById("spreadsheet").getAttribute('data-id'),
