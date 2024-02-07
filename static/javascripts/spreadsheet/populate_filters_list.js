@@ -188,9 +188,9 @@ function addNewFilterView(container, column) {
 
             handleFilter(filterItemView, column);
 
-            container.insertBefore(filterItemView, container.children[0]);  // Push to top
-            return;
+            if (container.children.length > 0)
+                container.insertBefore(filterItemView, container.children[0]);  // Push to top
+            else
+                container.appendChild(filterItemView);  // First child
         }).catch(error => console.error(error))
-
-    return filterPopup;
 }
