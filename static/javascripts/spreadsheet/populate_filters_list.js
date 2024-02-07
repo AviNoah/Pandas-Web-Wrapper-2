@@ -31,10 +31,18 @@ function createPopup(column) {
             container.classList.add('filters-list-container');
 
             container.innerHTML = content;
-            const filters_list = container.querySelector('filters-list');
-            const filters = getFiltersFromDB();
-            filters.then()
+            const addFiltersButton = container.querySelector("add-filter");
+            const filtersList = container.querySelector('filters-list');
 
+            // Make it produce a new filter item when clicked
+            addFiltersButton.addEventListener("click", () => addFilter(filtersList, column));
+
+            // Populate filters from DB
+            const filters = getFiltersFromDB(column);
+            return filters.then(filters => {
+                populateFilterList(container, filters);
+                return filtersList
+            })
         })
         .catch(error => console.error(error));
 
@@ -89,6 +97,6 @@ function positionPopup(target, popup) {
     popup.style.display = 'block';
 }
 
-function getFiltersFromDB() { }
+function getFiltersFromDB(column) { }
 
-function populateFilterList() { }
+function populateFilterList(container, filters) { }
