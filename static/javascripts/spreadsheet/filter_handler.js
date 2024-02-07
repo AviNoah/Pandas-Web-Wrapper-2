@@ -25,7 +25,10 @@ export function handleFilter(filterView, column) {
     // Visibility icon
     const visibilityImg = filterView.querySelector('img[name="visibility-icon"]');
     // Add a listener to toggle View on and off
-    visibilityImg.addEventListener('click', () => toggleFilter(visibilityImg));
+    visibilityImg.addEventListener('click', () => {
+        detectChange(filterView, submitBtn);
+        toggleFilter(visibilityImg);
+    });
     visibilityImg.addEventListener('dragstart', (event) => {
         event.preventDefault();  // Prevent dragging the image
     })
