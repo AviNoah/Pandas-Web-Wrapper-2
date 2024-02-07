@@ -6,7 +6,7 @@ export function viewFilterList(event, column) {
     popUp.then((popUp) => {
         document.body.appendChild(popUp);
         positionPopup(event.target, popUp); // position it under filter img
-        document.addEventListener('click', (event) => closeFilterPopup(event));  // Listen to closing
+        document.addEventListener('click', (event) => clickedOutsideOfPopup(event));  // Listen to closing
     })
 }
 
@@ -18,7 +18,7 @@ function closePopup() {
         existingPopup.parentNode.removeChild(existingPopup);  // Close existing
     }
 
-    document.removeEventListener('click', closeFilterPopup);
+    document.removeEventListener('click', clickedOutsideOfPopup);
 }
 
 function createPopup(column) {
@@ -54,7 +54,7 @@ function createPopup(column) {
         .catch(error => console.error(error));
 }
 
-function closeFilterPopup(event) {
+function clickedOutsideOfPopup(event) {
     // Function to handle closing the filter popup
     const filterPopup = document.querySelector('.filters-list-container');
 
