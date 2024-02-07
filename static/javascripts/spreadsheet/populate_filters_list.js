@@ -6,8 +6,32 @@ export function populateFilterList(event, column) {
     document.addEventListener('click', (event) => closeFilterPopup(event));  // Listen to closing
 }
 
-function createPopup(column) {
+function closePopup() {
+    // Create popup at view target
+    const existingPopup = document.querySelector('.filters-list-container');
+    if (existingPopup) {
+        existingPopup.parentNode.removeChild(existingPopup);  // Close existing
+    }
 
+    document.removeEventListener('click', closeFilterPopup);
+}
+
+function createPopup(column) {
+    closePopup();  // Close old pop up
+
+    const filtersListDiv = document.createElement('div');
+    filtersListDiv.classList.add("filters-list");
+
+    // Create add button
+    const addFilterDiv = document.createElement('div');
+    addFilterDiv.classList.add('add-filter');
+    addFilterDiv.classList.add('filter-item');
+
+    filtersListDiv.appendChild(addFilterDiv);
+
+    // Populate filters list from DB
+
+    return filtersListDiv;
 }
 
 function closeFilterPopup(event) {
@@ -23,13 +47,9 @@ function closeFilterPopup(event) {
     }
 
     // An element outside of filterPopup was selected
-    closePopupHelper(filterPopup);
+    closePopup();
 }
 
-function closePopupHelper(filterPopup) {
-    filterPopup.style.display = 'none';
-    document.removeEventListener('click', closeFilterPopup);
-}
 
 function positionPopup(target, popup) {
     // Position popup at target

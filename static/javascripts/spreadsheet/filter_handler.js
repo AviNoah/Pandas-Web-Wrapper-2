@@ -9,7 +9,6 @@ function escapeRegExp(string) {
 export function addFilter(event, column) {
     // Create filter pop up and attach an event listener to it to send filter data
     const popUp = createPopup(column); // Make popup
-    document.addEventListener('click', (event) => closeFilterPopup(event));  // Listen to closing
 }
 
 function applyFilter(column) {
