@@ -402,6 +402,7 @@ class filter_management:
         if not isOk:
             return jsonify({"error": msg}), 500
 
+        # TODO: column isnt saved correctly
         isOk, msg = db.file_filter_relationship(file_id, filter_id, sheet, column)
 
         db.commit()
