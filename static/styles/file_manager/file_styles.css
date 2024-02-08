@@ -16,7 +16,7 @@
     padding-right: 15px;
 }
 
-.data-wrapper img {
+.file-icon {
     --transition-time: 0.3s;
     width: var(--file-data-side);
     height: var(--file-data-side);
@@ -24,7 +24,7 @@
 }
 
 /* Add a hover enlarge effect on non selected files */
-.data-wrapper img:not(.selected-file):hover {
+.file-icon:not(.selected):hover {
     --scale: 1.15;
     transform: scale(var(--scale));
 }

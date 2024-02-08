@@ -167,6 +167,7 @@ function showVisibilityIcon(visibilityImg) {
             const blobUrl = URL.createObjectURL(blob);
             visibilityImg.setAttribute('src', blobUrl)
         })
+        .catch(error => console.error(error));
 }
 
 // Removing filter
