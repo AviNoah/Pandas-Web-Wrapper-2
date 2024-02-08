@@ -72,7 +72,7 @@ def applyFilters(df: pd.DataFrame, filters: list) -> pd.DataFrame:
     # Apply filters to data-frame, return new data-frame
     # filters is a list of dicts with the following keys: input, method, column, enabled
 
-    # TODO: Test all methods
+    # TODO: Make sure regex method works
     new_df: pd.DataFrame = df.copy()  # Dont destroy original
     for filter in filters:
         inp, method, column, enabled = (
