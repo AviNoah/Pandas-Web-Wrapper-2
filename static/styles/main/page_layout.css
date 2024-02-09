@@ -2,15 +2,17 @@
     --background-color: rgb(253, 233, 177);
 }
 
-html,
-body {
+html {
     height: 100%;
     width: 100%;
     background-color: var(--background-color);
     overflow: hidden;
 }
 
+
 body {
+    height: 100%;
+    width: 100%;
     display: grid;
     grid-template-columns: 3fr 1fr;
 }
