@@ -145,7 +145,7 @@ class DB:
         c: Cursor = self.cursor()
         try:
             c.execute(
-                f"""INSERT INTO {Tables.FileFilter.value} 
+                f"""INSERT OR REPLACE INTO {Tables.FileFilter.value} 
                 ({FileFilterColumns.FILE_ID.value},
                 {FileFilterColumns.FILTER_ID.value},
                 {FileFilterColumns.SHEET.value},
