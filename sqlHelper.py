@@ -108,7 +108,7 @@ class DB:
                 )
 
                 file_id = c.lastrowid
-                return True, f"Added {name} successfully", file_id
+                return True, f"Added {name} successfully", int(file_id)
             except Error as e:
                 return False, f"Failed to add {name}: {e}", None
 
@@ -127,7 +127,7 @@ class DB:
                 )
 
                 filter_id = c.lastrowid
-                return True, f"Added filter successfully", filter_id
+                return True, f"Added filter successfully", int(filter_id)
             except Error as e:
                 return False, f"Failed to add filter: {e}", None
 
@@ -143,7 +143,7 @@ class DB:
                     {FileFilterColumns.SHEET.value},
                     {FileFilterColumns.COLUMN.value})
                     VALUES (?, ?, ?, ?)""",
-                    (file_id, filter_id, sheet, column),
+                    (int(file_id), int(filter_id), int(sheet), int(column)),
                 )
 
                 return True, f"Relationship created successfully"
@@ -160,7 +160,7 @@ class DB:
                     {FileColumns.EXT.value} 
                     FROM {Tables.File.value}
                     WHERE {FileColumns.ID.value}=?""",
-                (file_id,),
+                (int(file_id),),
             )
             blob, name, ext = c.fetchone()
             return FileStorage(
@@ -176,7 +176,7 @@ class DB:
                     {FileColumns.EXT.value} 
                     FROM {Tables.File.value}
                     WHERE {FileColumns.ID.value}=?""",
-                (file_id,),
+                (int(file_id),),
             )
             name, ext = c.fetchone()
             return name, ext
@@ -220,7 +220,7 @@ class DB:
                 LEFT JOIN {Tables.FileFilter.value}
                 ON {Tables.Filter.value}.{FilterColumns.ID.value} = {Tables.FileFilter.value}.{FileFilterColumns.FILTER_ID.value}
                 WHERE {FilterColumns.ID.value}=?""",
-                (filter_id,),
+                (int(filter_id),),
             )
             input, method, enabled, column = c.fetchone()
             data: dict = {
@@ -244,8 +244,8 @@ class DB:
                     ON {Tables.Filter.value}.{FilterColumns.ID.value} = {Tables.FileFilter.value}.{FileFilterColumns.FILTER_ID.value}
                     WHERE {Tables.FileFilter.value}.{FileFilterColumns.FILE_ID.value}=? AND {Tables.FileFilter.value}.{FileFilterColumns.SHEET.value}=?""",
                 (
-                    file_id,
-                    sheet,
+                    int(file_id),
+                    int(sheet),
                 ),
             )
 
@@ -276,9 +276,9 @@ class DB:
                 {Tables.FileFilter.value}.{FileFilterColumns.SHEET.value}=? AND
                 {Tables.FileFilter.value}.{FileFilterColumns.COLUMN.value}=?""",
                 (
-                    file_id,
-                    sheet,
-                    column,
+                    int(file_id),
+                    int(sheet),
+                    int(column),
                 ),
             )
 
@@ -286,7 +286,7 @@ class DB:
             for filter_id, input, method, enabled in c.fetchall():
                 filters_data.append(
                     {
-                        "id": filter_id,
+                        "id": int(filter_id),
                         "input": input,
                         "method": method,
                         "enabled": enabled == 1,  # Convert to bool
@@ -306,7 +306,7 @@ class DB:
                         {FilterColumns.METHOD.value} = ?,
                         {FilterColumns.ENABLED.value} = ?
                     WHERE {FilterColumns.ID.value} = ?""",
-                    (input, method, enabled, filter_id),
+                    (input, method, enabled, int(filter_id)),
                 )
 
                 if c.rowcount > 0:
@@ -322,7 +322,7 @@ class DB:
                 c.execute(
                     f"""DELETE FROM {Tables.Filter.value}
                     WHERE {FilterColumns.ID.value} = ?""",
-                    (filter_id,),
+                    (int(filter_id),),
                 )
 
                 if c.rowcount > 0:
@@ -333,7 +333,7 @@ class DB:
 
     def update_file(
         self, file_id, filename: str, file: FileStorage
-    ) -> Tuple[bool, str, int]:
+    ) -> Tuple[bool, str]:
         # Update the file_blob in database at the given id
         filename = os.path.basename(filename)
         name, ext = os.path.splitext(filename)
@@ -345,12 +345,12 @@ class DB:
                         {FileColumns.EXT.value} = ?,
                         {FileColumns.BLOB.value} = ?
                     WHERE {FileColumns.ID.value} = ?""",
-                    (name, ext, file.read(), file_id),
+                    (name, ext, file.read(), int(file_id)),
                 )
 
-                return c.rowcount > 0, f"Updated {name} successfully", file_id
+                return c.rowcount > 0, f"Updated {name} successfully"
             except Error as e:
-                return False, f"Failed to update {name}: {e}", file_id
+                return False, f"Failed to update {name}: {e}"
 
     def update_file_name(self, file_id, name) -> Tuple[bool, str]:
         # Update the file name and ext in database at the given id
@@ -360,7 +360,7 @@ class DB:
                     f"""UPDATE {Tables.File.value}
                     SET {FileColumns.NAME.value} = ?
                     WHERE {FileColumns.ID.value} = ?""",
-                    (name, file_id),
+                    (name, int(file_id)),
                 )
 
                 return c.rowcount > 0, f"Updated file name successfully"
@@ -374,7 +374,7 @@ class DB:
                 c.execute(
                     f"""DELETE FROM {Tables.File.value}
                     WHERE {FileColumns.ID.value} = ?""",
-                    (file_id,),
+                    (int(file_id),),
                 )
 
                 if c.rowcount > 0:
