@@ -1,9 +1,10 @@
 from sqlite3 import Cursor, Connection, Error, connect
 from enum import Enum
-from typing import Optional, List, Tuple, List
+from typing import Optional, List, Tuple, List, Generator
 
 import os
 from werkzeug.datastructures import FileStorage
+from contextlib import contextmanager
 
 
 class Tables(Enum):
@@ -45,47 +46,53 @@ class DB:
     def conn(self) -> Connection:
         return self.__conn
 
-    def cursor(self) -> Cursor:
-        return self.conn().cursor()
+    @contextmanager
+    def cursor(self) -> Generator[Cursor]:
+        cursor = self.conn().cursor()
+        try:
+            yield cursor
+        finally:
+            cursor.close()
+            if self.auto_commit:
+                self.commit()
 
     def init_tables(self):
         # Initialize tables
-        c: Cursor = self.cursor()
-        try:
-            # Create File table
-            c.execute(
-                f"""CREATE TABLE IF NOT EXISTS {Tables.File.value}
-                        ({FileColumns.ID.value} INTEGER PRIMARY KEY,
-                        {FileColumns.NAME.value} TEXT,
-                        {FileColumns.EXT.value} TEXT,
-                        {FileColumns.BLOB.value} BLOB)"""
-            )
+        with self.cursor() as c:
+            try:
+                # Create File table
+                c.execute(
+                    f"""CREATE TABLE IF NOT EXISTS {Tables.File.value}
+                            ({FileColumns.ID.value} INTEGER PRIMARY KEY,
+                            {FileColumns.NAME.value} TEXT,
+                            {FileColumns.EXT.value} TEXT,
+                            {FileColumns.BLOB.value} BLOB)"""
+                )
 
-            # Create Filter table
-            c.execute(
-                f"""CREATE TABLE IF NOT EXISTS {Tables.Filter.value}
-                        ({FilterColumns.ID.value} INTEGER PRIMARY KEY,
-                        {FilterColumns.METHOD.value} TEXT,
-                        {FilterColumns.INPUT.value} TEXT,
-                        {FilterColumns.ENABLED.value} INTEGER)"""
-            )
+                # Create Filter table
+                c.execute(
+                    f"""CREATE TABLE IF NOT EXISTS {Tables.Filter.value}
+                            ({FilterColumns.ID.value} INTEGER PRIMARY KEY,
+                            {FilterColumns.METHOD.value} TEXT,
+                            {FilterColumns.INPUT.value} TEXT,
+                            {FilterColumns.ENABLED.value} INTEGER)"""
+                )
 
-            # Create Relationship table (Junction table)
-            c.execute(
-                f"""CREATE TABLE IF NOT EXISTS {Tables.FileFilter.value}
-                        ({FileFilterColumns.FILE_ID.value} INTEGER,
-                        {FileFilterColumns.FILTER_ID.value} INTEGER,
-                        {FileFilterColumns.SHEET.value} INTEGER,
-                        {FileFilterColumns.COLUMN.value} INTEGER,
-                        FOREIGN KEY({FileFilterColumns.FILE_ID.value}) REFERENCES {Tables.File.value}({FileColumns.ID.value}),
-                        FOREIGN KEY({FileFilterColumns.FILTER_ID.value}) REFERENCES {Tables.Filter.value}({FilterColumns.ID.value}),
-                        UNIQUE({FileFilterColumns.FILE_ID.value}, {FileFilterColumns.FILTER_ID.value}))"""
-            )
+                # Create Relationship table (Junction table)
+                c.execute(
+                    f"""CREATE TABLE IF NOT EXISTS {Tables.FileFilter.value}
+                            ({FileFilterColumns.FILE_ID.value} INTEGER,
+                            {FileFilterColumns.FILTER_ID.value} INTEGER,
+                            {FileFilterColumns.SHEET.value} INTEGER,
+                            {FileFilterColumns.COLUMN.value} INTEGER,
+                            FOREIGN KEY({FileFilterColumns.FILE_ID.value}) REFERENCES {Tables.File.value}({FileColumns.ID.value}),
+                            FOREIGN KEY({FileFilterColumns.FILTER_ID.value}) REFERENCES {Tables.Filter.value}({FilterColumns.ID.value}),
+                            UNIQUE({FileFilterColumns.FILE_ID.value}, {FileFilterColumns.FILTER_ID.value}))"""
+                )
 
-            self.__conn.commit()
-        except Error as e:
-            self.__conn.rollback()
-            raise e
+            except Error as e:
+                self.__conn.rollback()
+                raise e
 
     def commit(self):
         self.__conn.commit()
