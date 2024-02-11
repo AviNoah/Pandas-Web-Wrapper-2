@@ -451,8 +451,8 @@ def app_close(exception=None):
     # Then add it to DB...
     print("closed!")
     # Then free all connections from DB
-
-    db.connection_pool.release_all_connections(is_failure=bool(exception))
+    is_failure = exception is not None
+    db.connection_pool.release_all_connections(is_failure=is_failure)
 
 
 if __name__ == "__main__":
