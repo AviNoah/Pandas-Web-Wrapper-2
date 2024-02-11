@@ -65,12 +65,12 @@ class ConnectionPool:
 
 
 class DB:
-    def __init__(self, db_path: os.PathLike, auto_commit: bool = False):
-        if auto_commit:
-            isolation_level = None  # Auto-commit mode
-        else:
-            isolation_level = ""  # Default isolation level
-        self.__conn: Connection = connect(db_path, isolation_level=isolation_level)
+
+    def __init__(
+        self, db_path: os.PathLike, auto_commit: bool = False, pool_size: int = 5
+    ):
+        self.auto_commit = auto_commit
+        self.connection_pool = ConnectionPool(db_path, pool_size)
         self.init_tables()
 
     def conn(self) -> Connection:
@@ -78,7 +78,7 @@ class DB:
 
     @contextmanager
     def cursor(self) -> Generator[Cursor]:
-        conn = self.conn()
+        conn = self.connection_pool.get_connection()
         cursor: Cursor = conn.cursor()
         try:
             yield cursor
@@ -89,6 +89,7 @@ class DB:
             cursor.close()
             if self.auto_commit:
                 conn.commit()
+            self.connection_pool.release_connection(conn)
 
     def init_tables(self):
         # Initialize tables
