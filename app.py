@@ -22,7 +22,7 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 
 APP_FOLDER: str = ""
 db_path: os.PathLike = init_db(parent=APP_FOLDER, db_name="files")
-db: DB = DB(db_path, pool_size=10)  # Create a global DB instance.
+db: DB = DB(db_path)  # Create a global DB instance.
 
 
 class static_servers:
