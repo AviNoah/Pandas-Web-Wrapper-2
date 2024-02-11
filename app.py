@@ -3,7 +3,6 @@ from urllib.parse import quote
 
 from io import BytesIO
 from zipfile import ZipFile
-import base64
 from werkzeug.datastructures import FileStorage
 
 import os
