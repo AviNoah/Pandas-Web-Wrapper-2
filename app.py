@@ -22,6 +22,7 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 
 APP_FOLDER: str = ""
 db_path: os.PathLike = init_db(parent=APP_FOLDER, db_name="files")
+db: DB = DB(db_path, pool_size=10)  # Create a global DB instance.
 
 
 class static_servers:
@@ -74,22 +75,18 @@ class file_management:
 
     @app.route("/files/upload", methods=["POST"])
     def upload_file():
+        global db
         # Save files into database.
         try:
             files: list = list(request.files.values())
         except Exception as e:
             return jsonify({"error": "Failed to retrieve files from form"}), 500
 
-        db: DB = DB(db_path)
-
         file_statuses: list = list()
         for file in files:
             ok, msg, id = db.add_file(file.filename, file)
             print(msg)
             file_statuses.append((ok, id))
-
-        db.commit()
-        db.close()
 
         succeeded_ids: list = [id for ok, id in file_statuses if ok]
         return (
@@ -101,6 +98,7 @@ class file_management:
 
     @app.route("/files/update", methods=["POST"])
     def update_file():
+        global db
         # Update files at the given ids.
         try:
             file_blobs: list = list(request.files.values())
@@ -110,14 +108,10 @@ class file_management:
 
         files = zip(file_blobs, indices)
         file_statuses: list = list()
-        db: DB = DB(db_path)
         for file, file_id in files:
             ok, msg, id = db.update_file(file_id, file.filename, file)
             print(msg)
             file_statuses((ok, id))
-
-        db.commit()
-        db.close()
 
         succeeded_ids: list = [id for ok, id in file_statuses if ok]
         failed_ids: list = [id for ok, id in file_statuses if not ok]
@@ -156,6 +150,7 @@ class file_management:
 
     @app.route("/files/update/name", methods=["POST"])
     def update_file_name():
+        global db
         # Update files at the given ids.
         keys = {"fileId", "name"}
 
@@ -164,13 +159,7 @@ class file_management:
             return jsonify({"error": "Missing one or more required keys"}), 400
 
         file_id, name = json_data["fileId"], json_data["name"]
-
-        db: DB = DB(db_path)
-
         isOk, msg, id = db.update_file_name(file_id, name)
-
-        db.commit()
-        db.close()
 
         if isOk:
             return jsonify({"message": msg}), 200
@@ -179,6 +168,7 @@ class file_management:
 
     @app.route("/files/delete", methods=["POST"])
     def delete_file():
+        global db
         # Delete the file at the given id
         keys = {"fileId"}
 
@@ -187,11 +177,8 @@ class file_management:
             return jsonify({"error": "Missing one or more required keys"}), 400
 
         file_id: int = int(json_data["fileId"])
-        db: DB = DB(db_path)
         ok = db.delete_file(file_id)
 
-        db.commit()
-        db.close()
         if ok:
             return jsonify({"message": "Successfully deleted file"}), 200
 
@@ -202,6 +189,7 @@ class file_fetching:
     # Methods to fetch file data
     @app.route("/files/get/download", methods=["POST"])
     def download_file():
+        global db
         # Download a file matching given id
         keys = {"fileId"}
 
@@ -210,9 +198,7 @@ class file_fetching:
             return jsonify({"error": "Missing one or more required keys"}), 400
 
         file_id: int = int(json_data["fileId"])
-        db: DB = DB(db_path)
         file: FileStorage = db.get_file(file_id=file_id)
-        db.close()
 
         if not file:
             return jsonify({"error": "No files found"}), 500
@@ -229,6 +215,7 @@ class file_fetching:
 
     @app.route("/files/get/name", methods=["POST"])
     def get_file_name():
+        global db
         # Get a file name matching given id
         keys = {"fileId"}
 
@@ -237,10 +224,7 @@ class file_fetching:
             return jsonify({"error": "Missing one or more required keys"}), 400
 
         file_id: int = int(json_data["fileId"])
-        db: DB = DB(db_path)
         filename = db.get_file_name(file_id=file_id)
-
-        db.close()
 
         if not filename:
             return jsonify({"error": "No files found"}), 500
@@ -252,6 +236,7 @@ class file_fetching:
 
     @app.route("/files/get/sheet", methods=["POST"])
     def get_sheet():
+        global db
         # Get a sheet matching given id and sheet
         keys = {"fileId", "sheet"}
 
@@ -262,7 +247,6 @@ class file_fetching:
         file_id: int = int(json_data["fileId"])
         sheet: int = int(json_data["sheet"])
 
-        db: DB = DB(db_path)
         file: FileStorage = db.get_file(file_id)
 
         if not file:
@@ -280,12 +264,11 @@ class file_fetching:
         if filters:
             df = applyFilters(df, filters)  # Only if not empty or None
 
-        db.close()
-
         return sendDF(df)
 
     @app.route("/files/get/sheet_count", methods=["POST"])
     def get_sheet_count():
+        global db
         # Get a sheet matching given id and sheet
         keys = {"fileId"}
 
@@ -294,10 +277,7 @@ class file_fetching:
             return jsonify({"error": "Missing one or more required keys"}), 400
 
         file_id: int = int(json_data["fileId"])
-
-        db: DB = DB(db_path)
         file: FileStorage = db.get_file(file_id)
-        db.close()
 
         if not file:
             return jsonify({"error": "No files found"}), 500
@@ -309,11 +289,9 @@ class file_fetching:
 
     @app.route("/files/get/all", methods=["GET"])
     def get_all_files():
+        global db
         # Get all files
-        db: DB = DB(db_path)
         files: list = db.get_all_file_ids()
-
-        db.close()
 
         if not files:
             return jsonify({"error": "No files found"}), 500
@@ -322,11 +300,9 @@ class file_fetching:
 
     @app.route("/files/get/all/compressed", methods=["GET"])
     def get_all_files_zipped():
+        global db
         # Get all files in a zip file
-        db: DB = DB(db_path)
         files = db.get_all_files()
-
-        db.close()
 
         if not files:
             return jsonify({"error": "No files found"}), 500
@@ -353,6 +329,7 @@ class filter_management:
     # Filter management
     @app.route("/filters/add", methods=["POST"])
     def add_filter():
+        global db
         # Add a filter to the matching fileId
         keys = {"fileId", "sheet", "column", "method", "input", "enabled"}
 
@@ -369,8 +346,6 @@ class filter_management:
             json_data["enabled"],
         )
 
-        db: DB = DB(db_path)
-
         isOk, msg, filter_id = db.add_filter(method, input, enabled)
 
         # Check if added successfully
@@ -379,9 +354,6 @@ class filter_management:
 
         isOk, msg = db.file_filter_relationship(file_id, filter_id, sheet, column)
 
-        db.commit()
-        db.close()
-
         if isOk:
             return jsonify({"message": msg, "filterId": filter_id}), 200
 
@@ -389,6 +361,7 @@ class filter_management:
 
     @app.route("/filters/update", methods=["POST"])
     def update_filter():
+        global db
         # Update a filter matching the given id.
         keys = {"filterId", "method", "input", "enabled"}
 
@@ -402,12 +375,7 @@ class filter_management:
             json_data["input"],
             json_data["enabled"],
         )
-
-        db: DB = DB(db_path)
         isOk = db.update_filter(filter_id, method, input, enabled)
-
-        db.commit()
-        db.close()
 
         if isOk:
             return jsonify({"message": "Filter updated successfully"}), 200
@@ -416,6 +384,7 @@ class filter_management:
 
     @app.route("/filters/delete", methods=["POST"])
     def delete_filter():
+        global db
         # Delete a filter matching the given id.
         keys = {"filterId"}
 
@@ -424,12 +393,7 @@ class filter_management:
             return jsonify({"error": "Missing one or more required keys"}), 400
 
         filter_id = json_data["filterId"]
-
-        db: DB = DB(db_path)
         ok = db.delete_filter(filter_id)
-
-        db.commit()
-        db.close()
 
         if ok:
             return jsonify({"message": "Filter deleted successfully"}), 200
@@ -441,6 +405,7 @@ class filter_fetching:
     # Fetching filter data
     @app.route("/filters/get", methods=["POST"])
     def get_filter():
+        global db
         # Return the filter matching given id as a json
         keys = {"filterId"}
 
@@ -449,11 +414,7 @@ class filter_fetching:
             return jsonify({"error": "Missing one or more required keys"}), 400
 
         filter_id = json_data["filterId"]
-
-        db: DB = DB(db_path)
         filter_json: str = db.get_filter(filter_id)
-
-        db.close()
 
         if not filter_json:
             return jsonify({"error": "Failed to fetch filter"}), 500
@@ -462,6 +423,7 @@ class filter_fetching:
 
     @app.route("/filters/get/at", methods=["POST"])
     def get_filters_at():
+        global db
         # Return all the filters of the given fileId and sheet
         keys = {"fileId", "sheet", "column"}
 
@@ -473,10 +435,7 @@ class filter_fetching:
         sheet = json_data["sheet"]
         column = json_data["column"]
 
-        db: DB = DB(db_path)
         filters_json: str = db.get_filters_at(file_id, sheet, column)
-
-        db.close()
 
         if filters_json is None:
             return jsonify({"error": "Failed to fetch filter"}), 500
