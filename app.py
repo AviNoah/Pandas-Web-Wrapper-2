@@ -1,5 +1,4 @@
 from flask import *
-from urllib.parse import quote
 
 from io import BytesIO
 from zipfile import ZipFile
