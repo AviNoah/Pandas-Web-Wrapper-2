@@ -1,5 +1,4 @@
 :root {
-    --header_color: rgb(116, 116, 255);
     --table_color: rgb(251, 244, 244);
     --grid_lines_color: black;
 }
@@ -23,11 +22,6 @@
 #spreadsheet th:not(.header-cell),
 #spreadsheet td:not(.header-cell) {
     background-color: var(--table_color);
-}
-
-.header-cell,
-.header-cell * {
-    background-color: var(--header_color);
 }
 
 /* For the pop up box when filter is selected */

@@ -1,3 +1,12 @@
+:root{
+    --header_color: rgb(116, 116, 255);
+}
+
+.header-cell,
+.header-cell * {
+    background-color: var(--header_color);
+}
+
 .header-cell .cell-wrapper {
     display: flex;
     flex-direction: row;
