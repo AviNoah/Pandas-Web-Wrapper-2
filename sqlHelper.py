@@ -369,7 +369,7 @@ class DB:
             except Error as e:
                 return False, f"Failed to update {name}: {e}", file_id
 
-    def delete_file(self, file_id) -> bool:
+    def delete_file(self, file_id) -> Tuple[bool, str]:
         # Delete file record matching id
         with self.cursor() as c:
             try:
@@ -380,10 +380,10 @@ class DB:
                 )
 
                 if c.rowcount > 0:
-                    return True
-                return False
+                    return True, "File deleted successfully"
+                return False, "File not found"
             except Exception as e:
-                return False  # File not found
+                return False, "File deletion query failed"
 
 
 def init_db(parent: os.PathLike, db_name: str) -> os.PathLike:

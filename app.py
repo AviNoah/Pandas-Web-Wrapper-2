@@ -177,12 +177,12 @@ class file_management:
             return jsonify({"error": "Missing one or more required keys"}), 400
 
         file_id: int = int(json_data["fileId"])
-        ok = db.delete_file(file_id)
+        ok, msg = db.delete_file(file_id)
 
         if ok:
-            return jsonify({"message": "Successfully deleted file"}), 200
+            return jsonify({"message": msg}), 200
 
-        return jsonify({"error": "Failed to delete file"}), 500
+        return jsonify({"error": msg}), 500
 
 
 class file_fetching:
