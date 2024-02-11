@@ -449,11 +449,7 @@ def app_close(exception=None):
     # TODO: Stop and ask if the user would like to save his current session data
     ...
     # Then add it to DB...
-    return
     print("closed!")
-    # Then free all connections from DB
-    is_failure = exception is not None
-    db.connection_pool.release_all_connections(is_failure=is_failure)
 
 
 if __name__ == "__main__":
