@@ -36,62 +36,21 @@ class FileFilterColumns(Enum):
     COLUMN = "column"
 
 
-class ConnectionPool:
-    def __init__(self, db_path: os.PathLike, pool_size: int):
-        self.db_path = db_path
-        self.pool_size = pool_size
-        self.pool = Queue(maxsize=pool_size)
-        self.lock = Lock()  # Prevent multiple threads from accessing a connection
-        self._initialize_pool()  # Populate with connections at init
-
-    def _initialize_pool(self):
-        for _ in range(self.pool_size):
-            self.pool.put(connect(self.db_path))
-
-    def _increase_pool_size(self, value: int):
-        for _ in range(value):
-            self.pool.put(connect(self.db_path))
-        self.pool_size += value
-
-    def get_connection(self) -> Connection:
-        with self.lock:
-            if self.pool.empty():
-                self._increase_pool_size(3)  # Allocate more connections due to load
-            return self.pool.get()
-
-    def release_connection(self, conn):
-        with self.lock:
-            self.pool.put(conn)
-
-    def release_all_connections(self, is_failure: bool = False):
-        with self.lock:
-            while not self.pool.empty():
-                conn: Connection = self.pool.get()
-                if is_failure:
-                    conn.rollback()  # Roll back in case of failure
-                else:
-                    conn.commit()
-                conn.close()
-
-
 class DB:
-    def __init__(self, db_path: os.PathLike, pool_size: int = 5):
-        self.connection_pool = ConnectionPool(db_path, pool_size)
+    def __init__(self, db_path: os.PathLike):
+        self.db_path = db_path
         self.init_tables()
 
     @contextmanager
     def connection(self) -> Generator[Connection, None, None]:
-        conn = self.connection_pool.get_connection()
+        conn: Connection = connect(self.db_path)
         try:
             yield conn
         except Error as e:
             conn.rollback()  # Rollback changes if an exception occurs
-            self.connection_pool.release_connection(conn)  # Free connection
             raise e  # Re-raise the exception
         finally:
-            if conn:
-                conn.commit()  # Commit changes
-                self.connection_pool.release_connection(conn)  # Free connection
+            conn.close()
 
     @contextmanager
     def cursor(self) -> Generator[Cursor, None, None]:
