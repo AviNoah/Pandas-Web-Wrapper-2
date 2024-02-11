@@ -67,7 +67,7 @@ class ConnectionPool:
 class DB:
 
     def __init__(
-        self, db_path: os.PathLike, auto_commit: bool = False, pool_size: int = 5
+        self, db_path: os.PathLike, auto_commit: bool = True, pool_size: int = 5
     ):
         self.auto_commit = auto_commit
         self.connection_pool = ConnectionPool(db_path, pool_size)
