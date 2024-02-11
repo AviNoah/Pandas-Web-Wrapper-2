@@ -441,15 +441,6 @@ class filter_fetching:
         return filters_json, 200
 
 
-# Free all connections and commit them once context ends
-@app.teardown_appcontext
-def app_close(exception=None):
-    # TODO: Stop and ask if the user would like to save his current session data
-    ...
-    # Then add it to DB...
-    print("closed!")
-
-
 if __name__ == "__main__":
     port = 5000
     app.run(port=port, debug=True)
