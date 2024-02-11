@@ -1,8 +1,6 @@
 from sqlite3 import Cursor, Connection, Error, connect
 from enum import Enum
 from typing import Optional, List, Tuple, List, Generator
-from queue import Queue
-from threading import Lock
 
 import os
 from werkzeug.datastructures import FileStorage
