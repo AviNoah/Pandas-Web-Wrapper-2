@@ -48,12 +48,13 @@ class DB:
             conn.rollback()  # Rollback changes if an exception occurs
             raise e  # Re-raise the exception
         finally:
+            conn.commit()
             conn.close()
 
     @contextmanager
     def cursor(self) -> Generator[Cursor, None, None]:
         with self.connection() as conn:
-            cursor = conn.cursor()
+            cursor: Cursor = conn.cursor()
             try:
                 yield cursor
             finally:
