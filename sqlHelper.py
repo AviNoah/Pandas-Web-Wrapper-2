@@ -63,6 +63,16 @@ class ConnectionPool:
         with self.lock:
             self.pool.put(conn)
 
+    def release_all_connections(self, is_failure: bool = False):
+        with self.lock:
+            while not self.pool.empty():
+                conn: Connection = self.pool.get()
+                if is_failure:
+                    conn.rollback()  # Roll back in case of failure
+                else:
+                    conn.commit()
+                conn.close()
+
 
 class DB:
     def __init__(self, db_path: os.PathLike, pool_size: int = 5):
