@@ -48,9 +48,13 @@ class DB:
 
     @contextmanager
     def cursor(self) -> Generator[Cursor]:
-        cursor = self.conn().cursor()
+        conn = self.conn()
+        cursor = conn.cursor()
         try:
             yield cursor
+        except Error as e:
+            conn.rollback()  # Rollback changes if an exception occurs
+            raise e
         finally:
             cursor.close()
             if self.auto_commit:
