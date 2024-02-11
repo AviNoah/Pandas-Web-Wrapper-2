@@ -65,7 +65,6 @@ function addFileView(filename, id) {
 function loadFilesFromDB() {
     // Add files from DB to view
     const dropArea = document.getElementById('drop-zone')
-    dropArea.classList.add('populated');  // Mark as already populated - remove hint to drag files
 
     fetch("/files/get/all")
         .then(response => {
@@ -78,6 +77,7 @@ function loadFilesFromDB() {
             // Files is a list of valid ids
             if (fileIds.length > 0) {
                 addFiles(fileIds)
+                dropArea.classList.add('populated');  // Mark as already populated - remove hint to drag files
             }
         })
         .catch(error => console.error(error))
