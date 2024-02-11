@@ -80,18 +80,27 @@ class DB:
         self.init_tables()
 
     @contextmanager
-    def cursor(self) -> Generator:
+    def connection(self) -> Generator[Connection, None, None]:
         conn = self.connection_pool.get_connection()
-        cursor: Cursor = conn.cursor()
         try:
-            yield cursor
+            yield conn
         except Error as e:
             conn.rollback()  # Rollback changes if an exception occurs
-            raise e
+            self.connection_pool.release_connection(conn)  # Free connection
+            raise e  # Re-raise the exception
         finally:
-            cursor.close()
-            conn.commit()
-            self.connection_pool.release_connection(conn)
+            if conn:
+                conn.commit()  # Commit changes
+                self.connection_pool.release_connection(conn)  # Free connection
+
+    @contextmanager
+    def cursor(self) -> Generator[Cursor, None, None]:
+        with self.connection() as conn:
+            cursor = conn.cursor()
+            try:
+                yield cursor
+            finally:
+                cursor.close()
 
     def init_tables(self):
         # Initialize tables
