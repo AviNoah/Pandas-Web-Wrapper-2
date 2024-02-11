@@ -443,6 +443,17 @@ class filter_fetching:
         return filters_json, 200
 
 
+# Free all connections and commit them once context ends
+@app.teardown_appcontext()
+def app_close():
+    # TODO: Stop and ask if the user would like to save his current session data
+    ...
+    # Then add it to DB...
+
+    # Then free all connections from DB
+    db.connection_pool.release_all_connections(is_failure=False)  # Will commit
+
+
 if __name__ == "__main__":
     port = 5000
     app.run(port=port, debug=True)
