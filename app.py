@@ -291,7 +291,7 @@ class file_fetching:
         # Get all files
         files: list = db.get_all_file_ids()
 
-        if not files:
+        if files is None:
             return jsonify({"error": "No files found"}), 500
 
         return jsonify(files)
