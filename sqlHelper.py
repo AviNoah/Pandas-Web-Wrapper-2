@@ -80,7 +80,7 @@ class DB:
         self.init_tables()
 
     @contextmanager
-    def cursor(self) -> Generator[Cursor]:
+    def cursor(self) -> Generator:
         conn = self.connection_pool.get_connection()
         cursor: Cursor = conn.cursor()
         try:
