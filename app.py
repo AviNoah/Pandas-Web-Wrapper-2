@@ -444,14 +444,15 @@ class filter_fetching:
 
 
 # Free all connections and commit them once context ends
-@app.teardown_appcontext()
-def app_close():
+@app.teardown_appcontext
+def app_close(exception=None):
     # TODO: Stop and ask if the user would like to save his current session data
     ...
     # Then add it to DB...
-
+    print("closed!")
     # Then free all connections from DB
-    db.connection_pool.release_all_connections(is_failure=False)  # Will commit
+
+    db.connection_pool.release_all_connections(is_failure=bool(exception))
 
 
 if __name__ == "__main__":
