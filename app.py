@@ -200,31 +200,6 @@ class file_management:
 
 class file_fetching:
     # Methods to fetch file data
-    @app.route("/files/get", methods=["POST"])
-    def get_file():
-        # Get a file matching given id
-        keys = {"fileId"}
-
-        json_data = request.get_json()
-        if not verifyKeys(json_data, keys):
-            return jsonify({"error": "Missing one or more required keys"}), 400
-
-        file_id: int = int(json_data["fileId"])
-        db: DB = DB(db_path)
-        file: FileStorage = db.get_file(file_id=file_id)
-
-        db.close()
-
-        if not file:
-            return jsonify({"error": "No files found"}), 500
-
-        return send_file(
-            file,
-            as_attachment=False,
-            download_name="excel_file",
-            mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
-
     @app.route("/files/get/download", methods=["POST"])
     def download_file():
         # Download a file matching given id
