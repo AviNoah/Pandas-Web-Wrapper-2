@@ -354,7 +354,7 @@ class DB:
             except Error as e:
                 return False, f"Failed to update {name}: {e}", file_id
 
-    def update_file_name(self, file_id, name) -> Tuple[bool, str, int]:
+    def update_file_name(self, file_id, name) -> Tuple[bool, str]:
         # Update the file name and ext in database at the given id
         with self.cursor() as c:
             try:
@@ -365,9 +365,9 @@ class DB:
                     (name, file_id),
                 )
 
-                return c.rowcount > 0, f"Updated {name} successfully", file_id
+                return c.rowcount > 0, f"Updated file name successfully"
             except Error as e:
-                return False, f"Failed to update {name}: {e}", file_id
+                return False, f"Failed to update file name: {e}"
 
     def delete_file(self, file_id) -> Tuple[bool, str]:
         # Delete file record matching id

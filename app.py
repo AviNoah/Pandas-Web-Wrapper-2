@@ -159,7 +159,7 @@ class file_management:
             return jsonify({"error": "Missing one or more required keys"}), 400
 
         file_id, name = json_data["fileId"], json_data["name"]
-        isOk, msg, id = db.update_file_name(file_id, name)
+        isOk, msg = db.update_file_name(file_id, name)
 
         if isOk:
             return jsonify({"message": msg}), 200
