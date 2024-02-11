@@ -1,6 +1,8 @@
 from sqlite3 import Cursor, Connection, Error, connect
 from enum import Enum
 from typing import Optional, List, Tuple, List, Generator
+from queue import Queue
+from threading import Lock
 
 import os
 from werkzeug.datastructures import FileStorage
@@ -34,6 +36,34 @@ class FileFilterColumns(Enum):
     COLUMN = "column"
 
 
+class ConnectionPool:
+    def __init__(self, db_path: os.PathLike, pool_size: int):
+        self.db_path = db_path
+        self.pool_size = pool_size
+        self.pool = Queue(maxsize=pool_size)
+        self.lock = Lock()  # Prevent multiple threads from accessing a connection
+        self._initialize_pool()  # Populate with connections at init
+
+    def _initialize_pool(self):
+        for _ in range(self.pool_size):
+            self.pool.put(connect(self.db_path))
+
+    def _increase_pool_size(self, value: int):
+        for _ in range(value):
+            self.pool.put(connect(self.db_path))
+        self.pool_size += value
+
+    def get_connection(self):
+        with self.lock:
+            if self.pool.empty():
+                self._increase_pool_size(3)  # Allocate more connections due to load
+            return self.pool.get()
+
+    def release_connection(self, conn):
+        with self.lock:
+            self.pool.put(conn)
+
+
 class DB:
     def __init__(self, db_path: os.PathLike, auto_commit: bool = False):
         if auto_commit:
@@ -49,7 +79,7 @@ class DB:
     @contextmanager
     def cursor(self) -> Generator[Cursor]:
         conn = self.conn()
-        cursor = conn.cursor()
+        cursor: Cursor = conn.cursor()
         try:
             yield cursor
         except Error as e:
@@ -58,33 +88,32 @@ class DB:
         finally:
             cursor.close()
             if self.auto_commit:
-                self.commit()
+                conn.commit()
 
     def init_tables(self):
         # Initialize tables
         with self.cursor() as c:
-            try:
-                # Create File table
-                c.execute(
-                    f"""CREATE TABLE IF NOT EXISTS {Tables.File.value}
+            # Create File table
+            c.execute(
+                f"""CREATE TABLE IF NOT EXISTS {Tables.File.value}
                             ({FileColumns.ID.value} INTEGER PRIMARY KEY,
                             {FileColumns.NAME.value} TEXT,
                             {FileColumns.EXT.value} TEXT,
                             {FileColumns.BLOB.value} BLOB)"""
-                )
+            )
 
-                # Create Filter table
-                c.execute(
-                    f"""CREATE TABLE IF NOT EXISTS {Tables.Filter.value}
+            # Create Filter table
+            c.execute(
+                f"""CREATE TABLE IF NOT EXISTS {Tables.Filter.value}
                             ({FilterColumns.ID.value} INTEGER PRIMARY KEY,
                             {FilterColumns.METHOD.value} TEXT,
                             {FilterColumns.INPUT.value} TEXT,
                             {FilterColumns.ENABLED.value} INTEGER)"""
-                )
+            )
 
-                # Create Relationship table (Junction table)
-                c.execute(
-                    f"""CREATE TABLE IF NOT EXISTS {Tables.FileFilter.value}
+            # Create Relationship table (Junction table)
+            c.execute(
+                f"""CREATE TABLE IF NOT EXISTS {Tables.FileFilter.value}
                             ({FileFilterColumns.FILE_ID.value} INTEGER,
                             {FileFilterColumns.FILTER_ID.value} INTEGER,
                             {FileFilterColumns.SHEET.value} INTEGER,
@@ -92,14 +121,7 @@ class DB:
                             FOREIGN KEY({FileFilterColumns.FILE_ID.value}) REFERENCES {Tables.File.value}({FileColumns.ID.value}),
                             FOREIGN KEY({FileFilterColumns.FILTER_ID.value}) REFERENCES {Tables.Filter.value}({FilterColumns.ID.value}),
                             UNIQUE({FileFilterColumns.FILE_ID.value}, {FileFilterColumns.FILTER_ID.value}))"""
-                )
-
-            except Error as e:
-                self.__conn.rollback()
-                raise e
-
-    def commit(self):
-        self.__conn.commit()
+            )
 
     def rollback(self):
         self.conn().rollback()
