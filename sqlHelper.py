@@ -296,7 +296,9 @@ class DB:
                 )
             return filters_data
 
-    def update_filter(self, filter_id, method: str, input: str, enabled: bool) -> bool:
+    def update_filter(
+        self, filter_id, method: str, input: str, enabled: bool
+    ) -> Tuple[bool, str]:
         # Update filter data matching id, return whether succeeded or not
         with self.cursor() as c:
             try:
@@ -310,12 +312,12 @@ class DB:
                 )
 
                 if c.rowcount > 0:
-                    return True
-                return False
+                    return True, "Updated filter successfully"
+                return False, "No filter found"
             except Exception as e:
-                return False  # Filter not found
+                return False, "Filter's update query failed"
 
-    def delete_filter(self, filter_id) -> bool:
+    def delete_filter(self, filter_id) -> Tuple[bool, str]:
         # Delete filter record matching id, return whether succeeded or not
         with self.cursor() as c:
             try:
@@ -326,10 +328,10 @@ class DB:
                 )
 
                 if c.rowcount > 0:
-                    return True
-                return False
+                    return True, "Filter deletion was successful"
+                return False, "Filter was not found"
             except Exception as e:
-                return False  # Filter not found
+                return False, "Filter deletion query failed"
 
     def update_file(
         self, file_id, filename: str, file: FileStorage

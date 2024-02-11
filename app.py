@@ -375,12 +375,12 @@ class filter_management:
             json_data["input"],
             json_data["enabled"],
         )
-        isOk = db.update_filter(filter_id, method, input, enabled)
+        isOk, msg = db.update_filter(filter_id, method, input, enabled)
 
         if isOk:
-            return jsonify({"message": "Filter updated successfully"}), 200
+            return jsonify({"message": msg}), 200
 
-        return jsonify({"error": "Filter failed to update"}), 200
+        return jsonify({"error": msg}), 200
 
     @app.route("/filters/delete", methods=["POST"])
     def delete_filter():
@@ -393,12 +393,12 @@ class filter_management:
             return jsonify({"error": "Missing one or more required keys"}), 400
 
         filter_id = json_data["filterId"]
-        ok = db.delete_filter(filter_id)
+        ok, msg = db.delete_filter(filter_id)
 
         if ok:
-            return jsonify({"message": "Filter deleted successfully"}), 200
+            return jsonify({"message": msg}), 200
 
-        return jsonify({"error": "Filter failed to delete"}), 200
+        return jsonify({"error": msg}), 200
 
 
 class filter_fetching:
