@@ -1,6 +1,24 @@
 import { getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handler.js";
 import { openSheet } from "/scripts/spreadsheet/populate_spreadsheet.js";
 
+const visibility_logo_states = {
+    visible: { url: "/images/View.svg", alt: "View" },
+    hidden: { url: "/images/Hide.svg", alt: "Hide" },
+}
+
+// Preload images
+function preloadImages(imageStates) {
+    for (let stateKey in imageStates) {
+        const img = new Image();
+        const url = imageStates[stateKey].url;
+        try {
+            img.src = url;
+        } catch (error) {
+            console.error(`Failed to fetch ${url}: ${error}`);
+        }
+    }
+}
+
 function escapeRegExp(string) {
     // Escape regex
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
@@ -140,34 +158,13 @@ function toggleVisibilityIcon(visibilityImg) {
 
 function showVisibilityIcon(visibilityImg) {
     // Toggle view on and off
-    let url;
-    let alt;
-    if (visibilityImg.classList.contains('toggled')) {
-        // Toggle on == show
-        url = "/images/View.svg";
-        alt = "Show";
-    }
-    else {
-        // Toggle off == hide
-        url = "/images/Hide.svg";
-        alt = "Hide";
-    }
+    let imageState = visibility_logo_states.hidden;
 
-    visibilityImg.setAttribute('alt', alt);
+    if (visibilityImg.classList.contains('toggled'))
+        imageState = visibility_logo_states.visible;
 
-    // Fetch img
-    fetch(url)
-        .then(response => {
-            if (!response.ok)
-                throw new Error("Failed to fetch image");
-
-            return response.blob();
-        })
-        .then(blob => {
-            const blobUrl = URL.createObjectURL(blob);
-            visibilityImg.setAttribute('src', blobUrl)
-        })
-        .catch(error => console.error(error));
+    visibilityImg.setAttribute('src', imageState.url);
+    visibilityImg.setAttribute('alt', imageState.alt);
 }
 
 // Removing filter
@@ -200,3 +197,5 @@ function removeFromDB(filterId) {
         })
 }
 
+// Preload images on DOM content load
+document.addEventListener('DOMContentLoaded', () => preloadImages(visibility_logo_states));

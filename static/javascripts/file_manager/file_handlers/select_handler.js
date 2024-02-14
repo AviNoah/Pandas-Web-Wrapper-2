@@ -48,4 +48,4 @@ function showIfSelected(fileView) {
 }
 
 // Preload images on DOM content load
-document.addEventListener('DOMContentLoaded', preloadImages);
+document.addEventListener('DOMContentLoaded', () => preloadImages(excel_logo_states));
