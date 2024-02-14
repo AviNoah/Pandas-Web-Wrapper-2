@@ -34,32 +34,33 @@ export function addFiles(passedIds) {
 function addFileView(filename, id) {
     const fileViewDiv = document.createElement('div');
 
-    // Make file-view
-    fetch("/templates/file_manager/file.html")
-        .then(response => {
-            if (!response.ok)
-                throw new console.error("Failed fetching file view template");
+    // Check if the template is already cached
+    const templateContent = sessionStorage.getItem("fileViewTemplate")
+    if (templateContent === null) {
+        console.error('Template was not found in cache!');
+        return;
+    }
 
-            return response.text();
-        })
-        .then((content) => {
-            fileViewDiv.innerHTML = content;
+    processTemplate(templateContent, filename, id, fileViewDiv);
+}
 
-            // Update file name
-            const paragraphDiv = fileViewDiv.querySelector('p');
-            paragraphDiv.textContent = filename;
+// Function to process template content and add file view
+function processTemplate(templateContent, filename, id, fileViewDiv) {
+    fileViewDiv.innerHTML = templateContent;
 
-            const tooltipDiv = fileViewDiv.querySelector('span');
-            tooltipDiv.textContent = filename;
-            handleTooltip(tooltipDiv);
+    // Update file name
+    const paragraphDiv = fileViewDiv.querySelector('p');
+    paragraphDiv.textContent = filename;
 
-            // Append filename data to element
-            fileViewDiv.setAttribute('data-id', id);
-            fileViewDiv.classList.add('file-view');
+    const tooltipDiv = fileViewDiv.querySelector('span');
+    tooltipDiv.textContent = filename;
+    handleTooltip(tooltipDiv);
 
-            folderDiv.appendChild(fileViewDiv);
-        })
-        .catch(error => console.error(error));
+    // Append filename data to element
+    fileViewDiv.setAttribute('data-id', id);
+    fileViewDiv.classList.add('file-view');
+
+    folderDiv.appendChild(fileViewDiv);
 }
 
 function loadFilesFromDB() {
@@ -83,6 +84,22 @@ function loadFilesFromDB() {
         .catch(error => console.error(error))
 }
 
+function fetchTemplates() {
+    // Fetch file view template
+    fetch("/templates/file_manager/file.html")
+        .then(response => {
+            if (!response.ok)
+                throw new Error("Failed fetching file view template");
+
+            return response.text();
+        })
+        .then((content) => {
+            // Cache template
+            sessionStorage.setItem('fileViewTemplate', content);
+        })
+        .catch(error => console.error(error));
+}
+
 // Don't allow any image from the folder to be dragged.
 folderDiv.addEventListener('dragstart', (event) => {
     if (event.target.tagName === 'IMG')
@@ -91,4 +108,7 @@ folderDiv.addEventListener('dragstart', (event) => {
 
 
 // TODO: maybe we want each tab to have its own environment? consider disabling this
-document.addEventListener('DOMContentLoaded', loadFilesFromDB)
+document.addEventListener('DOMContentLoaded', () => {
+    loadFilesFromDB();
+    fetchTemplates();
+})
