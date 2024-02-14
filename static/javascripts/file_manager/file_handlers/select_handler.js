@@ -1,8 +1,24 @@
-function handleSelect(fileView, dataId) {
-    // TODO implement multi select and change view's contents
-    // TODO when selecting a file it should close the filters pop up
+const excel_logo_states = {
+    select: { url: "/images/excel_logo_opened.svg", alt: "Excel logo opened" },
+    deselect: { url: "/images/excel_logo_closed.svg", alt: "Excel logo closed" },
+}
 
-    // TODO: FIX THIS
+// Preload images
+function preloadImages(imageStates) {
+    for (let stateKey in imageStates) {
+        const img = new Image();
+        const url = imageStates[stateKey].url;
+        try {
+            img.src = url;
+        } catch (error) {
+            console.error(`Failed to fetch ${url}: ${error}`);
+        }
+    }
+}
+
+function handleSelect(fileView, dataId) {
+    // TODO implement multi select
+    // TODO when selecting a file it should close the filters pop up
     toggleSelect(fileView);
     showIfSelected(fileView);
 
@@ -11,7 +27,6 @@ function handleSelect(fileView, dataId) {
     target = "/";  // Index will handle communication
     parent.postMessage(JSON.stringify(data), target);
 }
-
 
 function toggleSelect(fileView) {
     // Toggle selection
@@ -22,27 +37,15 @@ function toggleSelect(fileView) {
 }
 
 function showIfSelected(fileView) {
-    let img_url = "/images/excel_logo_closed.svg";
-    let alt = "Excel logo closed";
-    if (fileView.classList.contains('selected')) {
-        img_url = "/images/excel_logo_opened.svg";
-        alt = "Excel logo opened";
-    }
+    let imageState = excel_logo_states.deselect;
+
+    if (fileView.classList.contains('select'))
+        imageState = excel_logo_states.select;
 
     const fileImg = fileView.querySelector('.file-icon');
-    fileImg.setAttribute('alt', alt);
-
-    // Fetch img
-    fetch(img_url)
-        .then(response => {
-            if (!response.ok)
-                throw new Error("Failed to fetch image");
-
-            return response.blob();
-        })
-        .then(blob => {
-            const blobUrl = URL.createObjectURL(blob);
-            fileImg.setAttribute('src', blobUrl);
-        })
-        .catch(error => console.error(error));
+    fileImg.setAttribute('src', imageState.url);
+    fileImg.setAttribute('alt', imageState.alt);
 }
+
+// Preload images on DOM content load
+document.addEventListener('DOMContentLoaded', preloadImages);
