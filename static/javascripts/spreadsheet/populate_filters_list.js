@@ -96,58 +96,50 @@ function clickedOutsideOfPopup(event) {
 
 // Handle pop up creation
 function createPopup(column) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         closePopup();
+        const content = sessionStorage.getItem("filtersListTemplate");
+        if (content === null)
+            reject();
 
-        fetch("/templates/filter/filters_list.html")
-            .then(response => {
-                if (!response.ok)
-                    throw new Error("Server failed to retrieve filter list template");
+        const container = document.createElement('div');
+        container.classList.add('filters-list-container');
 
-                return response.text();
-            })
-            .then(async content => {
-                const container = document.createElement('div');
-                container.classList.add('filters-list-container');
+        container.innerHTML = content;
+        const addFiltersButton = container.querySelector(".add-filter");
+        const filtersList = container.querySelector(".filters-list");
 
-                container.innerHTML = content;
-                const addFiltersButton = container.querySelector(".add-filter");
-                const filtersList = container.querySelector(".filters-list");
+        addFiltersButton.addEventListener("click", () => addNewFilterView(filtersList, column));
 
-                addFiltersButton.addEventListener("click", () => addNewFilterView(filtersList, column));
+        filtersList.setAttribute('data-column', column);
 
-                filtersList.setAttribute('data-column', column);
-
-                const filters = await getFiltersFromDB(column);
-                await populateFilterList(filtersList, filters);
-                addSeparators(filtersList);
-                resolve(container); // Resolve the promise after popup creation
-            })
-            .catch(error => reject(error));
+        const filters = await getFiltersFromDB(column);
+        await populateFilterList(filtersList, filters);
+        addSeparators(filtersList);
+        resolve(container); // Resolve the promise after popup creation
     });
 }
 
 // Handle pop up population
 function populateFilterList(container, filters) {
-    return fetch("/templates/filter/filter.html")
-        .then(response => {
-            if (!response.ok)
-                throw new Error("Server failed to retrieve filter template");
+    return new Promise(async (resolve, reject) => {
+        const content = sessionStorage.getItem("filterTemplate");
+        if (content === null)
+            reject();
 
-            return response.text();
+        // Each filter contains filter_id, input, method, enabled keys 
+        Array.from(filters).forEach(filter => {
+            const filterItem = document.createElement('div');
+            filterItem.classList.add("filter-item");
+            filterItem.innerHTML = content;
+
+            populateFilterItem(filterItem, filter);
+
+            container.appendChild(filterItem);
         })
-        .then(content => {
-            // Each filter contains filter_id, input, method, enabled keys 
-            Array.from(filters).forEach(filter => {
-                const filterItem = document.createElement('div');
-                filterItem.classList.add("filter-item");
-                filterItem.innerHTML = content;
 
-                populateFilterItem(filterItem, filter);
-
-                container.appendChild(filterItem);
-            })
-        })
+        resolve();
+    });
 }
 
 function populateFilterItem(filterItem, filterData) {
@@ -173,32 +165,55 @@ function populateFilterItem(filterItem, filterData) {
 
 function addNewFilterView(container, column) {
     // Add a new filter view to the container
-    fetch('/templates/filter/filter.html')
+    return new Promise(async (resolve, reject) => {
+        const content = sessionStorage.getItem("filterTemplate");
+        if (content === null)
+            reject();
+
+
+        const filterItemView = document.createElement('div');
+        filterItemView.classList.add("filter-item");
+        filterItemView.innerHTML = content;
+        // Don't add data-id until it is added to DB
+
+        handleFilter(filterItemView, column);
+
+        if (container.children.length > 0)
+            container.insertBefore(filterItemView, container.children[0]);  // Push to top
+        else
+            container.appendChild(filterItemView);  // First child
+
+        // Add separator immediately after the new filter
+        const separator = document.createElement('div');
+        separator.classList.add('separator');
+
+        if (container.children.length != 1)
+            container.insertBefore(separator, container.children[1]);
+
+        resolve();
+    });
+}
+
+function cacheTemplate(url, name) {
+    // Cache template
+    fetch(url)
         .then(response => {
             if (!response.ok)
-                throw new Error("Failed to fetch filter template");
+                throw new Error("Server failed to retrieve template");
 
             return response.text();
         })
-        .then(content => {
-            const filterItemView = document.createElement('div');
-            filterItemView.classList.add("filter-item");
-            filterItemView.innerHTML = content;
-            // Don't add data-id until it is added to DB
-
-            handleFilter(filterItemView, column);
-
-            if (container.children.length > 0)
-                container.insertBefore(filterItemView, container.children[0]);  // Push to top
-            else
-                container.appendChild(filterItemView);  // First child
-
-            // Add separator immediately after the new filter
-            const separator = document.createElement('div');
-            separator.classList.add('separator');
-
-            if (container.children.length != 1)
-                container.insertBefore(separator, container.children[1]);
-
-        }).catch(error => console.error(error))
+        .then((content) => {
+            // Cache template
+            sessionStorage.setItem(name, content);
+        })
+        .catch(error => console.error(error));
 }
+
+function fetchTemplates() {
+    cacheTemplate("/templates/filter/filters_list.html", "filtersListTemplate");
+    cacheTemplate("/templates/filter/filter.html", "filterTemplate");
+}
+
+// Preload images on DOM content load
+document.addEventListener('DOMContentLoaded', fetchTemplates);
