@@ -41,11 +41,6 @@ function addFileView(filename, id) {
         return;
     }
 
-    processTemplate(templateContent, filename, id, fileViewDiv);
-}
-
-// Function to process template content and add file view
-function processTemplate(templateContent, filename, id, fileViewDiv) {
     fileViewDiv.innerHTML = templateContent;
 
     // Update file name
