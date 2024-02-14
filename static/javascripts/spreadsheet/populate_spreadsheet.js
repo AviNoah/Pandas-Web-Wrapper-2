@@ -13,28 +13,28 @@ function updateSpreadsheetElement(sheet, editable = false) {
     // Mark header rows as header-cell
     const firstRowCells = spreadsheetElement.querySelectorAll('tr:first-child td');
 
-    fetch('/templates/spreadsheet/header_cell.html')
-        .then(response => {
-            if (!response.ok)
-                throw new Error("Server did not respond");
 
-            return response.text();
+
+    return new Promise((resolve, reject) => {
+        const content = sessionStorage.getItem("headerCellTemplate");
+        if (content === null)
+            reject();
+
+        firstRowCells.forEach(cell => {
+            const oldText = cell.textContent;
+
+            cell.classList.add('header-cell');
+            cell.innerHTML = content;
+
+            cell.querySelector('div[name="cell-name"]').textContent = oldText;
+
+            // Apply filter when the filter image is clicked; cellIndex is 0-based
+            cell.querySelector('img[name="cell-filter"]')
+                .addEventListener('click', (event) => viewFilterList(event, cell.cellIndex));
         })
-        .then(content => {
-            firstRowCells.forEach(cell => {
-                const oldText = cell.textContent;
 
-                cell.classList.add('header-cell');
-                cell.innerHTML = content;
-
-                cell.querySelector('div[name="cell-name"]').textContent = oldText;
-
-                // Apply filter when the filter image is clicked; cellIndex is 0-based
-                cell.querySelector('img[name="cell-filter"]')
-                    .addEventListener('click', (event) => viewFilterList(event, cell.cellIndex));
-            })
-        })
-        .catch(error => console.error(error));
+        resolve();
+    });
 }
 
 // Fetch sheet and call to updateSpreadsheet
@@ -110,6 +110,27 @@ selectedSheetSpinner.addEventListener('change', () => {
     openSheet(getSelectedSheetIndex());
 });
 
+function cacheTemplate(url, name) {
+    // Cache template
+    fetch(url)
+        .then(response => {
+            if (!response.ok)
+                throw new Error("Server failed to retrieve template");
+
+            return response.text();
+        })
+        .then((content) => {
+            // Cache template
+            sessionStorage.setItem(name, content);
+        })
+        .catch(error => console.error(error));
+}
+
+
+function fetchTemplates() {
+    cacheTemplate("/templates/spreadsheet/header_cell.html", "headerCellTemplate");
+}
+
 window.addEventListener('message', (event) => {
     // Reject any messages not from parent of iframe
     if (event.source !== parent)
@@ -122,3 +143,6 @@ window.addEventListener('message', (event) => {
     openFile(fileId);
     s.setAttribute('data-id', fileId);
 })
+
+// Preload templates on DOM content load
+document.addEventListener('DOMContentLoaded', fetchTemplates);

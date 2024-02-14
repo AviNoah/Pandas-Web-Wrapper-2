@@ -215,5 +215,5 @@ function fetchTemplates() {
     cacheTemplate("/templates/filter/filter.html", "filterTemplate");
 }
 
-// Preload images on DOM content load
+// Preload templates on DOM content load
 document.addEventListener('DOMContentLoaded', fetchTemplates);
