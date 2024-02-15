@@ -31,9 +31,22 @@ function handleSelect(fileView, dataId) {
 function toggleSelect(fileView) {
     // Toggle selection
     if (fileView.classList.contains('select'))
-        fileView.classList.remove('select');
+        deselect(fileView);
     else
-        fileView.classList.add('select');
+        select(fileView);
+}
+
+function deselect(fileView) {
+    fileView.classList.remove('select');
+}
+
+function select(fileView) {
+    fileView.classList.add('select');
+}
+
+function deselectAll(container) {
+    const fileViews = container.querySelectorAll('.file-view');
+    Array.from(fileViews).forEach(fileView => deselect(fileView));
 }
 
 function showIfSelected(fileView) {
