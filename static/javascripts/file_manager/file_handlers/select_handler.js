@@ -16,9 +16,12 @@ function preloadImages(imageStates) {
     }
 }
 
-function handleSelect(fileView, dataId) {
+function handleSelect(event, fileView, dataId) {
     // TODO implement multi select
     // TODO when selecting a file it should close the filters pop up
+    if (!event.shiftKey)
+        deselectAll(fileView.parentElement);  // If shift is not held, deselect all.
+
     toggleSelect(fileView);
     showIfSelected(fileView);
 
@@ -46,7 +49,10 @@ function select(fileView) {
 
 function deselectAll(container) {
     const fileViews = container.querySelectorAll('.file-view');
-    Array.from(fileViews).forEach(fileView => deselect(fileView));
+    Array.from(fileViews).forEach(fileView => {
+        deselect(fileView);
+        showIfSelected(fileView);  // Update img for all
+    });
 }
 
 function showIfSelected(fileView) {
