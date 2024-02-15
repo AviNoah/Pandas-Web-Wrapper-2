@@ -68,7 +68,7 @@ function getFiltersFromDB(column) {
 }
 
 // Handle pop up closing
-function closePopup() {
+export function closePopup() {
     // Create popup at view target
     const existingPopup = document.querySelector('.filters-list-container');
     if (existingPopup) {

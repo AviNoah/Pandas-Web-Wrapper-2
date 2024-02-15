@@ -1,4 +1,4 @@
-import { viewFilterList } from "/scripts/spreadsheet/populate_filters_list.js"
+import { viewFilterList, closePopup } from "/scripts/spreadsheet/populate_filters_list.js"
 import { adjustSpinner, getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handler.js";
 
 const spreadsheetElement = document.getElementById('spreadsheet');
@@ -7,13 +7,13 @@ function updateSpreadsheetElement(sheet, editable = false) {
     // Convert sheet data to HTML with grid lines
     const html = XLSX.utils.sheet_to_html(sheet, { editable: editable, showGridLines: true });
 
+    closePopup();  // Close filters list pop up
+
     // Display the HTML in the spreadsheet div
     spreadsheetElement.innerHTML = html;
 
     // Mark header rows as header-cell
     const firstRowCells = spreadsheetElement.querySelectorAll('tr:first-child td');
-
-
 
     return new Promise((resolve, reject) => {
         const content = sessionStorage.getItem("headerCellTemplate");

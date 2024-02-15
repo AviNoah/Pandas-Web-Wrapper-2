@@ -17,8 +17,6 @@ function preloadImages(imageStates) {
 }
 
 function handleSelect(event, fileView, dataId) {
-    // TODO implement multi select
-    // TODO when selecting a file it should close the filters pop up
     if (!event.shiftKey)
         deselectAll(fileView.parentElement);  // If shift is not held, deselect all.
 
