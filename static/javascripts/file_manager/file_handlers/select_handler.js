@@ -25,9 +25,14 @@ function handleSelect(event, fileView, dataId) {
     toggleSelect(fileView);
     showIfSelected(fileView);
 
-    console.log("handleSelect executed with dataId:", dataId);
+    showSpreadsheet(dataId);
+}
+
+function showSpreadsheet(dataId) {
+    // Show the spreadsheet of the given dataId
+    console.log("showSpreadsheet executed with dataId:", dataId);
     data = { fileId: dataId };
-    target = "/";  // Index will handle communication
+    target = "/";  // Index homepage will handle communication
     parent.postMessage(JSON.stringify(data), target);
 }
 
