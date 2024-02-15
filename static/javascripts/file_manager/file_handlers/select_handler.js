@@ -17,8 +17,10 @@ function preloadImages(imageStates) {
 }
 
 function handleSelect(event, fileView, dataId) {
-    if (!event.shiftKey)
+    if (!event.shiftKey) {
+        // Todo: open a context menu with the selected elements, then deselect them
         deselectAll(fileView.parentElement);  // If shift is not held, deselect all.
+    }
 
     toggleSelect(fileView);
     showIfSelected(fileView);
