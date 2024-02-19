@@ -104,7 +104,7 @@ function handleEdit(editView, fileView, dataId) {
     const oldName = filenameSpan.textContent;
     filenameSpan.focus();
     filenameSpan.setAttribute('contenteditable', true);
-
+    filenameSpan.textContent = filenameSpan.getAttribute('data-tooltip');
 
     // Listen until user finishes entering input
     filenameSpan.addEventListener('keydown', pressedEnter);
