@@ -1,5 +1,6 @@
 import { getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handler.js";
 import { openSheet } from "/scripts/spreadsheet/populate_spreadsheet.js";
+import { initTooltipTriggerEl } from "/scripts/tooltip/tooltipHandler.js";
 
 const visibility_logo_states = {
     visible: { url: "/images/View.svg", alt: "View" },
@@ -43,6 +44,7 @@ export function handleFilter(filterView, column) {
     // Visibility icon
     const visibilityImg = filterView.querySelector('img[name="visibility-icon"]');
     showVisibilityIcon(visibilityImg);
+    initTooltipTriggerEl(visibilityImg);
 
     // Add a listener to toggle View on and off
     visibilityImg.addEventListener('click', () => {
@@ -58,6 +60,11 @@ export function handleFilter(filterView, column) {
     // Delete icon
     const deleteImg = filterView.querySelector('img[name="delete-icon"]');
     deleteImg.addEventListener('click', () => handleDelete(filterView));
+    initTooltipTriggerEl(deleteImg);
+
+    // Method selector
+    const methodSelector = filterView.querySelector('select[name="filter-selector"]');
+    initTooltipTriggerEl(methodSelector);
 }
 
 function detectChange(filterView, submitBtn) {

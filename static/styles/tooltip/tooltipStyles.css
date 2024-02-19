@@ -11,4 +11,5 @@
 
 #tooltip.visible {
     display: block;
+    z-index: 10;
 }
