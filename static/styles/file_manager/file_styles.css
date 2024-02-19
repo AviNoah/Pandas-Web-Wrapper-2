@@ -37,6 +37,10 @@
     align-items: center;
 }
 
+.file-name {
+    text-align: center;
+}
+
 .buttons-wrapper {
     display: flex;
     flex-direction: column;
