@@ -34,7 +34,7 @@ export function addFiles(passedIds) {
 }
 
 // Function to truncate text
-function truncateText(text, maxLength) {
+export function truncateText(text, maxLength = 20) {
     if (text.length > maxLength) {
         return text.substring(0, maxLength) + '...'; // Truncate text if it exceeds maxLength
     } else {
