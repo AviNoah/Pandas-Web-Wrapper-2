@@ -1,5 +1,6 @@
 import { handleFilter } from "/scripts/spreadsheet/filter_handler.js";
 import { getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handler.js";
+import { initTooltipTriggerEl } from "/scripts/tooltip/tooltipHandler.js";
 
 export function viewFilterList(event, column) {
     // Make popup
@@ -107,6 +108,7 @@ function createPopup(column) {
 
         container.innerHTML = content;
         const addFiltersButton = container.querySelector(".add-filter");
+        initTooltipTriggerEl(addFiltersButton);
         const filtersList = container.querySelector(".filters-list");
 
         addFiltersButton.addEventListener("click", () => addNewFilterView(filtersList, column));
