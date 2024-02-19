@@ -6,7 +6,7 @@
   </p>
 </div>
 <div class="buttons-wrapper">
-  <img class="edit" onclick="handleEdit(this, this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/images/Edit.svg" alt="Edit" />
-  <img class="download" onclick="handleDownload(this.parentElement.parentElement.getAttribute('data-id'))" src="/images/Download.svg" alt="Download file" />
-  <img class="delete" onclick="handleDelete(this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/images/Delete.svg" alt="Delete file" name="delete-icon" />
+  <img data-tooltip="Edit" class="edit tooltip" onclick="handleEdit(this, this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/images/Edit.svg" alt="Edit" />
+  <img data-tooltip="Download" class="download tooltip" onclick="handleDownload(this.parentElement.parentElement.getAttribute('data-id'))" src="/images/Download.svg" alt="Download file" />
+  <img data-tooltip="Delete" class="delete tooltip" onclick="handleDelete(this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/images/Delete.svg" alt="Delete file" name="delete-icon" />
 </div>

@@ -60,6 +60,9 @@ function addFileView(filename, id) {
     tooltipTriggerDiv.setAttribute('data-tooltip', filename);
     initTooltipTriggerEl(tooltipTriggerDiv);
 
+    const buttons = fileViewDiv.querySelector('.buttons-wrapper').children;
+    Array.from(buttons).forEach(initTooltipTriggerEl);
+
     // Append filename data to element
     fileViewDiv.setAttribute('data-id', id);
     fileViewDiv.classList.add('file-view');
