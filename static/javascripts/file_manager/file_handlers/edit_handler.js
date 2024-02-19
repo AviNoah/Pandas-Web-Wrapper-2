@@ -1,10 +1,6 @@
-function truncateText(text, maxLength = 20) {
-    if (text.length > maxLength) {
-        return text.substring(0, maxLength) + '...'; // Truncate text if it exceeds maxLength
-    } else {
-        return text;
-    }
-}
+import { initTooltipTriggerEl } from "/scripts/tooltip/tooltipHandler.js";
+import { truncateText } from "/scripts/file_manager/populate_folder.js";
+
 
 function handleEdit(editView, fileView, dataId) {
     console.log("handleEdit executed with dataId:", dataId);
@@ -113,3 +109,6 @@ function handleEdit(editView, fileView, dataId) {
 
     editView.addEventListener('click', clickedEditAgain);
 }
+
+console.log(1);
+export { handleEdit };
