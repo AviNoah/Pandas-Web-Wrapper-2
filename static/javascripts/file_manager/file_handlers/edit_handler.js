@@ -55,6 +55,7 @@ function handleEdit(editView, fileView, dataId) {
                         filenameSpan.textContent = truncateText(newName);
                         filenameSpan.setAttribute('data-tooltip', newName);
                         filenameSpan.setAttribute('contenteditable', false);
+                        initTooltipTriggerEl(filenameSpan);
                     })
             })
             .catch(error => {
