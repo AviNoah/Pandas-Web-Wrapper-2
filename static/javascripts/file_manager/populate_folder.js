@@ -1,3 +1,5 @@
+import { initTooltipTriggerEl } from "/scripts/tooltip/tooltipHandler.js";
+
 const folderDiv = document.getElementById('drop-zone');
 
 export function addFiles(passedIds) {
@@ -31,6 +33,15 @@ export function addFiles(passedIds) {
     });
 }
 
+// Function to truncate text
+function truncateText(text, maxLength) {
+    if (text.length > maxLength) {
+        return text.substring(0, maxLength) + '...'; // Truncate text if it exceeds maxLength
+    } else {
+        return text;
+    }
+}
+
 function addFileView(filename, id) {
     const fileViewDiv = document.createElement('div');
 
@@ -44,12 +55,10 @@ function addFileView(filename, id) {
     fileViewDiv.innerHTML = templateContent;
 
     // Update file name
-    const paragraphDiv = fileViewDiv.querySelector('p');
-    paragraphDiv.textContent = filename;
-
-    const tooltipDiv = fileViewDiv.querySelector('span');
-    tooltipDiv.textContent = filename;
-    handleTooltip(tooltipDiv);
+    const tooltipTriggerDiv = fileViewDiv.querySelector('.tooltip.file-name');
+    tooltipTriggerDiv.textContent = truncateText(filename, 20);
+    tooltipTriggerDiv.setAttribute('data-tooltip', filename);
+    initTooltipTriggerEl(tooltipTriggerDiv);
 
     // Append filename data to element
     fileViewDiv.setAttribute('data-id', id);

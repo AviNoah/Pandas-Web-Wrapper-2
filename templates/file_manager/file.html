@@ -1,10 +1,9 @@
 <!-- File view, will become the innerHTML of a div with the ID data of the corresponding file in DB -->
 <div class="data-wrapper">
   <img class="file-icon" onclick="handleSelect(event, this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/images/excel_logo_closed.svg" alt="Excel icon closed" />
-  <div class="text-container tooltip">
-    <p class="file-name"></p> <!-- File name -->
-    <span></span> <!-- ToolTip -->
-  </div>
+  <p class="text-container">
+    <span class="file-name tooltip"></span>
+  </p>
 </div>
 <div class="buttons-wrapper">
   <img class="edit" onclick="handleEdit(this, this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/images/Edit.svg" alt="Edit" />

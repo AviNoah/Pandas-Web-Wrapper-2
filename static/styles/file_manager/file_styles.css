@@ -31,11 +31,10 @@
 
 .text-container {
     width: var(--file-data-side);
+    max-height: calc(var(--file-data-side)/8);
     display: flex;
-
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    margin-bottom: auto;
 }
 
 .buttons-wrapper {
