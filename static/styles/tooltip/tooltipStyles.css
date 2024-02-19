@@ -1,11 +1,3 @@
-.tooltip {
-    position: relative;
-    cursor: pointer;
-    word-wrap: break-word;
-    /* Needs to be in a container */
-    max-width: 100%;
-}
-
 #tooltip {
     position: fixed;
     background-color: #333;
