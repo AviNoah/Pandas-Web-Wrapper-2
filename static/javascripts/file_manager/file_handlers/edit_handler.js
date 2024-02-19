@@ -1,24 +1,25 @@
+function truncateText(text, maxLength = 20) {
+    if (text.length > maxLength) {
+        return text.substring(0, maxLength) + '...'; // Truncate text if it exceeds maxLength
+    } else {
+        return text;
+    }
+}
+
 function handleEdit(editView, fileView, dataId) {
     console.log("handleEdit executed with dataId:", dataId);
 
-    const filenameP = fileView.querySelector('p.file-name');
+    const filenameSpan = fileView.querySelector('span.file-name');
 
-    if (filenameP.classList.contains('editing')) {
-        filenameP.classList.remove('editing');
-        return;  // Don't do anything besides marking it as un-editing
-    }
+    if (filenameSpan.classList.contains('editing')) {
+        filenameSpan.classList.remove('editing');
+        return;  // Simply un-toggle.
+    };
 
-    filenameP.classList.add('editing');
-
-    const tooltipSpan = fileView.querySelector('span');
-    const oldName = filenameP.textContent;
-
-    filenameP.focus();
-    filenameP.setAttribute('contenteditable', true);
     const submitRename = function () {
         removeListeners();  // Remove listeners
 
-        const data = JSON.stringify({ filename: filenameP.textContent });
+        const data = JSON.stringify({ filename: filenameSpan.textContent });
         fetch('/files/update/name/validate', {
             method: "POST",
             headers: {
@@ -54,14 +55,15 @@ function handleEdit(editView, fileView, dataId) {
                         if (!response.ok)
                             throw new Error("Failed to update name");
 
-                        filenameP.setAttribute('contenteditable', false);
-                        tooltipSpan.textContent = filenameP.textContent;  // Update contents of tooltip
-                        handleTooltip(fileView.querySelector('span'));
+                        const newName = filenameSpan.textContent;
+                        filenameSpan.textContent = truncateText(newName);
+                        filenameSpan.setAttribute('data-tooltip', newName);
+                        filenameSpan.setAttribute('contenteditable', false);
                     })
             })
             .catch(error => {
-                filenameP.textContent = oldName;  // Revert to old name
-                filenameP.setAttribute('contenteditable', false);
+                filenameSpan.textContent = oldName;  // Revert to old name
+                filenameSpan.setAttribute('contenteditable', false);
                 console.error(error);
             });
 
@@ -73,43 +75,41 @@ function handleEdit(editView, fileView, dataId) {
 
 
         submitRename();
-    }
+    };
 
     const clickedOutside = function (event) {
         if (event.target.classList.contains("edit"))
             return;  // ignore clicking on edit
 
-        if (filenameP.parentElement.contains(event.target) ||
-            filenameP.parentElement === event.target)
+        if (filenameSpan.parentElement.contains(event.target) ||
+            filenameSpan.parentElement === event.target)
             return;  // ignore clicking on a text container
 
         submitRename()
-    }
+    };
 
     const clickedEditAgain = function () {
         submitRename();
-    }
+    };
 
     const removeListeners = function () {
-        filenameP.classList.remove('editing');
+        filenameSpan.classList.remove('editing');
         document.removeEventListener("click", clickedOutside);
         editView.removeEventListener("click", clickedEditAgain);
-        filenameP.removeEventListener("keydown", pressedEnter);
-    }
+        filenameSpan.removeEventListener("keydown", pressedEnter);
+    };
+
+    filenameSpan.classList.add('editing');
+
+    const oldName = filenameSpan.textContent;
+    filenameSpan.focus();
+    filenameSpan.setAttribute('contenteditable', true);
+
 
     // Listen until user finishes entering input
-    filenameP.addEventListener('keydown', pressedEnter);
+    filenameSpan.addEventListener('keydown', pressedEnter);
 
     document.addEventListener('click', clickedOutside);
 
     editView.addEventListener('click', clickedEditAgain);
-}
-
-function handleTooltip(tooltipSpan) {
-    // TODO: Fix where tool tip spawns
-    // Disable/enable tooltipSpan depending on length of file name
-    if (tooltipSpan.textContent.length < 18)
-        tooltipSpan.classList.add('short');
-    else
-        tooltipSpan.classList.remove('short');
 }
