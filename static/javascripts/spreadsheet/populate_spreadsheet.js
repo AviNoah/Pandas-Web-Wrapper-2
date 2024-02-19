@@ -1,5 +1,6 @@
 import { viewFilterList, closePopup } from "/scripts/spreadsheet/populate_filters_list.js"
 import { adjustSpinner, getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handler.js";
+import { initTooltipTriggerEl } from "/scripts/tooltip/tooltipHandler.js";
 
 const spreadsheetElement = document.getElementById('spreadsheet');
 
@@ -28,9 +29,10 @@ function updateSpreadsheetElement(sheet, editable = false) {
 
             cell.querySelector('div[name="cell-name"]').textContent = oldText;
 
+            const cellFilterImg = cell.querySelector('img[name="cell-filter"]');
+            initTooltipTriggerEl(cellFilterImg);
             // Apply filter when the filter image is clicked; cellIndex is 0-based
-            cell.querySelector('img[name="cell-filter"]')
-                .addEventListener('click', (event) => viewFilterList(event, cell.cellIndex));
+            cellFilterImg.addEventListener('click', (event) => viewFilterList(event, cell.cellIndex));
         })
 
         resolve();
