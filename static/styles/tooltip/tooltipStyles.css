@@ -1,7 +1,6 @@
 .tooltip {
     position: relative;
     cursor: pointer;
-    text-align: center;
     word-wrap: break-word;
     /* Needs to be in a container */
     max-width: 100%;
