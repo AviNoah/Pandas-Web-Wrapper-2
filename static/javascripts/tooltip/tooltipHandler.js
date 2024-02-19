@@ -26,12 +26,18 @@ function getTooltipHeight() {
 
     // Hide the tooltip again
     tooltipPopup.style.display = null;
-    console.log(oldDisplay)
 
     return height;
 }
 
+const isMouseOnTooltip = (event) => {
+    return Boolean(tooltipPopup === event.target || tooltipPopup.contains(event.target));
+}
+
 const mouseOverFunc = (tooltipText, event) => {
+    if (isMouseOnTooltip(event))
+        return;
+
     const tooltipX = event.clientX + 10; // Adjust 10px to the right
     const tooltipY = event.clientY + 10; // Adjust 10px downward
 
@@ -53,7 +59,9 @@ const mouseOverFunc = (tooltipText, event) => {
     tooltipPopup.classList.add('visible');
 };
 
-const mouseOutFunc = () => {
+const mouseOutFunc = (event) => {
+    if (isMouseOnTooltip(event))
+        return;
     tooltipPopup.classList.remove('visible');
 };
 
