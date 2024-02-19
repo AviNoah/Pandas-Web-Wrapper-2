@@ -34,8 +34,12 @@ const isMouseOnTooltip = (event) => {
     return Boolean(tooltipPopup === event.target || tooltipPopup.contains(event.target));
 }
 
+const isTriggerElementBeingEdited = (event) => {
+    return Boolean(event.target.classList.contains('editing'));
+}
+
 const mouseOverFunc = (tooltipText, event) => {
-    if (isMouseOnTooltip(event))
+    if (isMouseOnTooltip(event) || isTriggerElementBeingEdited(event))
         return;
 
     const tooltipX = event.clientX + 10; // Adjust 10px to the right
