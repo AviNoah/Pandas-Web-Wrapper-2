@@ -7,11 +7,6 @@ function handleEdit(editView, fileView, dataId) {
 
     const filenameSpan = fileView.querySelector('span.file-name');
 
-    if (filenameSpan.classList.contains('editing')) {
-        filenameSpan.classList.remove('editing');
-        return;  // Simply un-toggle.
-    };
-
     const submitRename = function () {
         removeListeners();  // Remove listeners
 
@@ -85,7 +80,9 @@ function handleEdit(editView, fileView, dataId) {
         submitRename()
     };
 
-    const clickedEditAgain = function () {
+    // TODO: Fix clicked edit again
+    const clickedEditAgain = function (event) {
+        event.preventDefault();
         submitRename();
     };
 
@@ -94,6 +91,11 @@ function handleEdit(editView, fileView, dataId) {
         document.removeEventListener("click", clickedOutside);
         editView.removeEventListener("click", clickedEditAgain);
         filenameSpan.removeEventListener("keydown", pressedEnter);
+    };
+
+    if (filenameSpan.classList.contains('editing')) {
+        removeListeners();
+        return;  // Simply un-toggle.
     };
 
     filenameSpan.classList.add('editing');
