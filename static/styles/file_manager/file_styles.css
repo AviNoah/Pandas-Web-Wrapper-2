@@ -74,5 +74,8 @@ img[name="delete-icon"]:hover {
 .editing {
     border: 1px solid blue;
     background-color: #f0f8ff;
+    word-wrap: break-word;
+    max-width: var(--file-data-side);
+    z-index: 9;
     /* Light blue background color */
 }
