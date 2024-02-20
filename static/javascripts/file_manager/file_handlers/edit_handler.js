@@ -113,5 +113,4 @@ function handleEdit(editView, fileView, dataId) {
     editView.addEventListener('click', clickedEditAgain);
 }
 
-console.log(1);
 export { handleEdit };
