@@ -70,7 +70,7 @@ function handleEdit(editView, fileView, dataId) {
     };
 
     const clickedOutside = function (event) {
-        if (event.target.classList.contains("edit"))
+        if (event.target === editView)
             return;  // ignore clicking on edit
 
         if (filenameSpan.parentElement.contains(event.target) ||
