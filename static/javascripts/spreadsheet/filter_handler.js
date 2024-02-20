@@ -20,6 +20,7 @@ function preloadImages(imageStates) {
     }
 }
 
+// TODO: when pulling input data from DB, escapeRegExp will run AGAIN on already escaped regExp, fix this
 function escapeRegExp(string) {
     // Escape regex
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
