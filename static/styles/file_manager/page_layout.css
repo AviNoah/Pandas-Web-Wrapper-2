@@ -16,12 +16,33 @@ body {
 }
 
 #drop-zone {
+    position: relative;
     width: 90%;
     height: 90%;
     opacity: 1;
     border-radius: 10px;
     overflow-y: auto;
     border: 1px dashed black;
+}
+
+.grid-controls {
+    height: 10%;
+    width: 90%;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+.grid-controls>* {
+    margin: 10px;
+}
+
+#compress {
+    --button-side: 24px;
+    width: var(--button-side);
+    height: var(--button-side);
+    z-index: 2;
+    cursor: pointer;
 }
 
 #drop-zone.dragover {
