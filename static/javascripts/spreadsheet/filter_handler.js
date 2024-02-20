@@ -20,12 +20,6 @@ function preloadImages(imageStates) {
     }
 }
 
-// TODO: when pulling input data from DB, escapeRegExp will run AGAIN on already escaped regExp, fix this
-function escapeRegExp(string) {
-    // Escape regex
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-}
-
 // Handle listeners
 export function handleFilter(filterView, column) {
     // Submit button
@@ -97,7 +91,7 @@ function addFilter(filterView, column) {
         sheet: getSelectedSheetIndex(),
         column: column,
         method: filterView.querySelector('select[name="filter-selector"]').value,
-        input: escapeRegExp(filterView.querySelector('input[name="filter-input"]').value),
+        input: filterView.querySelector('input[name="filter-input"]').value,
         enabled: filterView.querySelector('img[name="visibility-icon"]').classList.contains('toggled'),
     }
 
@@ -133,7 +127,7 @@ function updateFilter(filterView, filterId) {
     const data = {
         filterId: filterId,
         method: filterView.querySelector('select[name="filter-selector"]').value,
-        input: escapeRegExp(filterView.querySelector('input[name="filter-input"]').value),
+        input: filterView.querySelector('input[name="filter-input"]').value,
         enabled: filterView.querySelector('img[name="visibility-icon"]').classList.contains('toggled'),
     }
 

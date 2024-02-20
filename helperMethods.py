@@ -2,6 +2,7 @@
 
 import os
 import pandas as pd
+import re
 from werkzeug.datastructures import FileStorage
 
 from flask import jsonify, Response, send_file
@@ -68,6 +69,11 @@ def sendDF(df: pd.DataFrame) -> Response:
         return jsonify({"error": e}), 500
 
 
+def escapeRegEx(regEx: str) -> str:
+    # Return escaped regex
+    return re.sub(r"[.*+?^${}()|[\]\\]", r"\\\g<0>", regEx)
+
+
 def applyFilters(df: pd.DataFrame, filters: list) -> pd.DataFrame:
     # Apply filters to data-frame, return new data-frame
     # filters is a list of dicts with the following keys: input, method, column, enabled
@@ -86,6 +92,9 @@ def applyFilters(df: pd.DataFrame, filters: list) -> pd.DataFrame:
             continue  # Skip
 
         column_name = new_df.columns[column]  # Get column name
+
+        if method != "regex":
+            inp = escapeRegEx(inp)
 
         if method == "exact":
             # Filter rows where the column values exactly match the input string
