@@ -80,21 +80,14 @@ function handleEdit(editView, fileView, dataId) {
         submitRename()
     };
 
-    // TODO: Fix clicked edit again
-    const clickedEditAgain = function (event) {
-        event.preventDefault();
-        submitRename();
-    };
-
     const removeListeners = function () {
         filenameSpan.classList.remove('editing');
         document.removeEventListener("click", clickedOutside);
-        editView.removeEventListener("click", clickedEditAgain);
         filenameSpan.removeEventListener("keydown", pressedEnter);
     };
 
     if (filenameSpan.classList.contains('editing')) {
-        removeListeners();
+        submitRename();
         return;  // Simply un-toggle.
     };
 
@@ -107,10 +100,7 @@ function handleEdit(editView, fileView, dataId) {
 
     // Listen until user finishes entering input
     filenameSpan.addEventListener('keydown', pressedEnter);
-
     document.addEventListener('click', clickedOutside);
-
-    editView.addEventListener('click', clickedEditAgain);
 }
 
 export { handleEdit };
