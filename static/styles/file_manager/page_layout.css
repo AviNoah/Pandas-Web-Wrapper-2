@@ -45,6 +45,14 @@ body {
     cursor: pointer;
 }
 
+#clear {
+    --button-side: 24px;
+    width: var(--button-side);
+    height: var(--button-side);
+    z-index: 2;
+    cursor: pointer;
+}
+
 #drop-zone.dragover {
     border-style: solid;
 }

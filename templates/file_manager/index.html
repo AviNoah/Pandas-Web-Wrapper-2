@@ -22,6 +22,7 @@
 
     <!-- grid controls handlers -->
     <script src="/scripts/file_manager/grid_controls_handlers/compress_handler.js"></script>
+    <script src="/scripts/file_manager/grid_controls_handlers/clear_handler.js"></script>
 
     <!-- Tooltip handler and styles -->
     <link rel="stylesheet" href="/styles/tooltip/tooltipStyles.css" />
@@ -32,6 +33,7 @@
     <div class="folder" id="drop-zone"></div>
     <div class="grid-controls">
       <img class="tooltip" data-tooltip="Download as zip" id="compress" src="/images/ZipFolder.svg" onclick="handleCompress()" />
+      <img class="tooltip trashbin" data-tooltip="Clear grid" id="clear" src="/images/Delete.svg" onclick="handleClear()" />
     </div>
     <div id="tooltip"></div> <!-- A Hidden element waiting to be shown -->
     <script type="module" src="/scripts/file_manager/drop_zone_handler.js"></script>
