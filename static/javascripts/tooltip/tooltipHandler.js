@@ -42,23 +42,24 @@ const mouseOverFunc = (tooltipText, event) => {
     if (isMouseOnTooltip(event) || isTriggerElementBeingEdited(event))
         return;
 
-    const tooltipX = event.clientX + 10; // Adjust 10px to the right
-    const tooltipY = event.clientY + 10; // Adjust 10px downward
+    let tooltipX = event.clientX + 10; // Adjust 10px to the right
+    let tooltipY = event.clientY + 10; // Adjust 10px downward
 
     tooltipPopup.innerHTML = tooltipText;
-    tooltipPopup.style.left = tooltipX + 'px';
-    tooltipPopup.style.top = tooltipY + 'px';
 
     const width = getTooltipWidth();
     const height = getTooltipHeight();
 
     // Adjust popup position if it would exceed window boundaries
     if (tooltipX + width > window.innerWidth) {
-        tooltipPopup.style.left = (window.innerWidth - width - 10) + 'px';
+        tooltipX = event.clientX - 10 - width;
     }
     if (tooltipY + height > window.innerHeight) {
-        tooltipPopup.style.top = (window.innerHeight - height - 10) + 'px';
+        tooltipY = event.clientY - 10 - height;
     }
+
+    tooltipPopup.style.left = tooltipX + 'px';
+    tooltipPopup.style.top = tooltipY + 'px';
 
     tooltipPopup.classList.add('visible');
 };

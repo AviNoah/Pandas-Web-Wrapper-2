@@ -1,6 +1,5 @@
 
 function handleDownload(dataId) {
-    // TODO: Fix downloading files with hebrew text in them
     console.log("handleDownload executed with dataId:", dataId);
 
     const data = JSON.stringify({ fileId: dataId });
