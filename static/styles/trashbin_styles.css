@@ -1,0 +1,10 @@
+.trashbin {
+    opacity: 0.7;
+    filter: grayscale(100%);
+    transition: opacity 0.3s, filter 0.3s;
+}
+
+.trashbin:hover {
+    opacity: 1;
+    filter: none;
+}
