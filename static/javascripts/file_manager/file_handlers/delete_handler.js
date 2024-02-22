@@ -20,6 +20,11 @@ function handleDelete(fileView, dataId) {
                 throw new Error("Failed to delete file");
 
             console.log("Deleted file successfully");
+
+            if (fileView.classList.contains('select')) {
+                // Close spreadsheet
+                parent.postMessage(JSON.stringify({}), "/");
+            }
             fileView.parentElement.removeChild(fileView);  // Remove view
             return response;
         })
