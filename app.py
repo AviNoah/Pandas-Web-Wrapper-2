@@ -308,8 +308,8 @@ class file_fetching:
         # Construct a zip archive containing all files
         zip_data = BytesIO()
         with ZipFile(zip_data, "w") as zip_file:
-            for index, file_blob in enumerate(files, start=1):
-                zip_file.writestr(f"file_{index}.xlsx", file_blob)
+            for file in files:
+                zip_file.writestr(f"{file["name"]}{file["ext"]}", file["blob"])
 
         # Reset the file-like object's position to the beginning
         zip_data.seek(0)
@@ -318,7 +318,7 @@ class file_fetching:
         return send_file(
             zip_data,
             as_attachment=True,
-            attachment_filename="files.zip",
+            download_name="files.zip",
             mimetype="application/zip",
         )
 

@@ -188,12 +188,14 @@ class DB:
                 f"""SELECT 
                         {FileColumns.ID.value}, 
                         {FileColumns.NAME.value},
-                        {FileColumns.EXT.value} 
+                        {FileColumns.EXT.value} ,
+                        {FileColumns.BLOB.value} 
                         FROM {Tables.File.value}"""
             )
 
             files: List[dict] = [
-                {"id": id, "name": name, "ext": ext} for id, name, ext in c.fetchall()
+                {"id": id, "name": name, "ext": ext, "blob": blob}
+                for id, name, ext, blob in c.fetchall()
             ]
 
             return files
