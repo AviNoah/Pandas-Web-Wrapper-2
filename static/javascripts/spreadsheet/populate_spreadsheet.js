@@ -75,6 +75,13 @@ export function openSheet(sheet_num) {
     }).catch(error => console.error("Error while parsing selected workbook :", error));
 }
 
+export function closeSpreadsheet() {
+    const spreadsheetElement = document.getElementById('spreadsheet')
+    spreadsheetElement.removeAttribute('data-id')
+    spreadsheetElement.innerHTML = "";
+    console.log("Spreadsheet closed");
+}
+
 function openFile(id) {
     const data = JSON.stringify({ fileId: id })
 
@@ -128,7 +135,6 @@ function cacheTemplate(url, name) {
         .catch(error => console.error(error));
 }
 
-
 function fetchTemplates() {
     cacheTemplate("/templates/spreadsheet/header_cell.html", "headerCellTemplate");
 }
@@ -139,6 +145,12 @@ window.addEventListener('message', (event) => {
         return;
 
     const jsonData = JSON.parse(event.data);
+    if (!jsonData.hasOwnProperty('fileId')) {
+        // If no fileId property found, just close.
+        closeSpreadsheet();
+        return;
+    }
+
     const fileId = parseInt(jsonData.fileId, 10);
     const s = document.getElementById('spreadsheet');
 

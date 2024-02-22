@@ -8,4 +8,9 @@ function handleClear() {
 
     while (dropzone.children.length !== 0)
         dropzone.removeChild(dropzone.firstChild);
+
+    data = {};
+    target = "/";  // Index homepage will handle communication
+    parent.postMessage(JSON.stringify(data), target);
+    console.log("Cleared file grid");
 }
