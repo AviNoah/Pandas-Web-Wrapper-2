@@ -395,7 +395,7 @@ class DB:
                 c.execute(f"""DELETE FROM {Tables.File.value}""")
 
                 if c.rowcount > 0:
-                    return True, "Files deleted successfully"
+                    return True, "Session files deleted successfully"
                 return False, "No files found in session to delete"
             except Exception as e:
                 print(e)
