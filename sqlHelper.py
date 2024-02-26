@@ -43,6 +43,7 @@ class DB:
     def connection(self) -> Generator[Connection, None, None]:
         conn: Connection = connect(self.db_path)
         try:
+            conn.execute("BEGIN TRANSACTION")  # Begin transaction
             yield conn
         except Error as e:
             conn.rollback()  # Rollback changes if an exception occurs
