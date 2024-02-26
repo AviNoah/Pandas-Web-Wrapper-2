@@ -309,7 +309,7 @@ class file_fetching:
         zip_data = BytesIO()
         with ZipFile(zip_data, "w") as zip_file:
             for file in files:
-                zip_file.writestr(f"{file["name"]}{file["ext"]}", file["blob"])
+                zip_file.writestr(f"{file['name']}{file['ext']}", file["blob"])
 
         # Reset the file-like object's position to the beginning
         zip_data.seek(0)
