@@ -387,6 +387,20 @@ class DB:
             except Exception as e:
                 return False, "File deletion query failed"
 
+    def delete_files_from_session(self) -> Tuple[bool, str]:
+        # TODO: add sessionID parameter later to delete only ones related to current session
+        # Delete all files from session
+        with self.cursor() as c:
+            try:
+                c.execute(f"""DELETE FROM {Tables.File.value}""")
+
+                if c.rowcount > 0:
+                    return True, "Files deleted successfully"
+                return False, "No files found in session to delete"
+            except Exception as e:
+                print(e)
+                return False, "File deletion query failed"
+
 
 def init_db(parent: os.PathLike, db_name: str) -> os.PathLike:
     # Initialize DB file and return path

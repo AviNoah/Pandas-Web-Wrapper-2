@@ -9,6 +9,30 @@ function handleClear() {
     while (dropzone.children.length !== 0)
         dropzone.removeChild(dropzone.firstChild);
 
+
+    fetch("/files/delete/all",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: "",
+        })
+        .then(response => {
+            if (!response.ok)
+                throw new Error("Failed to delete files from session");
+
+            return response.json();
+        })
+        .then(json => {
+            if (!json.hasOwnProperty("message"))
+                throw new Error("Json has no message key");
+
+            return json.message;
+        })
+        .then(message => console.log(message))
+        .catch(error => console.error(error));
+
     data = {};
     target = "/";  // Index homepage will handle communication
     parent.postMessage(JSON.stringify(data), target);
