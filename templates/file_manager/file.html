@@ -8,5 +8,5 @@
 <div class="buttons-wrapper">
   <img data-tooltip="Edit" class="edit tooltip" onclick="import('/scripts/file_manager/file_handlers/edit_handler.js').then(module => module.handleEdit(this, this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id')))" src="/images/Edit.svg" alt="Edit" />
   <img data-tooltip="Download" class="download tooltip" onclick="handleDownload(this.parentElement.parentElement.getAttribute('data-id'))" src="/images/Download.svg" alt="Download file" />
-  <img data-tooltip="Delete" class="delete trashbin tooltip" onclick="handleDelete(this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id'))" src="/images/Delete.svg" alt="Delete file" name="delete-icon" />
+  <img data-tooltip="Delete" class="delete trashbin tooltip" onclick="import('/scripts/file_manager/file_handlers/delete_handler.js').then(module => module.handleDelete(this.parentElement.parentElement, this.parentElement.parentElement.getAttribute('data-id')))" src="/images/Delete.svg" alt="Delete file" name="delete-icon" />
 </div>

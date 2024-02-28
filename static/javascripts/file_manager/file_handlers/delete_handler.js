@@ -1,4 +1,6 @@
-function handleDelete(fileView, dataId) {
+import { closePopup } from "/scripts/tooltip/tooltipHandler.js";
+
+export function handleDelete(fileView, dataId) {
     console.log("handleDelete executed with dataId:", dataId);
 
     const choice = confirm("Are you sure you want to delete this file?");
@@ -25,6 +27,7 @@ function handleDelete(fileView, dataId) {
                 // Close spreadsheet
                 parent.postMessage(JSON.stringify({}), "/");
             }
+            closePopup();
             fileView.parentElement.removeChild(fileView);  // Remove view
             return response;
         })
