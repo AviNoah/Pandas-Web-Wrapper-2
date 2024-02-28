@@ -13,6 +13,22 @@ export function viewFilterList(event, column) {
         .catch(error => console.error(error));
 }
 
+export function isFilterPopulated(column) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const filters = await getFiltersFromDB(column);
+            if (filters.length > 0)
+                resolve(true);
+            resolve(false);
+        }
+        catch (error) {
+            console.error(error);
+            reject(false);
+        }
+    }
+    );
+}
+
 // Helper methods
 function positionPopup(target, popup) {
     // Position popup at target

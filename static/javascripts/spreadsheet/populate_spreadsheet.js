@@ -1,4 +1,4 @@
-import { viewFilterList, closePopup } from "/scripts/spreadsheet/populate_filters_list.js"
+import { viewFilterList, closePopup, isFilterPopulated } from "/scripts/spreadsheet/populate_filters_list.js"
 import { adjustSpinner, getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handler.js";
 import { initTooltipTriggerEl } from "/scripts/tooltip/tooltipHandler.js";
 
@@ -50,8 +50,11 @@ function updateSpreadsheetElement(sheet, editable = false) {
             const cellFilterImg = cell.querySelector('img[name="cell-filter"]');
             initTooltipTriggerEl(cellFilterImg);
 
-            cellFilterImg.src = filter_states.populated.url;
-            cellFilterImg.alt = filter_states.populated.alt;
+            isFilterPopulated(cell.cellIndex).then(result => {
+                const state = result ? filter_states.populated : filter_states.empty
+                cellFilterImg.src = state.url;
+                cellFilterImg.alt = state.alt;
+            })
 
             // Apply filter when the filter image is clicked; cellIndex is 0-based
             cellFilterImg.addEventListener('click', (event) => viewFilterList(event, cell.cellIndex));
