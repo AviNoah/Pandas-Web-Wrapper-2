@@ -185,7 +185,6 @@ class file_management:
     @app.route("/files/delete/all", methods=["POST"])
     def delete_files_from_session():
         # Delete all files from session (TODO: instead of all, delete only related to session)
-        # TODO: make it also mark grid as not populated
         global db
         status, msg = db.delete_files_from_session()
         if status:
