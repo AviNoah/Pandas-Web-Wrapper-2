@@ -2,6 +2,24 @@ import { viewFilterList, closePopup } from "/scripts/spreadsheet/populate_filter
 import { adjustSpinner, getSelectedSheetIndex } from "/scripts/spreadsheet/sheet_selector_handler.js";
 import { initTooltipTriggerEl } from "/scripts/tooltip/tooltipHandler.js";
 
+const filter_states = {
+    populated: { url: "/images/FilterSolid.svg", alt: "Populated filter" },
+    empty: { url: "/images/Filter.svg", alt: "Empty filter" },
+}
+
+// Preload images
+function preloadImages(imageStates) {
+    for (let stateKey in imageStates) {
+        const img = new Image();
+        const url = imageStates[stateKey].url;
+        try {
+            img.src = url;
+        } catch (error) {
+            console.error(`Failed to fetch ${url}: ${error}`);
+        }
+    }
+}
+
 const spreadsheetElement = document.getElementById('spreadsheet');
 
 function updateSpreadsheetElement(sheet, editable = false) {
@@ -31,6 +49,10 @@ function updateSpreadsheetElement(sheet, editable = false) {
 
             const cellFilterImg = cell.querySelector('img[name="cell-filter"]');
             initTooltipTriggerEl(cellFilterImg);
+
+            cellFilterImg.src = filter_states.populated.url;
+            cellFilterImg.alt = filter_states.populated.alt;
+
             // Apply filter when the filter image is clicked; cellIndex is 0-based
             cellFilterImg.addEventListener('click', (event) => viewFilterList(event, cell.cellIndex));
         })
@@ -159,4 +181,7 @@ window.addEventListener('message', (event) => {
 })
 
 // Preload templates on DOM content load
-document.addEventListener('DOMContentLoaded', fetchTemplates);
+document.addEventListener('DOMContentLoaded', () => {
+    fetchTemplates();
+    preloadImages(filter_states);
+});
