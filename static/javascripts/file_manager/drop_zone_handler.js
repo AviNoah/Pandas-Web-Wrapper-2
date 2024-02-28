@@ -22,7 +22,6 @@ function handleDrop(e) {
 
     // Check if the drop occurred on the zone or its children
     if (dropArea.contains(e.target)) {
-        dropArea.classList.add('populated');  // Mark as already populated - remove hint to drag files
         handleDroppedFiles(e);  // Accept dropped files
     }
 }
@@ -115,6 +114,29 @@ function handleDroppedFiles(event) {
         })
         .catch(error => console.error(error));
 }
+
+function handlePopulated(container) {
+    // Check if the container has any children
+    if (container.children.length > 0) {
+        // Add the "populated" tag if it has children
+        container.classList.add('populated');
+    } else {
+        // Remove the "populated" tag if it has no children
+        container.classList.remove('populated');
+    }
+}
+
+// Create a new instance of MutationObserver
+const observePopulation = new MutationObserver(() => {
+    // Call handlePopulated function whenever there's a change
+    handlePopulated(dropArea);
+});
+
+// Configure the MutationObserver to observe child list changes
+const config = { childList: true };
+
+// Start observing the target node for configured mutations
+observePopulation.observe(dropArea, config);
 
 // Attach event listeners
 document.addEventListener('dragenter', handleDragEnter);
