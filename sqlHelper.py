@@ -67,7 +67,7 @@ class DB:
             # Create File table
             c.execute(
                 f"""CREATE TABLE IF NOT EXISTS {Tables.File.value}
-                            ({FileColumns.ID.value} INTEGER PRIMARY KEY,
+                            ({FileColumns.ID.value} INTEGER PRIMARY KEY AUTOINCREMENT,
                             {FileColumns.NAME.value} TEXT,
                             {FileColumns.EXT.value} TEXT,
                             {FileColumns.BLOB.value} BLOB)"""
@@ -76,7 +76,7 @@ class DB:
             # Create Filter table
             c.execute(
                 f"""CREATE TABLE IF NOT EXISTS {Tables.Filter.value}
-                            ({FilterColumns.ID.value} INTEGER PRIMARY KEY,
+                            ({FilterColumns.ID.value} INTEGER PRIMARY KEY AUTOINCREMENT,
                             {FilterColumns.METHOD.value} TEXT,
                             {FilterColumns.INPUT.value} TEXT,
                             {FilterColumns.ENABLED.value} INTEGER)"""
