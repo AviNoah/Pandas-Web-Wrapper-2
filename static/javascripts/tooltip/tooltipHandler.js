@@ -30,6 +30,10 @@ function getTooltipHeight() {
     return height;
 }
 
+export function closePopup() {
+    tooltipPopup.classList.remove('visible');
+}
+
 const isMouseOnTooltip = (event) => {
     return Boolean(tooltipPopup === event.target || tooltipPopup.contains(event.target));
 }
@@ -69,7 +73,7 @@ const mouseOverFunc = (tooltipText, event) => {
 const mouseOutFunc = (event) => {
     if (isMouseOnTooltip(event))
         return;
-    tooltipPopup.classList.remove('visible');
+    closePopup();
 };
 
 export const initTooltipTriggerEl = (tooltipTriggerEl) => {
