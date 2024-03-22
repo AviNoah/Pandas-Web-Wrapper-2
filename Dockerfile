@@ -39,15 +39,14 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     python -m pip install -r requirements.txt && \
     chmod -R +w /root/.cache/pip
 
-# Switch to the non-privileged user to run the application.
-USER appuser
-
 # Copy the source code into the container.
 COPY . .
 
-# TODO: add write permission to /app/files.db file
-# Give write permissions to db file
-RUN chmod +w /app/files.db 
+RUN chown appuser:appuser /app/files.db && \
+    chmod u+w /app/files.db
+
+# Switch to the non-privileged user to run the application.
+USER appuser
 
 # Expose the port that the application listens on.
 EXPOSE 5000
