@@ -39,6 +39,13 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     python -m pip install -r requirements.txt && \
     chmod -R +w /root/.cache/pip
 
+# TODO: Install xlsx npm package
+# Use the official Node.js image which already includes npm
+FROM node:latest
+
+# Install npm dependencies
+RUN npm install xlsx
+
 # Copy the source code into the container.
 COPY . .
 
@@ -46,7 +53,7 @@ RUN chown appuser:appuser /app/files.db && \
     chmod u+w /app/files.db
 
 # Switch to the non-privileged user to run the application.
-USER appuser
+# USER appuser
 
 # Expose the port that the application listens on.
 EXPOSE 5000
