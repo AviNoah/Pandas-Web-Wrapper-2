@@ -1,11 +1,5 @@
 # syntax=docker/dockerfile:1
 
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/go/dockerfile-reference/
-
-# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
-
 ARG PYTHON_VERSION=3.12.2
 FROM python:${PYTHON_VERSION}-slim as base
 
@@ -18,8 +12,20 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Create a non-privileged user that the app will run under.
-# See https://docs.docker.com/go/dockerfile-user-best-practices/
+# Download dependencies as a separate step to take advantage of Docker's caching.
+# Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
+# Leverage a bind mount to requirements.txt to avoid having to copy them into
+# into this layer.
+RUN --mount=type=cache,target=/root/.cache/pip \
+    --mount=type=bind,source=requirements.txt,target=requirements.txt \
+    python -m pip install -r requirements.txt && \
+    chmod -R +w /root/.cache/pip
+
+# Use the official Node.js image which already includes npm
+FROM node:latest
+
+WORKDIR /app
+
 ARG UID=10001
 RUN adduser \
     --disabled-password \
@@ -30,28 +36,14 @@ RUN adduser \
     --uid "${UID}" \
     appuser
 
-# Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
-# Leverage a bind mount to requirements.txt to avoid having to copy them into
-# into this layer.
-RUN --mount=type=cache,target=/root/.cache/pip \
-    --mount=type=bind,source=requirements.txt,target=requirements.txt \
-    python -m pip install -r requirements.txt && \
-    chmod -R +w /root/.cache/pip
-
-# TODO: Install xlsx npm package
-# Use the official Node.js image which already includes npm
-FROM node:latest
-
-WORKDIR /app
-
 # Install npm dependencies
 RUN npm install xlsx
 
 # Copy the source code into the container.
 COPY . . --exclude=package*.json
 
-RUN chown appuser:appuser /app/files.db && \
+# Change ownership of files.db to appuser.
+RUN chown appuser /app/files.db && \
     chmod u+w /app/files.db
 
 # Switch to the non-privileged user to run the application.
