@@ -40,7 +40,7 @@ RUN adduser \
 RUN npm install xlsx
 
 # Copy the source code into the container.
-COPY . . --exclude=package*.json
+COPY . .
 
 # Change ownership of files.db to appuser.
 RUN chown appuser /app/files.db && \
